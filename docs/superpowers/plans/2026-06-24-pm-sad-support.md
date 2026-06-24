@@ -32,7 +32,7 @@
 - Consumes: nothing (first task).
 - Produces: `shared/templates/sad-template.md` with sections `## 1. Introduction`, `## 2. Architectural Drivers and Requirements` (canonical `AR-NNN` table, columns `ID | Requirement | Source | Design Impact`), `## 3. System Context` (inline `C4Context`), `## 4. Container and Infrastructure`, `## 5. Data Flow and Integration Patterns`, `## 6. Security and Compliance Architecture`, `## 7. Architecture Decisions`, `## 8. Open Questions and Assumptions`. The `AR` table columns match the SDD §3 `AR` table so migration is a verbatim row lift.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/sad-conventions.test.js`:
 
@@ -73,12 +73,12 @@ test('sad-template documents the AR table and C4/architecture sections', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/sad-conventions.test.js`
 Expected: FAIL — `ENOENT ... sad-template.md` (file does not exist yet).
 
-- [ ] **Step 3: Create the template**
+- [x] **Step 3: Create the template**
 
 Create `plugins/product-design-suite/shared/templates/sad-template.md`:
 
@@ -221,12 +221,12 @@ Structural choices made in this SAD, each linking to its ADR for the rationale.
 | <Assumption or question> | <Assumption/question> | <Owner> | <Open/resolved> |
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `node --test tests/sad-conventions.test.js`
 Expected: PASS (2 tests pass).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/shared/templates/sad-template.md tests/sad-conventions.test.js
@@ -246,7 +246,7 @@ git commit -m "feat: sad-template + conventions test (SAD support, Task 1)"
 - Consumes: `sad-template.md` (Task 1).
 - Produces: skill `name: pm-sad-builder` that authors `.product/sad/sad.md`, owns `AR-NNN`, documents `derive-then-confirm` and the confirmation-gated SDD→SAD migration; command `commands/pm-sad.md` routing to it.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Append to `tests/sad-conventions.test.js`:
 
@@ -271,12 +271,12 @@ test('pm-sad command exists and routes to the skill', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/sad-conventions.test.js`
 Expected: FAIL — `ENOENT ... pm-sad-builder/SKILL.md`.
 
-- [ ] **Step 3: Create the skill**
+- [x] **Step 3: Create the skill**
 
 Create `plugins/product-design-suite/skills/pm-sad-builder/SKILL.md`:
 
@@ -350,7 +350,7 @@ SDD owns those as usual — creating this file is what puts the project into "SA
 - Reuse source IDs verbatim; keep `AR-NNN` IDs stable across updates.
 ```
 
-- [ ] **Step 4: Create the command**
+- [x] **Step 4: Create the command**
 
 Create `plugins/product-design-suite/commands/pm-sad.md`:
 
@@ -362,12 +362,12 @@ argument-hint: [what to add or change]
 Use the pm-sad-builder skill to create or update `.product/sad/sad.md`, the canonical home for the macro-architecture (C4 Context/Container, infrastructure, data-flow, macro security) and Architectural Requirements (AR-NNN). $ARGUMENTS
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `node --test tests/sad-conventions.test.js`
 Expected: PASS (5 tests pass).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-sad-builder/SKILL.md plugins/product-design-suite/commands/pm-sad.md tests/sad-conventions.test.js
@@ -387,7 +387,7 @@ git commit -m "feat: pm-sad-builder skill + /pm-sad command (SAD support, Task 2
 - Consumes: `pm-sad-builder` (Task 2), `.product/sad/sad.md` keystone.
 - Produces: SDD builder documents the SAD-mode branch (SDD §3 references the SAD's `AR-NNN`/C4 Context+Container; components map to the SAD's `AR`); workflow documents the `PRD → (opt) SRS → (opt) SAD → SDD → ADR` sequence and offers `pm-sad-builder`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Append to `tests/sad-conventions.test.js`:
 
@@ -405,12 +405,12 @@ test('pm-product-workflow documents the optional SAD stage', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/sad-conventions.test.js`
 Expected: FAIL — the two new assertions fail (`SAD` / `pm-sad-builder` not yet present in those skills).
 
-- [ ] **Step 3: Add the SAD-mode branch to `pm-sdd-builder`**
+- [x] **Step 3: Add the SAD-mode branch to `pm-sdd-builder`**
 
 In `plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md`, replace the SRS input line (line 17):
 
@@ -450,7 +450,7 @@ with:
    builder only honors the active mode.
 ```
 
-- [ ] **Step 4: Re-sequence the workflow in `pm-product-workflow`**
+- [x] **Step 4: Re-sequence the workflow in `pm-product-workflow`**
 
 In `plugins/product-design-suite/skills/pm-product-workflow/SKILL.md`, replace the top line (line 11):
 
@@ -503,12 +503,12 @@ with:
   need not pre-create them.
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `node --test tests/sad-conventions.test.js`
 Expected: PASS (7 tests pass).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md plugins/product-design-suite/skills/pm-product-workflow/SKILL.md tests/sad-conventions.test.js
@@ -527,7 +527,7 @@ git commit -m "feat: SAD-mode branch in pm-sdd-builder + workflow wiring (SAD su
 - Consumes: nothing new (pure JS).
 - Produces: `buildMatrix({ prd, sdd, adrs, srs, sad })` — when `sad` is non-empty, `AR` (the `ars` list and AR→FR trace links) is parsed from the **SAD**; otherwise from the SDD (unchanged). `loadProduct(dir)` returns a `sad` field read from `<dir>/sad/sad.md` (`''` if absent).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tests/traceability.test.js`:
 
@@ -565,12 +565,12 @@ test('loadProduct reads sad/sad.md into the sad field', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `node --test tests/traceability.test.js`
 Expected: FAIL — `buildMatrix sources AR from the SAD when present` fails (currently `ars` is parsed from `sdd`, so it returns `AR-001` *plus* whatever, and `tracesTo` resolves in the SDD), and `loadProduct ... sad field` fails (`loaded.sad` is `undefined`).
 
-- [ ] **Step 3: Make `buildMatrix` AR-source mode-aware**
+- [x] **Step 3: Make `buildMatrix` AR-source mode-aware**
 
 In `plugins/product-design-suite/scripts/traceability.js`, change the `buildMatrix` signature (line 139):
 
@@ -617,7 +617,7 @@ to:
 
 (The `requirements` list's `sections`/`inSdd` continue to read from `sdd` — FR coverage is still shown against the SDD. Only the `AR` set relocates.)
 
-- [ ] **Step 4: Make `loadProduct` read the SAD**
+- [x] **Step 4: Make `loadProduct` read the SAD**
 
 In `loadProduct` (the returned object, lines 253–258), add a `sad` field alongside `srs`:
 
@@ -631,12 +631,12 @@ In `loadProduct` (the returned object, lines 253–258), add a `sad` field along
   };
 ```
 
-- [ ] **Step 5: Run the full traceability suite to verify pass + no regression**
+- [x] **Step 5: Run the full traceability suite to verify pass + no regression**
 
 Run: `node --test tests/traceability.test.js`
 Expected: PASS — all prior tests plus the 3 new ones pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/traceability.js tests/traceability.test.js
@@ -660,7 +660,7 @@ git commit -m "feat: traceability.js sources AR from the SAD when present (SAD s
 - Consumes: all prior tasks.
 - Produces: doc-sync includes the SAD in the impact graph and recognizes ADR↔SAD links; import maps a SAD source to `sad-template.md`; the ADR template exposes `related-sad`; concepts/structures document the SAD as an optional document with the macro/micro `AR` split.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tests/sad-conventions.test.js`:
 
@@ -684,12 +684,12 @@ test('concepts documents the SAD as an optional document', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/sad-conventions.test.js`
 Expected: FAIL — the three new assertions fail (no `SAD`/`related-sad`/`.product/sad/sad.md` yet in those files).
 
-- [ ] **Step 3: Wire `pm-doc-sync`**
+- [x] **Step 3: Wire `pm-doc-sync`**
 
 In `plugins/product-design-suite/skills/pm-doc-sync/SKILL.md`, replace the impact bullet (lines 24–28):
 
@@ -736,7 +736,7 @@ with:
      to ADRs that list it in `related-sad`.
 ```
 
-- [ ] **Step 4: Wire `pm-import`**
+- [x] **Step 4: Wire `pm-import`**
 
 In `plugins/product-design-suite/skills/pm-import/SKILL.md`:
 
@@ -787,7 +787,7 @@ macro-architecture (the SDD then references them).
   so traceability is preserved.
 ```
 
-- [ ] **Step 5: Add `related-sad` to the ADR template**
+- [x] **Step 5: Add `related-sad` to the ADR template**
 
 In `plugins/product-design-suite/shared/templates/adr-template.md`, add the `related-sad` field after `related-sdd` (line 14). Replace:
 
@@ -804,7 +804,7 @@ related-sad: []     # SAD section/AR references, e.g. ["§4 Containers", "AR-002
 related-adrs: []    # other related ADR IDs
 ```
 
-- [ ] **Step 6: Mention `related-sad` in `pm-adr-builder`**
+- [x] **Step 6: Mention `related-sad` in `pm-adr-builder`**
 
 In `plugins/product-design-suite/skills/pm-adr-builder/SKILL.md`, replace the related-link sentence (lines 27–28):
 
@@ -822,7 +822,7 @@ decision records a structural choice made in the SAD, set `related-sad` (SAD sec
 or `AR-NNN`).
 ```
 
-- [ ] **Step 7: Document the SAD in `concepts.md`**
+- [x] **Step 7: Document the SAD in `concepts.md`**
 
 In `plugins/product-design-suite/shared/references/concepts.md`, after the SRS-mode paragraph (line 221, ending "The suite detects which mode applies by whether `.product/srs/srs.md` exists."), add a new paragraph:
 
@@ -861,7 +861,7 @@ with:
    component/code design.
 ```
 
-- [ ] **Step 8: Document the SAD in `structures.md`**
+- [x] **Step 8: Document the SAD in `structures.md`**
 
 In `plugins/product-design-suite/shared/references/structures.md`, add a SAD subsection. Insert it immediately before `## 3. ADR (Architecture Decision Record)` (line 297). Add:
 
@@ -903,12 +903,12 @@ SAD
 defines them.
 ```
 
-- [ ] **Step 9: Run the conventions suite to verify pass**
+- [x] **Step 9: Run the conventions suite to verify pass**
 
 Run: `node --test tests/sad-conventions.test.js`
 Expected: PASS (all 13 assertions pass).
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-doc-sync/SKILL.md plugins/product-design-suite/skills/pm-import/SKILL.md plugins/product-design-suite/shared/templates/adr-template.md plugins/product-design-suite/skills/pm-adr-builder/SKILL.md plugins/product-design-suite/shared/references/concepts.md plugins/product-design-suite/shared/references/structures.md tests/sad-conventions.test.js
@@ -926,17 +926,17 @@ git commit -m "feat: SAD-aware doc-sync, import, ADR related-sad, concepts & str
 - Consumes: all prior tasks.
 - Produces: confirmation the entire plugin test suite is green.
 
-- [ ] **Step 1: Run the complete suite**
+- [x] **Step 1: Run the complete suite**
 
 Run: `node --test tests/*.test.js`
 Expected: PASS — all test files pass, including `validate-plugin.test.js` (the new `pm-sad-builder` skill satisfies `name == dir`), `sad-conventions.test.js`, the extended `traceability.test.js`, and all Phase 1–5 suites.
 
-- [ ] **Step 2: Confirm the plugin validator passes standalone**
+- [x] **Step 2: Confirm the plugin validator passes standalone**
 
 Run: `node --test tests/validate-plugin.test.js`
 Expected: PASS — no orphaned/misnamed skills or commands.
 
-- [ ] **Step 3: Commit (only if the run surfaced a fix)**
+- [x] **Step 3: Commit (only if the run surfaced a fix)**
 
 If Steps 1–2 are green with no edits, skip this commit. If a fix was required, commit it:
 
