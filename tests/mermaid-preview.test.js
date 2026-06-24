@@ -50,6 +50,12 @@ test('renderPreview shows an empty-state when given no blocks', () => {
   assert.match(html, /No mermaid diagrams found/);
 });
 
+test('renderPreview neutralizes a </script> sequence inside injected mermaidJs', () => {
+  const html = m.renderPreview(['flowchart TD\n A-->B'], { mermaidJs: 'a</script><script>alert(1)' });
+  assert.ok(!/a<\/script>/.test(html), 'raw </script> must be escaped to <\\/script>');
+  assert.match(html, /a<\\\/script>/);
+});
+
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');

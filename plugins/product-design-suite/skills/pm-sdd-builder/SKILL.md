@@ -34,9 +34,10 @@ derived from the PRD.
      `C4Component`, `sequenceDiagram`, `stateDiagram-v2`, `erDiagram`, `flowchart`).
    - **Present for approval.** Show the Mermaid source in the conversation, and
      offer a rendered preview: write the drafts to a scratch markdown file and run
-     `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`,
-     served via the preview server (`start-server.sh`). Mermaid is vendored
-     locally, so the preview works offline. Iterate until the user approves.
+     `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`
+     (use a temporary path like the system temp dir for both the scratch markdown
+     and preview HTML, not `.product/`), served via the preview server (`start-server.sh`).
+     Mermaid is vendored locally, so the preview works offline. Iterate until the user approves.
    - **Write** the approved ` ```mermaid ` blocks inline into the relevant `sdd.md`
      sections (§3 Architecture Overview, §7 Flows and Behavior). These inline blocks
      are the source of truth.
