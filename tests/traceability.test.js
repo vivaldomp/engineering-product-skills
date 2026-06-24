@@ -181,3 +181,35 @@ test('loadProduct reads srs/srs.md into the srs field', () => {
   const loaded = t.loadProduct(dir);
   assert.match(loaded.srs, /FR-001 from srs/);
 });
+
+test('buildMatrix sources AR from the SAD when present', () => {
+  const m = t.buildMatrix({
+    prd: 'FR-001 login.',
+    sad: '## 3. System Context\nAR-001 traces to FR-001.',
+    sdd: '## 4. Components\nImplements FR-001. See AR-001 in the SAD.',
+    adrs: {},
+  });
+  assert.deepEqual(m.ars.map(a => a.id), ['AR-001']);
+  assert.deepEqual(m.ars.find(a => a.id === 'AR-001').tracesTo, ['FR-001']);
+});
+
+test('buildMatrix sources AR from the SDD when no SAD (regression)', () => {
+  const m = t.buildMatrix({
+    prd: 'FR-001 a.',
+    sdd: '## 5. X\nAR-001 traces to FR-001.',
+    adrs: {},
+  });
+  assert.deepEqual(m.ars.map(a => a.id), ['AR-001']);
+  assert.deepEqual(m.ars.find(a => a.id === 'AR-001').tracesTo, ['FR-001']);
+});
+
+test('loadProduct reads sad/sad.md into the sad field', () => {
+  const os = require('node:os');
+  const fsm = require('node:fs');
+  const pth = require('node:path');
+  const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'pm-sad-'));
+  fsm.mkdirSync(pth.join(dir, 'sad'), { recursive: true });
+  fsm.writeFileSync(pth.join(dir, 'sad', 'sad.md'), 'AR-001 from sad');
+  const loaded = t.loadProduct(dir);
+  assert.match(loaded.sad, /AR-001 from sad/);
+});

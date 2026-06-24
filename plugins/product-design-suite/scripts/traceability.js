@@ -136,7 +136,7 @@ function linksWithin(text, leftRe, rightRe) {
   return out;
 }
 
-function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '' } = {}) {
+function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '', sad = '' } = {}) {
   // SRS mode: when an SRS is present it is the canonical source of FR/NFR;
   // BR always comes from the PRD. With no SRS, FR/BR/NFR all come from the PRD.
   const hasSrs = String(srs).trim() !== '';
@@ -150,8 +150,11 @@ function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '' } = {}) {
   });
   const adrsFor = id => adrSets.filter(([, s]) => s.has(id)).map(([k]) => k).sort(refCompare);
 
+  // SAD mode: when a SAD is present it is the canonical source of AR-NNN; otherwise AR lives in the SDD.
+  const arSource = String(sad).trim() !== '' ? sad : sdd;
+
   const uatVerifies = linksWithin(prd, /^UAT-/, REQ_RE);
-  const arTrace = linksWithin(sdd, /^AR-/, REQ_RE);
+  const arTrace = linksWithin(arSource, /^AR-/, REQ_RE);
 
   const uatsForReq = new Map();
   for (const [uat, reqs] of uatVerifies) {
@@ -176,7 +179,7 @@ function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '' } = {}) {
     id, verifies: uatVerifies.get(id) || [],
   }));
 
-  const ars = parseRefs(sdd).filter(id => /^AR-/.test(id)).map(id => ({
+  const ars = parseRefs(arSource).filter(id => /^AR-/.test(id)).map(id => ({
     id, tracesTo: arTrace.get(id) || [], adrs: adrsFor(id),
   }));
 
@@ -254,6 +257,7 @@ function loadProduct(dir) {
     prd: read(path.join(dir, 'prd', 'prd.md')),
     sdd: read(path.join(dir, 'sdd', 'sdd.md')),
     srs: read(path.join(dir, 'srs', 'srs.md')),
+    sad: read(path.join(dir, 'sad', 'sad.md')),
     adrs,
   };
 }

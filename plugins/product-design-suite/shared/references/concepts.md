@@ -220,13 +220,28 @@ ADR/
 
 Many agile teams do not maintain a separate formal SRS; the PRD then owns functional (`FR-NNN`) and non-functional (`NFR-NNN`) requirements directly, alongside the SDD for technical design and ADRs for decision history. This works well where architecture evolves incrementally and decisions need to remain traceable. Teams that do keep an IEEE-830 SRS (often regulated or enterprise contexts) can adopt the optional SRS document: the SRS becomes the canonical home for `FR-NNN`/`NFR-NNN` while the PRD references them and keeps business rules (`BR-NNN`) and acceptance tests (`UAT-NNN`). The suite detects which mode applies by whether `.product/srs/srs.md` exists.
 
+Between requirements and detailed design sits the optional **System Architecture Document
+(SAD)** — the macro-architecture blueprint. When a team adopts it, the SAD becomes the
+canonical home for the system context (C4 Level 1), container/infrastructure topology
+(C4 Level 2), data-flow and integration patterns, the macro security architecture, and the
+Architectural Requirements (`AR-NNN`); the SDD then drops to the micro level (C3 components,
+APIs, schemas, code-level design) and references the SAD. Without a SAD, the SDD owns the
+macro-architecture and `AR-NNN` as before. The suite detects SAD mode by whether
+`.product/sad/sad.md` exists. Where the SRS answers *what* the system must do and the SDD
+answers *how* a module is built, the SAD answers *where* components live and the big picture.
+
 ## 5. Recommended lifecycle
 
 1. Start with a PRD when the problem, audience, expected outcomes, and scope need alignment.
    - *(Optional)* If the team maintains a formal SRS, author it after the PRD with
      `pm-srs-builder`; the SRS then owns the detailed `FR`/`NFR` that the PRD references and
      the SDD designs against.
-2. Draft or update the SDD when the team is ready to design the technical solution.
+   - *(Optional)* If the team maintains a System Architecture Document, author it after the
+     requirements with `pm-sad-builder`; the SAD then owns the macro-architecture and `AR-NNN`
+     that the SDD designs against and references.
+2. Draft or update the SDD when the team is ready to design the technical solution. When a SAD
+   exists, the SDD references its macro-architecture and `AR-NNN` and focuses on C3
+   component/code design.
 3. Create ADRs whenever the design involves meaningful trade-offs, irreversible choices, expensive changes, cross-team standards, or long-lived operational consequences.
 4. Keep the documents connected through references: PRD requirements should map to SDD sections, and SDD design choices should link to ADRs.
 5. Update documents when reality changes. Documentation is most valuable when it reflects the system as built or intentionally records why it changed.

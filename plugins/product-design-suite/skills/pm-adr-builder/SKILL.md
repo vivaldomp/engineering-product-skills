@@ -24,8 +24,10 @@ Record one architectural decision per file in `.product/adr/`.
    every 4 questions and summarize remaining gaps). Options considered must be real
    alternatives (include "do nothing" when relevant).
 4. Populate the YAML front-matter (`id`, `title`, `status`, `date`, `author`,
-   `reviewers`). Link related PRD/SDD/ADR references in the `related-prd`,
-   `related-sdd`, and `related-adrs` front-matter fields.
+   `reviewers`). Link related PRD/SDD/SAD/ADR references in the `related-prd`,
+   `related-sdd`, `related-sad`, and `related-adrs` front-matter fields. When the
+   decision records a structural choice made in the SAD, set `related-sad` (SAD section
+   or `AR-NNN`).
 5. Set `status` to a single enum value (Proposed/Accepted/Superseded/Deprecated/
    Rejected) — never overload it with parentheticals. Record supersede/amend
    relationships in the structured front-matter fields: set `supersedes` or

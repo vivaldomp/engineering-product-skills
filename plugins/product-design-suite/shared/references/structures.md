@@ -294,6 +294,42 @@ set from this catalog:
 | DFD + trust boundary | `flowchart` with `subgraph` boundaries | privacy/security/LGPD review, data crossing trust zones |
 | Flow / activity | `flowchart` | general process or branching logic |
 
+## 2b. SAD (System Architecture Document)
+
+An optional macro-architecture document that sits between the SRS and the SDD. When present,
+it is the canonical home for the system context, container/infrastructure topology, data-flow
+patterns, the macro security architecture, and the Architectural Requirements (`AR-NNN`). The
+SDD then references it and focuses on C3 component/code design. Without a SAD, the SDD owns
+the macro-architecture and `AR-NNN`.
+
+```text
+SAD
+|-- 1. Introduction (purpose, scope, audience, references, related ADRs, glossary)
+|-- 2. Architectural drivers and requirements (AR-NNN, drivers from NFRs, constraints)
+|-- 3. System context (C4 Level 1)
+|-- 4. Container and infrastructure (C4 Level 2, technology choices, deployment)
+|-- 5. Data flow and integration patterns (REST/GraphQL/events, trust boundaries)
+|-- 6. Security and compliance architecture (macro: authN, encryption, perimeters)
+|-- 7. Architecture decisions (each linking to an ADR)
+`-- 8. Open questions and assumptions
+```
+
+### SAD quality checklist
+
+- The macro-architecture maps back to SRS/PRD non-functional requirements via `AR-NNN`.
+- System boundaries and external integrations are explicit (C4 Context).
+- Container/technology choices and the deployment landscape are shown (C4 Container).
+- Data-flow and integration patterns, including trust boundaries, are mapped.
+- Macro security posture is covered; implementation-level security stays in the SDD.
+- Structural choices link to ADRs for their rationale.
+
+### AR ownership (macro/micro split)
+
+`AR-NNN` (Architectural Requirements) is owned by the **SAD when one exists**, and by the
+**SDD otherwise**. `traceability.js` keys off `.product/sad/sad.md` existence and sources the
+`AR` set accordingly, so `AR-NNN` resolves across SAD and SDD regardless of which document
+defines them.
+
 ## 3. ADR (Architecture Decision Record)
 
 Each ADR documents one decision. It should be concise, traceable, and durable enough for future maintainers to understand the reasoning without reopening old discussions.

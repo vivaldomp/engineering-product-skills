@@ -11,6 +11,7 @@ amends: []          # ADR IDs this decision modifies without replacing
 amended-by: []      # ADR IDs that modify this decision
 related-prd: []     # PRD section/ID references, e.g. ["§7 FR-012"]
 related-sdd: []     # SDD section references, e.g. ["§4 Components"]
+related-sad: []     # SAD section/AR references, e.g. ["§4 Containers", "AR-002"]
 related-adrs: []    # other related ADR IDs
 ---
 
