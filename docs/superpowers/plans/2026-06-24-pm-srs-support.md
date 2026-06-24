@@ -47,7 +47,7 @@
 - Consumes: nothing (first task).
 - Produces: `shared/templates/srs-template.md` with YAML front-matter (`title`, `status`, `version`, `owner`, `date`), section headings `## 1. Introduction`, `## 2. Overall Description`, `## 3. Specific Requirements`, subheadings `### Functional Requirements` and `### Non-Functional Requirements`, an `FR-001` row in the functional table, and an `NFR-001` row in the non-functional table. Later tasks rely on this file path and on `FR`/`NFR` being column-compatible with the PRD's tables.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/srs-conventions.test.js`:
 
@@ -87,12 +87,12 @@ test('srs-template documents IEEE-830 sections and FR/NFR tables', () => {
 });
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `node --test tests/srs-conventions.test.js`
 Expected: FAIL — `ENOENT` reading `shared/templates/srs-template.md` (file does not exist yet).
 
-- [ ] **Step 3: Create the SRS template**
+- [x] **Step 3: Create the SRS template**
 
 Create `plugins/product-design-suite/shared/templates/srs-template.md` with exactly this content:
 
@@ -195,17 +195,17 @@ live in the SDD and trace back to the `FR`/`NFR` IDs defined here.
 <Optional supporting material: data dictionaries, analysis models, or supplementary diagrams.>
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `node --test tests/srs-conventions.test.js`
 Expected: PASS — 2 tests pass.
 
-- [ ] **Step 5: Verify no regressions**
+- [x] **Step 5: Verify no regressions**
 
 Run: `node --test tests/*.test.js`
 Expected: All tests pass (new `srs-conventions` tests plus the existing Phase 1–4 suites).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/shared/templates/srs-template.md tests/srs-conventions.test.js
@@ -227,7 +227,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - Consumes: `shared/templates/srs-template.md` (Task 1).
 - Produces: a skill named `pm-srs-builder` that authors `.product/srs/srs.md`, owns `FR-NNN`/`NFR-NNN`, supports derive-then-confirm mode, and performs a confirmation-gated PRD→SRS requirements migration. The command `/pm-srs` routes to it. Task 4 (workflow) references `pm-srs-builder` by name; Task 5 (import) references the same authoring contract.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Append to `tests/srs-conventions.test.js`:
 
@@ -253,12 +253,12 @@ test('pm-srs command exists and routes to the skill', () => {
 });
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `node --test tests/srs-conventions.test.js`
 Expected: FAIL — `ENOENT` reading `skills/pm-srs-builder/SKILL.md`.
 
-- [ ] **Step 3: Create the skill**
+- [x] **Step 3: Create the skill**
 
 Create `plugins/product-design-suite/skills/pm-srs-builder/SKILL.md` with exactly this content:
 
@@ -316,7 +316,7 @@ the PRD owns those requirements as usual — creating this file is what puts the
 - Reuse source IDs verbatim; keep IDs stable across updates.
 ```
 
-- [ ] **Step 4: Create the command**
+- [x] **Step 4: Create the command**
 
 Create `plugins/product-design-suite/commands/pm-srs.md` with exactly this content:
 
@@ -328,17 +328,17 @@ argument-hint: [what to add or change]
 Use the pm-srs-builder skill to create or update `.product/srs/srs.md`, the canonical home for functional (FR-NNN) and non-functional (NFR-NNN) requirements. $ARGUMENTS
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `node --test tests/srs-conventions.test.js`
 Expected: PASS — 5 tests pass (2 from Task 1 + 3 new).
 
-- [ ] **Step 6: Verify no regressions (validate-plugin must accept the new skill)**
+- [x] **Step 6: Verify no regressions (validate-plugin must accept the new skill)**
 
 Run: `node --test tests/*.test.js`
 Expected: All pass, including `validate-plugin.test.js` (the new skill's `name: pm-srs-builder` matches its directory).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-srs-builder/SKILL.md plugins/product-design-suite/commands/pm-srs.md tests/srs-conventions.test.js
@@ -359,7 +359,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - Consumes: nothing from prior tasks (the engine works on text, not files authored by Tasks 1–2).
 - Produces: `buildMatrix({ prd, sdd, adrs, srs })` where `srs` defaults to `''`; when `srs` is non-empty, `FR`/`NFR` requirements are sourced from `srs` and `BR` from `prd`; when empty, `FR`/`BR`/`NFR` all come from `prd` (unchanged). `loadProduct(dir)` returns `{ prd, sdd, adrs, srs }`, reading `.product/srs/srs.md` (empty string if absent).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tests/traceability.test.js`:
 
@@ -396,12 +396,12 @@ test('loadProduct reads srs/srs.md into the srs field', () => {
 });
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `node --test tests/traceability.test.js`
 Expected: FAIL — the SRS test sees `FR-001` only because the PRD references it (BR/NFR sourcing wrong), and `loadProduct(...).srs` is `undefined`.
 
-- [ ] **Step 3: Make `buildMatrix` SRS-aware**
+- [x] **Step 3: Make `buildMatrix` SRS-aware**
 
 In `plugins/product-design-suite/scripts/traceability.js`, replace the start of `buildMatrix` and its requirement-set construction.
 
@@ -430,7 +430,7 @@ The `requirements` line already filters `prdRefs` by `REQ_RE` (`/^(FR|BR|NFR)-/`
 
 Note: `uatVerifies` and `arTrace` already read from `prd`/`sdd` respectively and link by ID — leave them unchanged.
 
-- [ ] **Step 4: Make `loadProduct` read the SRS**
+- [x] **Step 4: Make `loadProduct` read the SRS**
 
 In `plugins/product-design-suite/scripts/traceability.js`, find the return of `loadProduct` (line ~248):
 
@@ -449,17 +449,17 @@ Replace with:
   };
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `node --test tests/traceability.test.js`
 Expected: PASS — all traceability tests pass, including the 3 new ones.
 
-- [ ] **Step 6: Verify no regressions across the whole suite**
+- [x] **Step 6: Verify no regressions across the whole suite**
 
 Run: `node --test tests/*.test.js`
 Expected: All pass. The `traceability-conventions.test.js` and `e2e-smoke.test.js` suites still pass (the `srs` default of `''` preserves PRD-mode behavior).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/traceability.js tests/traceability.test.js
@@ -482,7 +482,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - Consumes: `pm-srs-builder` (Task 2, referenced by name); the `.product/srs/srs.md` mode signal (Task 3 contract).
 - Produces: PRD/SDD builders and the workflow that branch on SRS mode. No code symbols — these are skill-prose edits asserted by convention tests.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tests/srs-conventions.test.js`:
 
@@ -503,12 +503,12 @@ test('pm-product-workflow documents the optional SRS stage', () => {
 });
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `node --test tests/srs-conventions.test.js`
 Expected: FAIL — the builders/workflow do not yet mention SRS.
 
-- [ ] **Step 3: Wire `pm-prd-builder` step 5**
+- [x] **Step 3: Wire `pm-prd-builder` step 5**
 
 In `plugins/product-design-suite/skills/pm-prd-builder/SKILL.md`, find step 5:
 
@@ -531,7 +531,7 @@ Replace with:
      honors the active mode.)
 ```
 
-- [ ] **Step 4: Wire `pm-sdd-builder` step 2**
+- [x] **Step 4: Wire `pm-sdd-builder` step 2**
 
 In `plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md`, find step 2:
 
@@ -550,7 +550,7 @@ Replace with:
    PRD's `FR-NNN`, as before.
 ```
 
-- [ ] **Step 5: Wire `pm-product-workflow`**
+- [x] **Step 5: Wire `pm-product-workflow`**
 
 In `plugins/product-design-suite/skills/pm-product-workflow/SKILL.md`, find the lead line:
 
@@ -600,17 +600,17 @@ Replace with:
   pre-create it.
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `node --test tests/srs-conventions.test.js`
 Expected: PASS — 7 tests pass (5 prior + 2 new).
 
-- [ ] **Step 7: Verify no regressions**
+- [x] **Step 7: Verify no regressions**
 
 Run: `node --test tests/*.test.js`
 Expected: All pass.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-prd-builder/SKILL.md plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md plugins/product-design-suite/skills/pm-product-workflow/SKILL.md tests/srs-conventions.test.js
@@ -633,7 +633,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - Consumes: the SRS authoring contract (Task 2) and `srs-template.md` (Task 1).
 - Produces: doc-sync, import, and concepts prose that treats the SRS as a first-class document. Asserted by convention tests; one test asserts the import skill no longer claims the SRS has no native template.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tests/srs-conventions.test.js`:
 
@@ -653,12 +653,12 @@ test('concepts documents the SRS as an optional document', () => {
 });
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `node --test tests/srs-conventions.test.js`
 Expected: FAIL — `pm-import` still says "no native template"; `concepts.md` does not mention `.product/srs/srs.md`.
 
-- [ ] **Step 3: Wire `pm-doc-sync` step 3**
+- [x] **Step 3: Wire `pm-doc-sync` step 3**
 
 In `plugins/product-design-suite/skills/pm-doc-sync/SKILL.md`, find the start of the step 3 impact bullet list:
 
@@ -679,7 +679,7 @@ Replace those two lines (the lead-in and the first bullet) with:
      live in the PRD. Business rules (`BR-NNN`) and UAT (`UAT-NNN`) always live in the PRD.
 ```
 
-- [ ] **Step 4: Wire `pm-import` (inputs, mapping, gap report, rules)**
+- [x] **Step 4: Wire `pm-import` (inputs, mapping, gap report, rules)**
 
 In `plugins/product-design-suite/skills/pm-import/SKILL.md`:
 
@@ -741,7 +741,7 @@ Replace with:
   verbatim so traceability is preserved.
 ```
 
-- [ ] **Step 5: Wire `concepts.md` (§4 framing + §5 lifecycle)**
+- [x] **Step 5: Wire `concepts.md` (§4 framing + §5 lifecycle)**
 
 In `plugins/product-design-suite/shared/references/concepts.md`, find:
 
@@ -770,17 +770,17 @@ Replace with:
      the SDD designs against.
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `node --test tests/srs-conventions.test.js`
 Expected: PASS — 9 tests pass (7 prior + 2 new).
 
-- [ ] **Step 7: Verify no regressions across the whole suite**
+- [x] **Step 7: Verify no regressions across the whole suite**
 
 Run: `node --test tests/*.test.js`
 Expected: All pass, including the Phase 3 `metadata-conventions.test.js` (its `concepts` assertions for `front-matter`/`amend` are untouched) and the Phase 4 `import-conventions.test.js`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-doc-sync/SKILL.md plugins/product-design-suite/skills/pm-import/SKILL.md plugins/product-design-suite/shared/references/concepts.md tests/srs-conventions.test.js

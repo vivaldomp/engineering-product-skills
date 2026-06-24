@@ -35,7 +35,7 @@
 - Consumes: nothing from other tasks.
 - Produces: a skill named `pm-import` and a `/pm-import` command. Task 2's workflow wiring references the skill name `pm-import` and the derive-then-confirm hand-off; the gap-report path `.product/import-gap-report.md` is referenced by this skill only.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/import-conventions.test.js` with exactly:
 
@@ -70,12 +70,12 @@ test('pm-import command exists and routes to the skill', () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `node --test tests/import-conventions.test.js`
 Expected: FAIL — all three tests error because `skills/pm-import/SKILL.md` and `commands/pm-import.md` do not exist (`ENOENT`).
 
-- [ ] **Step 3: Create the `pm-import` skill**
+- [x] **Step 3: Create the `pm-import` skill**
 
 Create `plugins/product-design-suite/skills/pm-import/SKILL.md` with exactly:
 
@@ -132,7 +132,7 @@ afterwards in derive-then-confirm mode.
   cross-document traceability is preserved.
 ```
 
-- [ ] **Step 4: Create the `/pm-import` command**
+- [x] **Step 4: Create the `/pm-import` command**
 
 Create `plugins/product-design-suite/commands/pm-import.md` with exactly:
 
@@ -144,17 +144,17 @@ argument-hint: [path to existing docs]
 Use the pm-import skill to ingest existing product docs, map them to the templates, and write a gap report at .product/import-gap-report.md before authoring. $ARGUMENTS
 ```
 
-- [ ] **Step 5: Run the test to verify it passes**
+- [x] **Step 5: Run the test to verify it passes**
 
 Run: `node --test tests/import-conventions.test.js`
 Expected: PASS — 3/3 tests pass.
 
-- [ ] **Step 6: Run the full suite (no regressions)**
+- [x] **Step 6: Run the full suite (no regressions)**
 
 Run: `node --test tests/*.test.js`
 Expected: PASS — all prior suites still green (Phase 1/2/3), plus the 3 new tests. `validate-plugin` passes because `name: pm-import` matches the directory `pm-import`.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-import/SKILL.md plugins/product-design-suite/commands/pm-import.md tests/import-conventions.test.js
@@ -179,7 +179,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - Consumes: the `pm-import` skill name and the derive-then-confirm hand-off from Task 1.
 - Produces: the `## Derive-then-confirm mode` section in `questioning-protocol.md`; a derive-then-confirm branch in all three builders; a detect-stage that offers `pm-import` (existing source) and the `pm-doc-sync` migration (legacy `.product/` docs). The migration itself is implemented in Task 3 — the workflow forward-references it.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tests/import-conventions.test.js`:
 
@@ -205,12 +205,12 @@ test('pm-product-workflow detects existing source docs and legacy docs', () => {
 });
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `node --test tests/import-conventions.test.js`
 Expected: FAIL — the three new tests fail (no `derive-then-confirm` in the protocol or builders; no `pm-import` in the workflow). Task 1's three tests still pass.
 
-- [ ] **Step 3: Append the derive-then-confirm section to the protocol**
+- [x] **Step 3: Append the derive-then-confirm section to the protocol**
 
 In `plugins/product-design-suite/shared/references/questioning-protocol.md`, append this section at the end of the file (after the existing `## Counter reset` paragraph):
 
@@ -238,7 +238,7 @@ The greenfield gap-question cadence remains the default whenever no authoritativ
 source exists.
 ```
 
-- [ ] **Step 4: Wire `pm-prd-builder` (step 4)**
+- [x] **Step 4: Wire `pm-prd-builder` (step 4)**
 
 In `plugins/product-design-suite/skills/pm-prd-builder/SKILL.md`, replace:
 
@@ -259,7 +259,7 @@ with:
    every 4 questions and summarize remaining gaps).
 ```
 
-- [ ] **Step 5: Wire `pm-sdd-builder` (step 3)**
+- [x] **Step 5: Wire `pm-sdd-builder` (step 3)**
 
 In `plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md`, replace:
 
@@ -277,7 +277,7 @@ with:
    (pause after every 4 questions and summarize remaining gaps).
 ```
 
-- [ ] **Step 6: Wire `pm-adr-builder` (step 3)**
+- [x] **Step 6: Wire `pm-adr-builder` (step 3)**
 
 In `plugins/product-design-suite/skills/pm-adr-builder/SKILL.md`, replace:
 
@@ -299,7 +299,7 @@ with:
    alternatives (include "do nothing" when relevant).
 ```
 
-- [ ] **Step 7: Wire `pm-product-workflow` (step 2 detect-stage)**
+- [x] **Step 7: Wire `pm-product-workflow` (step 2 detect-stage)**
 
 In `plugins/product-design-suite/skills/pm-product-workflow/SKILL.md`, replace:
 
@@ -327,17 +327,17 @@ with:
    Warn (don't block) if the user wants to skip ahead.
 ```
 
-- [ ] **Step 8: Run the tests to verify they pass**
+- [x] **Step 8: Run the tests to verify they pass**
 
 Run: `node --test tests/import-conventions.test.js`
 Expected: PASS — 6/6 tests pass (Task 1's 3 + Task 2's 3).
 
-- [ ] **Step 9: Run the full suite (no regressions)**
+- [x] **Step 9: Run the full suite (no regressions)**
 
 Run: `node --test tests/*.test.js`
 Expected: PASS — all suites green.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add plugins/product-design-suite/shared/references/questioning-protocol.md plugins/product-design-suite/skills/pm-prd-builder/SKILL.md plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md plugins/product-design-suite/skills/pm-adr-builder/SKILL.md plugins/product-design-suite/skills/pm-product-workflow/SKILL.md tests/import-conventions.test.js
@@ -358,7 +358,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - Consumes: the workflow's migration offer wired in Task 2 (forward reference resolved here).
 - Produces: a confirmation-gated migration step in `pm-doc-sync` for pre-existing `.product/` docs lacking front-matter or carrying the legacy `## 1. Metadata` ADR table.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Append to `tests/import-conventions.test.js`:
 
@@ -371,12 +371,12 @@ test('pm-doc-sync documents the legacy front-matter migration', () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `node --test tests/import-conventions.test.js`
 Expected: FAIL — the new test fails on `/migrat/i` (pm-doc-sync does not yet mention migration). The other 6 tests still pass.
 
-- [ ] **Step 3: Add the migration step to `pm-doc-sync`**
+- [x] **Step 3: Add the migration step to `pm-doc-sync`**
 
 In `plugins/product-design-suite/skills/pm-doc-sync/SKILL.md`, insert a new step between the current step 6 and the `## Rules` heading. The current text is:
 
@@ -403,17 +403,17 @@ Replace it with:
 ## Rules
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `node --test tests/import-conventions.test.js`
 Expected: PASS — 7/7 tests pass.
 
-- [ ] **Step 5: Run the full suite (no regressions)**
+- [x] **Step 5: Run the full suite (no regressions)**
 
 Run: `node --test tests/*.test.js`
 Expected: PASS — all suites green.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-doc-sync/SKILL.md tests/import-conventions.test.js

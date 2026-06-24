@@ -40,7 +40,7 @@
   - `injectCoverage(sddMarkdown, block) -> string` — idempotent marker replace, else append `## 16. Requirement Coverage Index`.
   - `loadProduct(dir) -> {prd, sdd, adrs}`.
 
-- [ ] **Step 1: Write the failing test file**
+- [x] **Step 1: Write the failing test file**
 
 Replace the entire contents of `tests/traceability.test.js` with:
 
@@ -175,12 +175,12 @@ test('injectCoverage preserves content outside the markers', () => {
 });
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `node --test tests/traceability.test.js`
 Expected: FAIL — `t.parseRefs is not a function` (the module still exports the old API).
 
-- [ ] **Step 3: Rewrite `traceability.js`**
+- [x] **Step 3: Rewrite `traceability.js`**
 
 Replace the entire contents of `plugins/product-design-suite/scripts/traceability.js` with:
 
@@ -449,7 +449,7 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Migrate the e2e-smoke test to the new `buildMatrix` shape**
+- [x] **Step 4: Migrate the e2e-smoke test to the new `buildMatrix` shape**
 
 In `tests/e2e-smoke.test.js`, replace lines 18-22 (the block from `const rows = t.buildMatrix(...)` through the `NFR-002` assertion):
 
@@ -471,12 +471,12 @@ New:
   assert.equal(m.requirements.find(r => r.id === 'NFR-002').inSdd, false);
 ```
 
-- [ ] **Step 5: Run the full suite to verify it passes**
+- [x] **Step 5: Run the full suite to verify it passes**
 
 Run: `node --test tests/*.test.js`
 Expected: PASS — all files green, including the rewritten `traceability.test.js`, the migrated `e2e-smoke.test.js`, and the untouched `validate-plugin.test.js`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/traceability.js tests/traceability.test.js tests/e2e-smoke.test.js
@@ -495,7 +495,7 @@ git commit -m "feat: range-aware traceability engine with anchors, UAT/AR linkag
 - Consumes: the coverage-index marker strings from Task 1 (Global Constraints).
 - Produces: a template that already contains the injection target, so the first `traceability.js` run replaces between markers instead of appending.
 
-- [ ] **Step 1: Write the failing convention test**
+- [x] **Step 1: Write the failing convention test**
 
 Create `tests/traceability-conventions.test.js`:
 
@@ -517,12 +517,12 @@ test('sdd template ships the coverage-index markers and an appendices section', 
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `node --test tests/traceability-conventions.test.js`
 Expected: FAIL — the template has no `## 16` / `## 17` sections yet.
 
-- [ ] **Step 3: Append the new sections to the SDD template**
+- [x] **Step 3: Append the new sections to the SDD template**
 
 At the end of `plugins/product-design-suite/shared/templates/sdd-template.md` (after the §15 table that ends at line 533), append:
 
@@ -543,12 +543,12 @@ At the end of `plugins/product-design-suite/shared/templates/sdd-template.md` (a
 ad-hoc sections that do not fit the standard structure. Add subsections as needed.>
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `node --test tests/traceability-conventions.test.js`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/shared/templates/sdd-template.md tests/traceability-conventions.test.js
@@ -569,7 +569,7 @@ git commit -m "feat: SDD template ships coverage-index region and appendices pro
 - Consumes: the behaviors documented in Task 1 (injection, orphan classification) and Task 2 (template §16).
 - Produces: nothing consumed by later tasks (final task).
 
-- [ ] **Step 1: Add the failing convention assertions**
+- [x] **Step 1: Add the failing convention assertions**
 
 Append these tests to `tests/traceability-conventions.test.js`:
 
@@ -591,12 +591,12 @@ test('pm-sdd-builder notes the generated coverage index', () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `node --test tests/traceability-conventions.test.js`
 Expected: FAIL — the three docs don't yet mention injection/orphans/generated index.
 
-- [ ] **Step 3: Update `pm-doc-sync` step 1 and step 6**
+- [x] **Step 3: Update `pm-doc-sync` step 1 and step 6**
 
 In `plugins/product-design-suite/skills/pm-doc-sync/SKILL.md`, replace step 1 (lines 15-17):
 
@@ -629,7 +629,7 @@ New:
    artifacts are already resolved by the range-aware parser).
 ```
 
-- [ ] **Step 4: Update `structures.md` traceability guidance**
+- [x] **Step 4: Update `structures.md` traceability guidance**
 
 In `plugins/product-design-suite/shared/references/structures.md`, replace line 445:
 
@@ -651,7 +651,7 @@ AR→FR traces and UAT back-references, and flagging genuine **orphans** (a PRD 
 with no matching SDD mention) distinctly from resolved notation artifacts.
 ```
 
-- [ ] **Step 5: Update `pm-sdd-builder` step 8**
+- [x] **Step 5: Update `pm-sdd-builder` step 8**
 
 In `plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md`, replace step 8 (line 52):
 
@@ -667,12 +667,12 @@ New:
    markers) — do not hand-author it.
 ```
 
-- [ ] **Step 6: Run the full suite to verify it passes**
+- [x] **Step 6: Run the full suite to verify it passes**
 
 Run: `node --test tests/*.test.js`
 Expected: PASS — all files green, including the extended `traceability-conventions.test.js`.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-doc-sync/SKILL.md plugins/product-design-suite/shared/references/structures.md plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md tests/traceability-conventions.test.js

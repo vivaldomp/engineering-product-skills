@@ -60,7 +60,7 @@ git checkout -b feat/product-design-suite
 **Interfaces:**
 - Produces: marketplace at `.claude-plugin/marketplace.json` with keys `name`, `owner`, `plugins`; plugin manifest at `plugins/product-design-suite/.claude-plugin/plugin.json` with keys `name`, `version`, `description`, `author`. Consumed by Task 2's validator and all skill tasks (shared paths).
 
-- [ ] **Step 1: Create directory tree and move existing content**
+- [x] **Step 1: Create directory tree and move existing content**
 
 ```bash
 cd "$(git rev-parse --show-toplevel)"
@@ -79,7 +79,7 @@ mv templates/adr-template.md plugins/product-design-suite/shared/templates/adr-t
 rmdir templates 2>/dev/null || true
 ```
 
-- [ ] **Step 2: Write the marketplace manifest**
+- [x] **Step 2: Write the marketplace manifest**
 
 Create `.claude-plugin/marketplace.json`:
 
@@ -97,7 +97,7 @@ Create `.claude-plugin/marketplace.json`:
 }
 ```
 
-- [ ] **Step 3: Write the plugin manifest**
+- [x] **Step 3: Write the plugin manifest**
 
 Create `plugins/product-design-suite/.claude-plugin/plugin.json`:
 
@@ -110,7 +110,7 @@ Create `plugins/product-design-suite/.claude-plugin/plugin.json`:
 }
 ```
 
-- [ ] **Step 4: Write a minimal README**
+- [x] **Step 4: Write a minimal README**
 
 Create `README.md`:
 
@@ -143,17 +143,17 @@ node --test tests/
 \`\`\`
 ```
 
-- [ ] **Step 5: Verify JSON is valid**
+- [x] **Step 5: Verify JSON is valid**
 
 Run: `node -e "JSON.parse(require('fs').readFileSync('.claude-plugin/marketplace.json','utf8')); JSON.parse(require('fs').readFileSync('plugins/product-design-suite/.claude-plugin/plugin.json','utf8')); console.log('JSON OK')"`
 Expected: `JSON OK`
 
-- [ ] **Step 6: Verify the move succeeded**
+- [x] **Step 6: Verify the move succeeded**
 
 Run: `test -f plugins/product-design-suite/shared/references/concepts.md && test -f plugins/product-design-suite/shared/templates/prd-template.md && test ! -f concepts.md && echo MOVED_OK`
 Expected: `MOVED_OK`
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add -A
@@ -171,7 +171,7 @@ git commit -m "feat: scaffold marketplace, plugin manifest, move shared content"
 **Interfaces:**
 - Produces (CommonJS exports): `parseFrontmatter(src) -> object|null`, `validateSkill(dir) -> string[]`, `validateJson(path, requiredKeys) -> string[]`, `validatePlugin(root) -> string[]`. CLI: `node tools/validate-plugin.js <root>` exits non-zero on errors. Consumed by Tasks 8–10 and 12 to validate skills.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/validate-plugin.test.js`:
 
@@ -215,12 +215,12 @@ test('validateJson flags missing keys', () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `node --test tests/validate-plugin.test.js`
 Expected: FAIL — `Cannot find module '../tools/validate-plugin.js'`
 
-- [ ] **Step 3: Implement the validator**
+- [x] **Step 3: Implement the validator**
 
 Create `tools/validate-plugin.js`:
 
@@ -291,17 +291,17 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `node --test tests/validate-plugin.test.js`
 Expected: PASS (4 tests)
 
-- [ ] **Step 5: Run the validator against the real repo**
+- [x] **Step 5: Run the validator against the real repo**
 
 Run: `node tools/validate-plugin.js .`
 Expected: `OK: plugin valid` (no skills yet — manifests validate; skills checked as added)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/validate-plugin.js tests/validate-plugin.test.js
@@ -319,7 +319,7 @@ git commit -m "feat: add plugin/skill validator with tests"
 **Interfaces:**
 - Produces (CommonJS exports): `extractIds(text) -> string[]`; `buildMatrix({prd, sdd, adrs}) -> Array<{id, inSdd, adrs}>` where `adrs` input is `{ 'ADR-001': text }`; `renderMatrixMarkdown(rows) -> string`; `renderMatrixHtml(rows) -> string`; `loadProduct(dir) -> {prd, sdd, adrs}`. CLI writes `<dir>/traceability.md` and `<dir>/traceability.html`. Consumed by `pm-doc-sync` (Task 9).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/traceability.test.js`:
 
@@ -355,12 +355,12 @@ test('renderMatrixMarkdown and Html include the id', () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `node --test tests/traceability.test.js`
 Expected: FAIL — cannot find module `traceability.js`
 
-- [ ] **Step 3: Implement the script**
+- [x] **Step 3: Implement the script**
 
 Create `plugins/product-design-suite/scripts/traceability.js`:
 
@@ -425,12 +425,12 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `node --test tests/traceability.test.js`
 Expected: PASS (3 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/traceability.js tests/traceability.test.js
@@ -448,7 +448,7 @@ git commit -m "feat: add traceability matrix builder with tests"
 **Interfaces:**
 - Produces (CommonJS exports): `renderSvg(spec) -> string` and `renderDiagram(spec) -> string` (full self-contained HTML). `spec = { title, nodes:[{id,label,kind}], edges:[{from,to,label}] }`. CLI: `node diagram-render.js <spec.json> <out.html>`. Consumed by `pm-sdd-builder` (Task 8).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/diagram-render.test.js`:
 
@@ -486,12 +486,12 @@ test('escapes angle brackets in labels', () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `node --test tests/diagram-render.test.js`
 Expected: FAIL — cannot find module `diagram-render.js`
 
-- [ ] **Step 3: Implement the script**
+- [x] **Step 3: Implement the script**
 
 Create `plugins/product-design-suite/scripts/diagram-render.js`:
 
@@ -547,12 +547,12 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `node --test tests/diagram-render.test.js`
 Expected: PASS (3 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/diagram-render.js tests/diagram-render.test.js
@@ -570,7 +570,7 @@ git commit -m "feat: add inline-SVG diagram renderer with tests"
 **Interfaces:**
 - Produces (CommonJS exports): `parseOpenUI(src) -> {rootId, defs}` (defs maps id → AST node); `renderOpenUI(src) -> string` (self-contained HTML). Supported components: `Root, Section, Grid, Card, Navbar, Link, StatCard, Heading, Text, Button, Input, Form`. CLI: `node openui-render.js <in.openui> <out.html>`. Consumed by `pm-sdd-builder`/`pm-prd-builder` (Tasks 8/8a) and `openui-guide.md` (Task 7).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/openui-render.test.js`:
 
@@ -611,12 +611,12 @@ test('escapes HTML in text', () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `node --test tests/openui-render.test.js`
 Expected: FAIL — cannot find module `openui-render.js`
 
-- [ ] **Step 3: Implement the parser + renderer**
+- [x] **Step 3: Implement the parser + renderer**
 
 Create `plugins/product-design-suite/scripts/openui-render.js`:
 
@@ -745,12 +745,12 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `node --test tests/openui-render.test.js`
 Expected: PASS (4 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/openui-render.js tests/openui-render.test.js
@@ -770,7 +770,7 @@ git commit -m "feat: add OpenUI Lang renderer with tests"
 - Consumes: `renderOpenUI` and `renderDiagram` (Tasks 4–5) for preview content.
 - Produces: a runnable preview server; verified here only by a non-network smoke test (syntax loads + frame template references no external URLs). Consumed by `pm-product-workflow` (Task 10) for live iteration.
 
-- [ ] **Step 1: Copy the reused files**
+- [x] **Step 1: Copy the reused files**
 
 ```bash
 SRC=/home/vivaldo/.claude/plugins/cache/claude-plugins-official/superpowers/6.0.3/skills/brainstorming/scripts
@@ -783,7 +783,7 @@ cp "$SRC/helper.js"           "$DST/helper.js"
 chmod +x "$DST/start-server.sh" "$DST/stop-server.sh"
 ```
 
-- [ ] **Step 2: Write the failing smoke test**
+- [x] **Step 2: Write the failing smoke test**
 
 Create `tests/preview-server.test.js`:
 
@@ -807,21 +807,21 @@ test('frame-template.html loads no external http(s) resources', () => {
 });
 ```
 
-- [ ] **Step 3: Run the test to verify it fails (or passes)**
+- [x] **Step 3: Run the test to verify it fails (or passes)**
 
 Run: `node --test tests/preview-server.test.js`
 Expected: FAIL if files not yet copied, or the second test FAILS if the upstream template references external URLs.
 
-- [ ] **Step 4: If the second test fails, inline external references in `frame-template.html`**
+- [x] **Step 4: If the second test fails, inline external references in `frame-template.html`**
 
 Open `plugins/product-design-suite/scripts/frame-template.html`. For each `https?://` reference found, either remove it or replace with an inline equivalent (e.g., download a font/icon and inline it as base64, or drop the dependency). The template uses OS-aware CSS that should already be local; remove any analytics/CDN tags. Re-run until the test passes.
 
-- [ ] **Step 5: Run the test to verify it passes**
+- [x] **Step 5: Run the test to verify it passes**
 
 Run: `node --test tests/preview-server.test.js`
 Expected: PASS (2 tests)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/preview-server.cjs plugins/product-design-suite/scripts/start-server.sh plugins/product-design-suite/scripts/stop-server.sh plugins/product-design-suite/scripts/frame-template.html plugins/product-design-suite/scripts/helper.js tests/preview-server.test.js
@@ -839,7 +839,7 @@ git commit -m "feat: reuse superpowers preview server (self-contained)"
 **Interfaces:**
 - Produces: two reference docs loaded on demand by every skill. `questioning-protocol.md` defines the gap-question cadence consumed by Tasks 8–10. `openui-guide.md` documents the grammar that `openui-render.js` (Task 5) accepts.
 
-- [ ] **Step 1: Write `questioning-protocol.md`**
+- [x] **Step 1: Write `questioning-protocol.md`**
 
 Create `plugins/product-design-suite/shared/references/questioning-protocol.md`:
 
@@ -868,7 +868,7 @@ after each pause checkpoint and after the user volunteers a batch of information
 without being asked.
 ```
 
-- [ ] **Step 2: Write `openui-guide.md`**
+- [x] **Step 2: Write `openui-guide.md`**
 
 Create `plugins/product-design-suite/shared/references/openui-guide.md`:
 
@@ -920,12 +920,12 @@ node "${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js" design/home.openui design/
 \`\`\`
 ```
 
-- [ ] **Step 3: Verify the example renders**
+- [x] **Step 3: Verify the example renders**
 
 Run: `printf 'root = Root([h])\nh = Heading("OK")\n' > /tmp/g.openui && node plugins/product-design-suite/scripts/openui-render.js /tmp/g.openui /tmp/g.html && grep -q "OK" /tmp/g.html && echo RENDER_OK`
 Expected: `RENDER_OK`
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add plugins/product-design-suite/shared/references/questioning-protocol.md plugins/product-design-suite/shared/references/openui-guide.md
@@ -945,7 +945,7 @@ git commit -m "docs: add questioning protocol and OpenUI authoring guide"
 - Consumes: shared templates/references (Task 1, 7), `diagram-render.js` and `openui-render.js` (Tasks 4–5).
 - Produces: three valid skills writing to `.product/{prd,sdd,adr}`. Validated by Task 2's validator.
 
-- [ ] **Step 1: Write `pm-prd-builder/SKILL.md`**
+- [x] **Step 1: Write `pm-prd-builder/SKILL.md`**
 
 Create `plugins/product-design-suite/skills/pm-prd-builder/SKILL.md`:
 
@@ -990,7 +990,7 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 - Do not invent requirements; ask instead.
 ```
 
-- [ ] **Step 2: Write `pm-sdd-builder/SKILL.md`**
+- [x] **Step 2: Write `pm-sdd-builder/SKILL.md`**
 
 Create `plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md`:
 
@@ -1036,7 +1036,7 @@ derived from the PRD.
 - Cover failure modes, security, observability, and operations — not only happy paths.
 ```
 
-- [ ] **Step 3: Write `pm-adr-builder/SKILL.md`**
+- [x] **Step 3: Write `pm-adr-builder/SKILL.md`**
 
 Create `plugins/product-design-suite/skills/pm-adr-builder/SKILL.md`:
 
@@ -1076,12 +1076,12 @@ Record one architectural decision per file in `.product/adr/`.
 - Keep it durable: explain *why*, not just *what*.
 ```
 
-- [ ] **Step 4: Validate the three skills**
+- [x] **Step 4: Validate the three skills**
 
 Run: `node tools/validate-plugin.js .`
 Expected: `OK: plugin valid`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-prd-builder plugins/product-design-suite/skills/pm-sdd-builder plugins/product-design-suite/skills/pm-adr-builder
@@ -1099,7 +1099,7 @@ git commit -m "feat: add prd/sdd/adr builder skills"
 - Consumes: `scripts/traceability.js` (Task 3) and the artifacts under `.product/`.
 - Produces: a valid skill that generates an impact report and confirmation-gated edits, and refreshes `.product/traceability.{md,html}`. Validated by Task 2.
 
-- [ ] **Step 1: Write `pm-doc-sync/SKILL.md`**
+- [x] **Step 1: Write `pm-doc-sync/SKILL.md`**
 
 Create `plugins/product-design-suite/skills/pm-doc-sync/SKILL.md`:
 
@@ -1138,12 +1138,12 @@ without explicit user confirmation.
 - Bidirectional: check both downstream (PRD->SDD->ADR) and back-references.
 ```
 
-- [ ] **Step 2: Validate**
+- [x] **Step 2: Validate**
 
 Run: `node tools/validate-plugin.js .`
 Expected: `OK: plugin valid`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-doc-sync
@@ -1161,7 +1161,7 @@ git commit -m "feat: add doc-sync skill"
 - Consumes: all four other skills, the preview server (Task 6), and `${CLAUDE_PLUGIN_ROOT}/shared/...`.
 - Produces: a valid orchestrator skill. Validated by Task 2.
 
-- [ ] **Step 1: Write `pm-product-workflow/SKILL.md`**
+- [x] **Step 1: Write `pm-product-workflow/SKILL.md`**
 
 Create `plugins/product-design-suite/skills/pm-product-workflow/SKILL.md`:
 
@@ -1204,12 +1204,12 @@ Drive the sequential PRD -> SDD -> ADR workflow.
 - Keep everything inside `.product/`.
 ```
 
-- [ ] **Step 2: Validate**
+- [x] **Step 2: Validate**
 
 Run: `node tools/validate-plugin.js .`
 Expected: `OK: plugin valid`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-product-workflow
@@ -1229,7 +1229,7 @@ git commit -m "feat: add product-workflow orchestrator skill"
 **Interfaces:**
 - Produces: four command files that invoke the matching skills. Verified by a presence/content check.
 
-- [ ] **Step 1: Write the four command files**
+- [x] **Step 1: Write the four command files**
 
 Create `plugins/product-design-suite/commands/pm-prd.md`:
 
@@ -1271,12 +1271,12 @@ argument-hint: [product idea or next step]
 Use the pm-product-workflow skill to drive the PRD -> SDD -> ADR workflow. $ARGUMENTS
 ```
 
-- [ ] **Step 2: Verify the wrappers reference the right skills**
+- [x] **Step 2: Verify the wrappers reference the right skills**
 
 Run: `for c in prd sdd adr product; do grep -q "pm-${c/product/product-workflow}" "plugins/product-design-suite/commands/pm-$c.md" || echo "MISSING ref in pm-$c.md"; done; echo CHECK_DONE`
 Expected: `CHECK_DONE` with no `MISSING` lines.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add plugins/product-design-suite/commands
@@ -1294,7 +1294,7 @@ git commit -m "feat: add pm-prefixed slash command wrappers"
 - Consumes: every script and the validator.
 - Produces: a single end-to-end test proving the toolchain works on a sample, and a clean full validation + full test run.
 
-- [ ] **Step 1: Write the end-to-end smoke test**
+- [x] **Step 1: Write the end-to-end smoke test**
 
 Create `tests/e2e-smoke.test.js`:
 
@@ -1333,22 +1333,22 @@ test('renderers produce self-contained html', () => {
 });
 ```
 
-- [ ] **Step 2: Run the full test suite**
+- [x] **Step 2: Run the full test suite**
 
 Run: `node --test tests/`
 Expected: PASS — all suites green (validate-plugin, traceability, diagram-render, openui-render, preview-server, e2e-smoke).
 
-- [ ] **Step 3: Run the full plugin validation**
+- [x] **Step 3: Run the full plugin validation**
 
 Run: `node tools/validate-plugin.js .`
 Expected: `OK: plugin valid`
 
-- [ ] **Step 4: Verify the final structure**
+- [x] **Step 4: Verify the final structure**
 
 Run: `find plugins/product-design-suite -type f | sort`
 Expected: lists 5 `SKILL.md`, 4 command files, 4 references, 3 templates, 8 scripts, 1 plugin.json — matching the File Structure section.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tests/e2e-smoke.test.js

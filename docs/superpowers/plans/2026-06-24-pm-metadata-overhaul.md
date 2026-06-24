@@ -33,7 +33,7 @@
 - Consumes: nothing from earlier tasks.
 - Produces: the front-matter contract Task 2's skills will populate, and the test file `tests/metadata-conventions.test.js` that Task 2 extends. Exact field sets are listed in Global Constraints.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/metadata-conventions.test.js` with exactly this content:
 
@@ -89,12 +89,12 @@ test('ADR template drops the Metadata section and renumbers Context to 1', () =>
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `node --test tests/metadata-conventions.test.js`
 Expected: FAIL — templates have no front-matter yet; the ADR still has `## 1. Metadata` and `## 2. Context`.
 
-- [ ] **Step 3: Add front-matter to the PRD template**
+- [x] **Step 3: Add front-matter to the PRD template**
 
 In `plugins/product-design-suite/shared/templates/prd-template.md`, prepend this block so it becomes the very top of the file, immediately followed by the existing `# PRD: <Product or Initiative Name>` line:
 
@@ -110,7 +110,7 @@ date: <YYYY-MM-DD>
 
 (Leave one blank line between the closing `---` and the `# PRD:` heading.)
 
-- [ ] **Step 4: Add front-matter to the SDD template**
+- [x] **Step 4: Add front-matter to the SDD template**
 
 In `plugins/product-design-suite/shared/templates/sdd-template.md`, prepend this block so it becomes the very top of the file, immediately followed by the existing `# SDD: <System or Initiative Name>` line:
 
@@ -126,7 +126,7 @@ date: <YYYY-MM-DD>
 
 (Leave one blank line between the closing `---` and the `# SDD:` heading. Do not touch anything else in the file — the §16 COVERAGE-INDEX markers and §17 Appendices at the end stay exactly as they are.)
 
-- [ ] **Step 5: Add front-matter to the ADR template and delete the Metadata table**
+- [x] **Step 5: Add front-matter to the ADR template and delete the Metadata table**
 
 In `plugins/product-design-suite/shared/templates/adr-template.md`, prepend this block at the very top, immediately followed by the existing `# ADR-<NNN>: <Decision Title>` line (one blank line between the closing `---` and the H1):
 
@@ -167,7 +167,7 @@ Then delete the entire `## 1. Metadata` section — every line from `## 1. Metad
 
 ```
 
-- [ ] **Step 6: Renumber the remaining ADR section headings**
+- [x] **Step 6: Renumber the remaining ADR section headings**
 
 In the same file, apply these seven exact heading replacements (decrement each by one):
 
@@ -183,17 +183,17 @@ In the same file, apply these seven exact heading replacements (decrement each b
 
 Leave `## Status History` unchanged. Do not renumber the `### Option A/B/C` subheadings or any `####` — only the seven top-level `##` numbered headings above.
 
-- [ ] **Step 7: Run the test to verify it passes**
+- [x] **Step 7: Run the test to verify it passes**
 
 Run: `node --test tests/metadata-conventions.test.js`
 Expected: PASS — all four tests green.
 
-- [ ] **Step 8: Run the full suite for no regressions**
+- [x] **Step 8: Run the full suite for no regressions**
 
 Run: `node --test tests/*.test.js`
 Expected: PASS — every test, including `traceability-conventions` and `e2e-smoke`, stays green.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add plugins/product-design-suite/shared/templates/prd-template.md \
@@ -220,7 +220,7 @@ git commit -m "feat: add YAML front-matter to PRD/SDD/ADR templates + ADR relati
 - Consumes: the front-matter field names defined in Task 1 (Global Constraints) and the test file created in Task 1.
 - Produces: nothing downstream (final task).
 
-- [ ] **Step 1: Write the failing tests (extend the convention test)**
+- [x] **Step 1: Write the failing tests (extend the convention test)**
 
 Append these tests to the end of `tests/metadata-conventions.test.js`:
 
@@ -253,12 +253,12 @@ test('references document front-matter metadata and relationship fields', () => 
 });
 ```
 
-- [ ] **Step 2: Run the new tests to verify they fail**
+- [x] **Step 2: Run the new tests to verify they fail**
 
 Run: `node --test tests/metadata-conventions.test.js`
 Expected: FAIL — the four new tests fail (skills/references not yet updated); the four Task 1 tests still pass.
 
-- [ ] **Step 3: Update pm-adr-builder**
+- [x] **Step 3: Update pm-adr-builder**
 
 In `plugins/product-design-suite/skills/pm-adr-builder/SKILL.md`, replace step 4:
 
@@ -293,7 +293,7 @@ with:
    table.
 ```
 
-- [ ] **Step 4: Update pm-prd-builder**
+- [x] **Step 4: Update pm-prd-builder**
 
 In `plugins/product-design-suite/skills/pm-prd-builder/SKILL.md`, replace step 6:
 
@@ -311,7 +311,7 @@ with:
    table.
 ```
 
-- [ ] **Step 5: Update pm-sdd-builder**
+- [x] **Step 5: Update pm-sdd-builder**
 
 In `plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md`, replace step 7:
 
@@ -327,7 +327,7 @@ with:
    the SDD, and record unresolved gaps in Open Questions.
 ```
 
-- [ ] **Step 6: Update pm-doc-sync**
+- [x] **Step 6: Update pm-doc-sync**
 
 In `plugins/product-design-suite/skills/pm-doc-sync/SKILL.md`, within step 3, after the existing bullet:
 
@@ -345,7 +345,7 @@ add this bullet:
      the asymmetric/dangling link and propose the corrective edit.
 ```
 
-- [ ] **Step 7: Update structures.md**
+- [x] **Step 7: Update structures.md**
 
 In `plugins/product-design-suite/shared/references/structures.md`, in the "ADR quality checklist", after the line:
 
@@ -360,7 +360,7 @@ add these two bullets:
 - Supersede/amend relationships use the structured `supersedes`/`superseded-by`/`amends`/`amended-by` front-matter fields, set on both ADRs — not parentheticals on `status`.
 ```
 
-- [ ] **Step 8: Update concepts.md**
+- [x] **Step 8: Update concepts.md**
 
 In `plugins/product-design-suite/shared/references/concepts.md`, replace the line:
 
@@ -382,17 +382,17 @@ Supersede and amend relationships are recorded in dedicated front-matter fields
 `status` a single enum value rather than overloaded prose.
 ```
 
-- [ ] **Step 9: Run the tests to verify they pass**
+- [x] **Step 9: Run the tests to verify they pass**
 
 Run: `node --test tests/metadata-conventions.test.js`
 Expected: PASS — all eight tests green.
 
-- [ ] **Step 10: Run the full suite for no regressions**
+- [x] **Step 10: Run the full suite for no regressions**
 
 Run: `node --test tests/*.test.js`
 Expected: PASS — every test stays green.
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-adr-builder/SKILL.md \

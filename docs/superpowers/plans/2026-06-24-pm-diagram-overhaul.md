@@ -32,7 +32,7 @@
   - CLI: `node mermaid-preview.js <input.md> <out.html>` — reads markdown, inlines `scripts/vendor/mermaid.min.js` if present, writes preview HTML.
 - Consumed by: `tests/e2e-smoke.test.js` (Task 3) and `pm-sdd-builder` / `pm-product-workflow` skills (Task 6).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/mermaid-preview.test.js`:
 
@@ -90,12 +90,12 @@ test('renderPreview shows an empty-state when given no blocks', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/mermaid-preview.test.js`
 Expected: FAIL — `Cannot find module '.../mermaid-preview.js'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 Create `plugins/product-design-suite/scripts/mermaid-preview.js`:
 
@@ -157,12 +157,12 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `node --test tests/mermaid-preview.test.js`
 Expected: PASS — 5 tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/mermaid-preview.js tests/mermaid-preview.test.js
@@ -181,7 +181,7 @@ git commit -m "feat: add mermaid-preview script (extract fences + self-contained
 - Consumes: `mermaid-preview.js` CLI and `VENDOR_MERMAID` path from Task 1.
 - Produces: a committed static `mermaid.min.js` (UMD build) that the CLI inlines.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tests/mermaid-preview.test.js`:
 
@@ -212,12 +212,12 @@ test('CLI renders a self-contained preview from a markdown file', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `node --test tests/mermaid-preview.test.js`
 Expected: FAIL — `vendor/mermaid.min.js must exist`.
 
-- [ ] **Step 3: Vendor the asset**
+- [x] **Step 3: Vendor the asset**
 
 Fetch a pinned Mermaid 11.x UMD build and place it at the vendor path (run from repo root):
 
@@ -236,12 +236,12 @@ ls -la plugins/product-design-suite/scripts/vendor/
 
 If `package/dist/mermaid.min.js` is absent in the packed tarball, use `package/dist/mermaid.js` (the non-minified UMD) instead — the only requirement is a UMD bundle exposing a global `mermaid` with `initialize`. Confirm the file is > 100 KB.
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `node --test tests/mermaid-preview.test.js`
 Expected: PASS — all 7 tests pass (5 from Task 1 + 2 here).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/vendor/ tests/mermaid-preview.test.js
@@ -261,7 +261,7 @@ git commit -m "feat: vendor pinned mermaid.min.js for offline diagram preview"
 - Consumes: `mermaid-preview.js` exports (Task 1).
 - Produces: no remaining live `require` of `diagram-render.js` anywhere outside `docs/`.
 
-- [ ] **Step 1: Update the e2e smoke test to the new module**
+- [x] **Step 1: Update the e2e smoke test to the new module**
 
 In `tests/e2e-smoke.test.js`, replace line 8:
 
@@ -289,23 +289,23 @@ with:
 
 (The surrounding assertions — `<!DOCTYPE html>` and no external `http(s)` — stay unchanged and still hold.)
 
-- [ ] **Step 2: Delete the retired script and its test**
+- [x] **Step 2: Delete the retired script and its test**
 
 ```bash
 git rm plugins/product-design-suite/scripts/diagram-render.js tests/diagram-render.test.js
 ```
 
-- [ ] **Step 3: Run the affected tests to verify green**
+- [x] **Step 3: Run the affected tests to verify green**
 
 Run: `node --test tests/e2e-smoke.test.js tests/mermaid-preview.test.js`
 Expected: PASS — no module-not-found, all tests pass.
 
-- [ ] **Step 4: Verify no live references remain**
+- [x] **Step 4: Verify no live references remain**
 
 Run: `grep -rn "diagram-render" --include="*.js" --include="*.cjs" --include="*.md" plugins tests tools`
 Expected: no matches under `plugins/`, `tests/`, or `tools/` (matches under `docs/` are historical and out of scope). The `pm-sdd-builder` reference at step 4 of its SKILL is removed in Task 6 — note it here and confirm it's gone after Task 6.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tests/e2e-smoke.test.js
@@ -323,7 +323,7 @@ git commit -m "refactor: retire diagram-render.js; migrate e2e smoke to mermaid-
 **Interfaces:**
 - Produces: SDD template whose diagram sections are ` ```mermaid ` fenced examples instead of `<Insert or reference ...>` placeholders. Verified by `tests/diagram-conventions.test.js`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/diagram-conventions.test.js`:
 
@@ -347,12 +347,12 @@ test('sdd-template uses inline mermaid for C4 and sequence diagrams', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/diagram-conventions.test.js`
 Expected: FAIL — `t` still contains the old placeholder / lacks `C4Container`.
 
-- [ ] **Step 3: Edit the template — §3 Architecture Overview**
+- [x] **Step 3: Edit the template — §3 Architecture Overview**
 
 In `sdd-template.md`, replace the block from `### System Context Diagram` through the end of `### C4 Component Diagram` (the ```text ASCII box plus the three `<Insert or reference ...>` lines) with:
 
@@ -400,7 +400,7 @@ C4Component
 
 (Leave `### Deployment Landscape`, `### Runtime View`, and `### Major Design Decisions` unchanged.)
 
-- [ ] **Step 4: Edit the template — §7 Flows and Behavior**
+- [x] **Step 4: Edit the template — §7 Flows and Behavior**
 
 Replace the `### Sequence Diagrams`, `### Activity Diagrams`, and `### State Diagrams` placeholder bodies with inline stubs:
 
@@ -443,12 +443,12 @@ stateDiagram-v2
 
 (Leave `### Orchestration`, `### Failure Flows`, `### Recovery Flows` unchanged.)
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `node --test tests/diagram-conventions.test.js`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/shared/templates/sdd-template.md tests/diagram-conventions.test.js
@@ -466,7 +466,7 @@ git commit -m "feat: inline mermaid C4/sequence/state stubs in SDD template"
 **Interfaces:**
 - Produces: a "Diagram archetypes (Mermaid)" catalog the SDD builder reasons over (Task 6), and a repo-structure note matching inline-first behavior.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Append to `tests/diagram-conventions.test.js`:
 
@@ -483,12 +483,12 @@ test('structures.md ships a mermaid diagram archetype catalog', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/diagram-conventions.test.js`
 Expected: FAIL — catalog text not present.
 
-- [ ] **Step 3: Add the catalog**
+- [x] **Step 3: Add the catalog**
 
 In `structures.md`, immediately after the `### SDD quality checklist` list (before `## 3. ADR (Architecture Decision Record)`), insert:
 
@@ -513,7 +513,7 @@ set from this catalog:
 | Flow / activity | `flowchart` | general process or branching logic |
 ````
 
-- [ ] **Step 4: Fix the repository-structure diagrams note**
+- [x] **Step 4: Fix the repository-structure diagrams note**
 
 In `structures.md` §4, replace the `diagrams/` block:
 
@@ -537,12 +537,12 @@ with:
 |   `-- flow/
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `node --test tests/diagram-conventions.test.js`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/shared/references/structures.md tests/diagram-conventions.test.js
@@ -562,7 +562,7 @@ git commit -m "feat: add mermaid diagram archetype catalog; align diagrams folde
 - Consumes: `mermaid-preview.js` (Task 1), the catalog in `structures.md` (Task 5).
 - Produces: SDD builder that recommends → drafts → previews → approves → writes inline Mermaid; no remaining reference to `diagram-render.js`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Append to `tests/diagram-conventions.test.js`:
 
@@ -580,12 +580,12 @@ test('pm-product-workflow preview step references mermaid-preview', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/diagram-conventions.test.js`
 Expected: FAIL — `pm-sdd-builder` still references `diagram-render`.
 
-- [ ] **Step 3: Update `pm-sdd-builder` frontmatter description**
+- [x] **Step 3: Update `pm-sdd-builder` frontmatter description**
 
 Replace the `description:` line (line 3) so it no longer implies HTML-rendered diagrams:
 
@@ -593,7 +593,7 @@ Replace the `description:` line (line 3) so it no longer implies HTML-rendered d
 description: Create or update a Software Design Document (SDD). Use when the user wants to design the technical solution, architecture, C4 diagrams, components, data model, APIs, security, observability, or testing strategy derived from a PRD. Writes .product/sdd/sdd.md with inline Mermaid diagrams (and optional exports to .product/diagrams/).
 ```
 
-- [ ] **Step 4: Replace step 4 of `pm-sdd-builder`**
+- [x] **Step 4: Replace step 4 of `pm-sdd-builder`**
 
 Replace the current step 4 (the `Render diagrams as self-contained HTML ...` block referencing `diagram-render.js`) with:
 
@@ -620,7 +620,7 @@ Replace the current step 4 (the `Render diagrams as self-contained HTML ...` blo
      only if the user wants separate artifacts.
 ````
 
-- [ ] **Step 5: Update the `pm-product-workflow` preview step**
+- [x] **Step 5: Update the `pm-product-workflow` preview step**
 
 In `pm-product-workflow/SKILL.md`, in the `**Preview (optional)**` step, add that diagram previews are generated with `mermaid-preview.js`. Replace the step body with:
 
@@ -632,12 +632,12 @@ In `pm-product-workflow/SKILL.md`, in the `**Preview (optional)**` step, add tha
    — and OpenUI mockups via `openui-render.js`.
 ````
 
-- [ ] **Step 6: Run test to verify it passes**
+- [x] **Step 6: Run test to verify it passes**
 
 Run: `node --test tests/diagram-conventions.test.js`
 Expected: PASS — all conventions tests green.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md plugins/product-design-suite/skills/pm-product-workflow/SKILL.md tests/diagram-conventions.test.js
@@ -651,22 +651,22 @@ git commit -m "feat: SDD builder recommends + previews inline mermaid diagrams"
 **Files:**
 - No source changes — verification only.
 
-- [ ] **Step 1: Run the entire test suite**
+- [x] **Step 1: Run the entire test suite**
 
 Run: `node --test tests/`
 Expected: PASS — every suite green (`validate-plugin`, `traceability`, `openui-render`, `preview-server`, `e2e-smoke`, `mermaid-preview`, `diagram-conventions`). No `diagram-render` suite remains.
 
-- [ ] **Step 2: Confirm no stale references outside docs**
+- [x] **Step 2: Confirm no stale references outside docs**
 
 Run: `grep -rn "diagram-render" plugins tests tools`
 Expected: no output.
 
-- [ ] **Step 3: Confirm the plugin still validates**
+- [x] **Step 3: Confirm the plugin still validates**
 
 Run: `node --test tests/validate-plugin.test.js`
 Expected: PASS.
 
-- [ ] **Step 4: Final commit (if any verification fixes were needed)**
+- [x] **Step 4: Final commit (if any verification fixes were needed)**
 
 ```bash
 git add -A
