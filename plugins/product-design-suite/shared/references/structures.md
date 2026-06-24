@@ -443,3 +443,11 @@ ADR decision
 ```
 
 This traceability allows teams to answer three practical questions quickly: why the product exists, how it is designed, and why the design uses its chosen architectural path.
+
+`scripts/traceability.js` makes this concrete. It understands compressed ID notation
+(ranges like `FR-036…042`, lists like `FR-001/002/003a`, and sub-IDs like `FR-010a`),
+expanding both PRD and SDD references symmetrically so notation differences never read as
+gaps. It emits `.product/traceability.{md,html}` and injects a Requirement Coverage Index
+into SDD §16 — linking each requirement to its SDD sections (anchored) and ADRs, listing
+AR→FR traces and UAT back-references, and flagging genuine **orphans** (a PRD requirement
+with no matching SDD mention) distinctly from resolved notation artifacts.

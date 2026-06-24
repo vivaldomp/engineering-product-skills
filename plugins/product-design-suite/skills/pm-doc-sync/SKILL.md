@@ -14,7 +14,9 @@ without explicit user confirmation.
 ## Steps
 1. Refresh the traceability index:
    `node "${CLAUDE_PLUGIN_ROOT}/scripts/traceability.js" .product`
-   This writes `.product/traceability.md` and `.product/traceability.html`.
+   This writes `.product/traceability.md` and `.product/traceability.html`, and injects
+   the coverage index into `.product/sdd/sdd.md` §16 between the COVERAGE-INDEX markers
+   (content outside the markers is never touched).
 2. Determine what changed (use git diff if available, else ask the user which
    document/section changed).
 3. Using the traceability matrix, build an **impact report** listing each
@@ -25,7 +27,8 @@ without explicit user confirmation.
 4. For each impact, propose a **concrete edit** (show the exact before/after).
 5. Apply only the edits the user approves. Re-run step 1 afterward so the matrix
    reflects the applied edits.
-6. Report any requirements with `In SDD = NO` in the matrix as coverage gaps.
+6. Report any `⚠️ Orphan` rows in the matrix as genuine coverage gaps (notation-only
+   artifacts are already resolved by the range-aware parser).
 
 ## Rules
 - Confirmation-gated: propose, then apply on approval. No silent rewrites.

@@ -2,35 +2,151 @@ const test = require('node:test');
 const assert = require('node:assert');
 const t = require('../plugins/product-design-suite/scripts/traceability.js');
 
-test('extractIds finds unique typed ids', () => {
-  const ids = t.extractIds('See FR-001 and FR-001 and ADR-003 and noise FRX-9');
-  assert.deepEqual(ids.sort(), ['ADR-003', 'FR-001']);
+test('parseRefs finds canonical ids and sub-ids, ignores noise', () => {
+  assert.deepEqual(
+    t.parseRefs('See FR-001 and FR-001 and ADR-003 and FR-003a, noise FRX-9'),
+    ['ADR-003', 'FR-001', 'FR-003a']);
 });
 
-test('buildMatrix links requirement to sdd and adrs', () => {
-  const rows = t.buildMatrix({
-    prd: 'FR-001 do a thing. NFR-002 be fast.',
-    sdd: 'Implements FR-001 in section 4.',
+test('parseRefs expands an ellipsis range with width preserved', () => {
+  assert.deepEqual(t.parseRefs('FR-036…042'),
+    ['FR-036', 'FR-037', 'FR-038', 'FR-039', 'FR-040', 'FR-041', 'FR-042']);
+});
+
+test('parseRefs expands a full-form ellipsis range', () => {
+  assert.deepEqual(t.parseRefs('FR-001…FR-003'), ['FR-001', 'FR-002', 'FR-003']);
+});
+
+test('parseRefs expands a dotted range', () => {
+  assert.deepEqual(t.parseRefs('NFR-001..003'), ['NFR-001', 'NFR-002', 'NFR-003']);
+});
+
+test('parseRefs handles slash/comma lists with bare tails and sub-ids', () => {
+  assert.deepEqual(t.parseRefs('FR-001/002/003a'), ['FR-001', 'FR-002', 'FR-003a']);
+  assert.deepEqual(t.parseRefs('FR-010a, FR-010b'), ['FR-010a', 'FR-010b']);
+});
+
+test('parseRefs ignores non-reference separators', () => {
+  assert.deepEqual(t.parseRefs('service/002 and v1.2'), []);
+});
+
+test('expandRange caps oversized spans at the endpoints', () => {
+  assert.deepEqual(t.expandRange('FR-001', 'FR-9999'), ['FR-001', 'FR-9999']);
+});
+
+test('parseRefs does not match a longer id by substring', () => {
+  const ids = t.parseRefs('Implements FR-0012 only.');
+  assert.ok(ids.includes('FR-0012'));
+  assert.ok(!ids.includes('FR-001'));
+});
+
+test('sectionAnchors returns the nearest heading slug', () => {
+  const md = '## 4. Components and Responsibilities\nImplements FR-001 here.\n\n## 7. Flows\nNothing.';
+  assert.deepEqual(t.sectionAnchors(md, 'FR-001'),
+    [{ section: '4. Components and Responsibilities', slug: '4-components-and-responsibilities' }]);
+  assert.deepEqual(t.sectionAnchors(md, 'FR-999'), []);
+});
+
+test('buildMatrix resolves notation artifacts via symmetric expansion', () => {
+  const m = t.buildMatrix({
+    prd: 'Requirements FR-036…042 define export behavior.',
+    sdd: '## 7. Flows\nThe pipeline implements FR-036…042.',
+    adrs: {},
+  });
+  assert.equal(m.requirements.length, 7);
+  assert.ok(m.requirements.every(r => r.coverage === 'covered'));
+  assert.deepEqual(m.orphans, []);
+});
+
+test('buildMatrix flags genuine orphans', () => {
+  const m = t.buildMatrix({ prd: 'FR-001 a. FR-002 b. NFR-003 c.', sdd: 'Implements FR-001.', adrs: {} });
+  assert.deepEqual(m.orphans.sort(), ['FR-002', 'NFR-003']);
+  assert.equal(m.requirements.find(r => r.id === 'FR-001').coverage, 'covered');
+});
+
+test('buildMatrix links adrs and sdd sections', () => {
+  const m = t.buildMatrix({
+    prd: 'FR-001 onboarding.',
+    sdd: '## 4. Components and Responsibilities\nFR-001 realized here.',
     adrs: { 'ADR-003': 'Decision affecting FR-001.' },
   });
-  const fr = rows.find(r => r.id === 'FR-001');
-  assert.equal(fr.inSdd, true);
-  assert.deepEqual(fr.adrs, ['ADR-003']);
-  const nfr = rows.find(r => r.id === 'NFR-002');
-  assert.equal(nfr.inSdd, false);
-  assert.deepEqual(nfr.adrs, []);
+  const r = m.requirements.find(x => x.id === 'FR-001');
+  assert.deepEqual(r.adrs, ['ADR-003']);
+  assert.equal(r.sections[0].slug, '4-components-and-responsibilities');
 });
 
-test('renderMatrixMarkdown and Html include the id', () => {
-  const rows = t.buildMatrix({ prd: 'FR-001 x', sdd: '', adrs: {} });
-  assert.match(t.renderMatrixMarkdown(rows), /FR-001/);
-  assert.match(t.renderMatrixHtml(rows), /<table/);
-  assert.match(t.renderMatrixHtml(rows), /FR-001/);
+test('buildMatrix populates UAT back-refs and AR traces', () => {
+  const m = t.buildMatrix({
+    prd: 'FR-001 onboarding.\n\nUAT-002 verifies FR-001 flow.',
+    sdd: '## 5. Architecture\nAR-001 traces to FR-001.',
+    adrs: {},
+  });
+  assert.deepEqual(m.requirements.find(x => x.id === 'FR-001').uats, ['UAT-002']);
+  assert.deepEqual(m.uats.find(u => u.id === 'UAT-002').verifies, ['FR-001']);
+  assert.deepEqual(m.ars.find(a => a.id === 'AR-001').tracesTo, ['FR-001']);
 });
 
-test('buildMatrix does not match a longer id by substring', () => {
-  const rows = t.buildMatrix({ prd: 'FR-001 x', sdd: 'Implements FR-0012 only.', adrs: { 'ADR-009': 'touches FR-0012' } });
-  const fr = rows.find(r => r.id === 'FR-001');
-  assert.equal(fr.inSdd, false);
-  assert.deepEqual(fr.adrs, []);
+test('renderMarkdown includes ids, coverage glyphs and secondary tables', () => {
+  const m = t.buildMatrix({
+    prd: 'FR-001 x.\n\nUAT-002 verifies FR-001.',
+    sdd: '## 4. Components\nFR-001.\nAR-001 traces to FR-001.',
+    adrs: {},
+  });
+  const md = t.renderMarkdown(m);
+  assert.match(md, /FR-001/);
+  assert.match(md, /✅ Covered/);
+  assert.match(md, /Architectural Requirements/);
+  assert.match(md, /Acceptance Tests/);
+});
+
+test('renderHtml is self-contained with no external resources', () => {
+  const m = t.buildMatrix({ prd: 'FR-001 x', sdd: '', adrs: {} });
+  const html = t.renderHtml(m);
+  assert.match(html, /<!DOCTYPE html>/);
+  assert.ok(!/(src|href)=("|')https?:\/\//.test(html));
+  assert.match(html, /FR-001/);
+});
+
+test('injectCoverage appends a §16 when markers absent, idempotent on re-run', () => {
+  const once = t.injectCoverage('# SDD\n\n## 1. Intro\nbody', 'BLOCK-CONTENT');
+  assert.match(once, /## 16\. Requirement Coverage Index/);
+  assert.match(once, /COVERAGE-INDEX:START/);
+  assert.match(once, /BLOCK-CONTENT/);
+  const twice = t.injectCoverage(once, 'NEW-CONTENT');
+  assert.equal((twice.match(/COVERAGE-INDEX:START/g) || []).length, 1);
+  assert.match(twice, /NEW-CONTENT/);
+  assert.ok(!twice.includes('BLOCK-CONTENT'));
+});
+
+test('injectCoverage preserves content outside the markers', () => {
+  const base = 'intro\n<!-- COVERAGE-INDEX:START — generated by traceability.js, do not edit between markers -->\nOLD\n<!-- COVERAGE-INDEX:END -->\noutro';
+  const out = t.injectCoverage(base, 'FRESH');
+  assert.match(out, /^intro/);
+  assert.match(out, /outro$/);
+  assert.match(out, /FRESH/);
+  assert.ok(!out.includes('OLD'));
+});
+
+test('expandRange allows a 200-id span and caps at 201', () => {
+  assert.equal(t.expandRange('FR-001', 'FR-200').length, 200);
+  assert.deepEqual(t.expandRange('FR-001', 'FR-201'), ['FR-001', 'FR-201']);
+});
+
+test('parseRefs expands a bare sub-id tail in a slash list', () => {
+  assert.deepEqual(t.parseRefs('FR-010a/b'), ['FR-010a', 'FR-010b']);
+  assert.deepEqual(t.parseRefs('FR-001/002/003a'), ['FR-001', 'FR-002', 'FR-003a']);
+});
+
+test('parseRefs does not invent a sub-id from prose after a comma', () => {
+  assert.deepEqual(t.parseRefs('FR-001, and FR-002 follow'), ['FR-001', 'FR-002']);
+});
+
+test('buildMatrix scopes AR/UAT linkage to a sentence, not the whole paragraph', () => {
+  const m = t.buildMatrix({
+    prd: 'FR-001 a. FR-002 b.',
+    sdd: '## 5. X\nAR-001 implements FR-001. AR-002 implements FR-002.',
+    adrs: {},
+  });
+  assert.deepEqual(m.ars.find(a => a.id === 'AR-001').tracesTo, ['FR-001']);
+  assert.deepEqual(m.ars.find(a => a.id === 'AR-002').tracesTo, ['FR-002']);
 });

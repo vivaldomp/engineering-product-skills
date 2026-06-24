@@ -15,11 +15,11 @@ test('traceability over a sample .product links PRD->SDD->ADR', () => {
   fs.writeFileSync(path.join(dir, 'prd', 'prd.md'), 'FR-001 onboarding. NFR-002 latency.');
   fs.writeFileSync(path.join(dir, 'sdd', 'sdd.md'), 'AR-001 implements FR-001.');
   fs.writeFileSync(path.join(dir, 'adr', 'ADR-001-x.md'), 'Decision impacting FR-001.');
-  const rows = t.buildMatrix(t.loadProduct(dir));
-  const fr = rows.find(r => r.id === 'FR-001');
+  const m = t.buildMatrix(t.loadProduct(dir));
+  const fr = m.requirements.find(r => r.id === 'FR-001');
   assert.equal(fr.inSdd, true);
   assert.deepEqual(fr.adrs, ['ADR-001']);
-  assert.equal(rows.find(r => r.id === 'NFR-002').inSdd, false);
+  assert.equal(m.requirements.find(r => r.id === 'NFR-002').inSdd, false);
 });
 
 test('renderers produce self-contained html', () => {
