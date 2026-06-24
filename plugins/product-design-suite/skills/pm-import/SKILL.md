@@ -39,9 +39,9 @@ afterwards in derive-then-confirm mode.
    - `gap` — no source material (a genuine question for the builder);
    and, per document, an **unmapped source** list of source material that did not map
    to any template section, so nothing is silently dropped.
-5. **Hand off.** Offer to run each builder (`pm-prd-builder`, `pm-sdd-builder`,
-   `pm-adr-builder`) in **derive-then-confirm** mode, pre-seeded with that document's
-   mapped content and its gap list.
+5. **Hand off.** Offer to run each builder (`pm-prd-builder`, `pm-srs-builder`,
+   `pm-sdd-builder`, `pm-adr-builder`) in **derive-then-confirm** mode, pre-seeded with that
+   document's mapped content and its gap list.
 
 ## Rules
 - Read-only on source: never migrate, move, or edit the user's existing files.

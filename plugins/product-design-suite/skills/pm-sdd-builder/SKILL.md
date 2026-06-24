@@ -14,6 +14,7 @@ derived from the PRD.
 ## Inputs
 - Template: `${CLAUDE_PLUGIN_ROOT}/shared/templates/sdd-template.md`
 - PRD: `.product/prd/prd.md` (read for requirements to satisfy)
+- SRS (SRS mode): `.product/srs/srs.md` — the canonical `FR`/`NFR` source when it exists
 - References: `${CLAUDE_PLUGIN_ROOT}/shared/references/{concepts,structures,questioning-protocol,openui-guide}.md`
 
 ## Steps
