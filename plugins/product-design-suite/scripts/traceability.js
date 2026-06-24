@@ -136,8 +136,13 @@ function linksWithin(text, leftRe, rightRe) {
   return out;
 }
 
-function buildMatrix({ prd = '', sdd = '', adrs = {} } = {}) {
-  const prdRefs = parseRefs(prd);
+function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '' } = {}) {
+  // SRS mode: when an SRS is present it is the canonical source of FR/NFR;
+  // BR always comes from the PRD. With no SRS, FR/BR/NFR all come from the PRD.
+  const hasSrs = String(srs).trim() !== '';
+  const fnrRefs = parseRefs(hasSrs ? srs : prd).filter(id => /^(FR|NFR)-/.test(id));
+  const brRefs = parseRefs(prd).filter(id => /^BR-/.test(id));
+  const prdRefs = [...new Set([...fnrRefs, ...brRefs, ...parseRefs(prd).filter(id => /^UAT-/.test(id))])].sort(refCompare);
   const sddSet = new Set(parseRefs(sdd));
   const adrSets = Object.entries(adrs).map(([k, txt]) => {
     const m = k.match(/ADR-\d+/);
@@ -245,7 +250,12 @@ function loadProduct(dir) {
       }
     }
   }
-  return { prd: read(path.join(dir, 'prd', 'prd.md')), sdd: read(path.join(dir, 'sdd', 'sdd.md')), adrs };
+  return {
+    prd: read(path.join(dir, 'prd', 'prd.md')),
+    sdd: read(path.join(dir, 'sdd', 'sdd.md')),
+    srs: read(path.join(dir, 'srs', 'srs.md')),
+    adrs,
+  };
 }
 
 module.exports = {

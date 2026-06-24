@@ -218,11 +218,14 @@ ADR/
 `-- ADR-004-mcp-server.md
 ```
 
-Many agile teams do not maintain a separate formal SRS. Instead, they keep PRDs for product intent, SDDs for technical design, and ADRs for decision history. This combination usually works well in environments where architecture evolves incrementally and decisions need to remain traceable.
+Many agile teams do not maintain a separate formal SRS; the PRD then owns functional (`FR-NNN`) and non-functional (`NFR-NNN`) requirements directly, alongside the SDD for technical design and ADRs for decision history. This works well where architecture evolves incrementally and decisions need to remain traceable. Teams that do keep an IEEE-830 SRS (often regulated or enterprise contexts) can adopt the optional SRS document: the SRS becomes the canonical home for `FR-NNN`/`NFR-NNN` while the PRD references them and keeps business rules (`BR-NNN`) and acceptance tests (`UAT-NNN`). The suite detects which mode applies by whether `.product/srs/srs.md` exists.
 
 ## 5. Recommended lifecycle
 
 1. Start with a PRD when the problem, audience, expected outcomes, and scope need alignment.
+   - *(Optional)* If the team maintains a formal SRS, author it after the PRD with
+     `pm-srs-builder`; the SRS then owns the detailed `FR`/`NFR` that the PRD references and
+     the SDD designs against.
 2. Draft or update the SDD when the team is ready to design the technical solution.
 3. Create ADRs whenever the design involves meaningful trade-offs, irreversible choices, expensive changes, cross-team standards, or long-lived operational consequences.
 4. Keep the documents connected through references: PRD requirements should map to SDD sections, and SDD design choices should link to ADRs.

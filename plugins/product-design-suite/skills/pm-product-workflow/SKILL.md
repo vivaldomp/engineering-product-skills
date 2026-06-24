@@ -8,7 +8,7 @@ metadata:
 
 # pm-product-workflow
 
-Drive the sequential PRD -> SDD -> ADR workflow.
+Drive the sequential PRD -> (optional) SRS -> SDD -> ADR workflow.
 
 ## Steps
 1. **Initialize** `.product/` if missing: create `prd/ sdd/ adr/ diagrams/
@@ -21,7 +21,11 @@ Drive the sequential PRD -> SDD -> ADR workflow.
      front-matter, or an ADR still carrying a legacy `## 1. Metadata` table) ->
      offer the `pm-doc-sync` migration before continuing.
    - no `prd/prd.md` -> start with `pm-prd-builder`.
-   - PRD exists, no `sdd/sdd.md` -> offer `pm-sdd-builder`.
+   - PRD exists, no `srs/srs.md` -> offer `pm-srs-builder` for teams that maintain a formal
+     IEEE-830 SRS (optional; skipping it keeps the PRD as the requirements home). If a `docs/`
+     SRS was imported, offer the SRS builder here.
+   - PRD exists (and the SRS, if the team uses one), no `sdd/sdd.md` -> offer `pm-sdd-builder`.
+     When `.product/srs/srs.md` exists, the SRS is the requirements source for the SDD.
    - SDD exists -> offer `pm-adr-builder` for flagged decisions.
    Warn (don't block) if the user wants to skip ahead.
 3. **Enforce cadence** from
@@ -42,6 +46,8 @@ Drive the sequential PRD -> SDD -> ADR workflow.
 7. **Advance** to the next stage when the current document is finalized.
 
 ## Rules
-- Respect the sequence; the PRD anchors the SDD, and ADRs record decisions made
-  during SDD design.
+- Respect the sequence; the PRD anchors the work, an optional SRS (when present) owns the
+  detailed `FR`/`NFR` that the SDD designs against, and ADRs record decisions made during SDD
+  design. `.product/srs/` is created on demand by `pm-srs-builder` — the workflow need not
+  pre-create it.
 - Keep everything inside `.product/`.

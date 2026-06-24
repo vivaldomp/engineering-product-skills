@@ -14,13 +14,17 @@ derived from the PRD.
 ## Inputs
 - Template: `${CLAUDE_PLUGIN_ROOT}/shared/templates/sdd-template.md`
 - PRD: `.product/prd/prd.md` (read for requirements to satisfy)
+- SRS (SRS mode): `.product/srs/srs.md` — the canonical `FR`/`NFR` source when it exists
 - References: `${CLAUDE_PLUGIN_ROOT}/shared/references/{concepts,structures,questioning-protocol,openui-guide}.md`
 
 ## Steps
 1. If `.product/prd/prd.md` is missing, warn the user that the SDD should follow
    a PRD, and offer to run `pm-prd-builder` first (do not hard-block).
-2. Read the SDD template and the PRD. Map PRD `FR-NNN` to Architectural
-   Requirements `AR-NNN` in the SDD for traceability (reference the FR IDs).
+2. Read the SDD template and the requirements source. Map functional requirements to
+   Architectural Requirements `AR-NNN` in the SDD for traceability (reference the requirement
+   IDs). **SRS mode** — when `.product/srs/srs.md` exists — the canonical `FR-NNN`/`NFR-NNN`
+   live in the SRS, so read the SRS and map its requirements to `AR-NNN`. **Otherwise** map the
+   PRD's `FR-NNN`, as before.
 3. Fill each required section per `questioning-protocol.md`. When authoritative
    source is provided — mapped content from `pm-import`, or source supplied by the
    user — use **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask only about genuine gaps. Otherwise ask gap questions

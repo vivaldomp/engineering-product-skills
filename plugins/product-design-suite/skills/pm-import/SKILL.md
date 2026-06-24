@@ -15,7 +15,7 @@ documents and writes a gap report; the builder skills author the documents
 afterwards in derive-then-confirm mode.
 
 ## Inputs
-- Templates: `${CLAUDE_PLUGIN_ROOT}/shared/templates/{prd,sdd,adr}-template.md`
+- Templates: `${CLAUDE_PLUGIN_ROOT}/shared/templates/{prd,sdd,adr,srs}-template.md`
 - Concepts/structure: `${CLAUDE_PLUGIN_ROOT}/shared/references/concepts.md`,
   `${CLAUDE_PLUGIN_ROOT}/shared/references/structures.md`
 - Question cadence: `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md`
@@ -27,24 +27,26 @@ afterwards in derive-then-confirm mode.
    never move, rename, or edit source files.
 2. **Classify each candidate** by type (PRD / SRS / ADR / SDD) from filename and
    heading heuristics, and confirm the classification with the user before mapping.
-3. **Map to templates.** For each PRD/SDD/ADR source, match its content to the
-   corresponding template's sections. The **SRS has no native template** — record it
-   as a read-only reference link in the gap report; never fold it into another
-   document or relocate it.
+3. **Map to templates.** For each PRD/SDD/ADR/SRS source, match its content to the
+   corresponding template's sections. An **SRS source maps to `srs-template.md`**
+   (`.product/srs/srs.md`); its `FR-NNN`/`NFR-NNN` are the canonical functional and
+   non-functional requirements (the PRD then references them). The source location stays
+   read-only — never relocate or edit it.
 4. **Write the gap report** to `.product/import-gap-report.md`. For each target
-   document (PRD, SDD, ADR), a table mapping every template section to a status:
+   document (PRD, SRS, SDD, ADR), a table mapping every template section to a status:
    - `derived` — source fully covers the section;
    - `partial` — source covers it incompletely;
    - `gap` — no source material (a genuine question for the builder);
    and, per document, an **unmapped source** list of source material that did not map
    to any template section, so nothing is silently dropped.
-5. **Hand off.** Offer to run each builder (`pm-prd-builder`, `pm-sdd-builder`,
-   `pm-adr-builder`) in **derive-then-confirm** mode, pre-seeded with that document's
-   mapped content and its gap list.
+5. **Hand off.** Offer to run each builder (`pm-prd-builder`, `pm-srs-builder`,
+   `pm-sdd-builder`, `pm-adr-builder`) in **derive-then-confirm** mode, pre-seeded with that
+   document's mapped content and its gap list.
 
 ## Rules
 - Read-only on source: never migrate, move, or edit the user's existing files.
-- The SRS stays a linked read-only reference (no native template yet).
+- An SRS source maps to the SRS template (`.product/srs/srs.md`); reuse its `FR`/`NFR` IDs
+  verbatim so traceability is preserved.
 - Confirmation-gated: confirm classification before mapping, and confirm hand-off.
 - Reuse source IDs (`FR-NNN`, `BR-NNN`, `NFR-NNN`, `UAT-NNN`, `ADR-NNN`) verbatim so
   cross-document traceability is preserved.

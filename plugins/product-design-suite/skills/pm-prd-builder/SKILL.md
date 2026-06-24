@@ -24,8 +24,15 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
    content from `pm-import`, or source supplied by the user — use **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask
    only about genuine gaps. Otherwise use the gap-question cadence (pause after
    every 4 questions and summarize remaining gaps).
-5. Assign stable IDs: functional `FR-NNN`, business rules `BR-NNN`,
-   non-functional `NFR-NNN`, UAT `UAT-NNN`. Keep IDs stable across updates.
+5. Assign stable IDs (keep them stable across updates):
+   - **No SRS (default):** the PRD owns functional `FR-NNN`, business rules `BR-NNN`,
+     non-functional `NFR-NNN`, and UAT `UAT-NNN`.
+   - **SRS mode** — when `.product/srs/srs.md` exists — the SRS owns the canonical
+     `FR-NNN`/`NFR-NNN`; the PRD's §7 Functional Requirements and §9 Non-Functional
+     Requirements **reference** the SRS instead of enumerating them. The PRD still owns
+     and assigns `BR-NNN` and `UAT-NNN`. (Moving existing `FR`/`NFR` into a new SRS is
+     `pm-srs-builder`'s migration step, not the PRD builder's job — the PRD builder only
+     honors the active mode.)
 6. On finalize, populate the YAML front-matter (`title`, `status`, `version`,
    `owner`, `date`) — bump `version` and refresh `date` on an update — write
    `.product/prd/prd.md`, and record unresolved gaps in the **Open Questions**

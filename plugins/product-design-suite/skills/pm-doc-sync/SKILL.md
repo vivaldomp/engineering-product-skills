@@ -21,7 +21,10 @@ without explicit user confirmation.
    document/section changed).
 3. Using the traceability matrix, build an **impact report** listing each
    affected downstream and upstream item, for example:
-   - A changed PRD `FR-NNN` -> SDD sections referencing it, ADRs referencing it.
+   - A changed requirement `FR-NNN`/`NFR-NNN` -> SDD `AR-NNN` and sections referencing it,
+     ADRs referencing it, and PRD `UAT-NNN` that verify it. When `.product/srs/srs.md` exists,
+     the SRS is the canonical source of `FR`/`NFR` and the PRD references them; otherwise they
+     live in the PRD. Business rules (`BR-NNN`) and UAT (`UAT-NNN`) always live in the PRD.
    - A changed/ superseded ADR -> SDD "Referenced ADRs" and design choices.
    - Read each ADR's front-matter relationship fields (`supersedes`,
      `superseded-by`, `amends`, `amended-by`) to find linked ADRs, and verify the
