@@ -34,6 +34,13 @@ without explicit user confirmation.
    reflects the applied edits.
 6. Report any `⚠️ Orphan` rows in the matrix as genuine coverage gaps (notation-only
    artifacts are already resolved by the range-aware parser).
+7. **Migrate legacy docs to the metadata convention.** If a `.product/` document
+   predates the YAML front-matter convention — it has no front-matter block, or an
+   ADR still carries the legacy `## 1. Metadata` table — propose the migration:
+   add a front-matter block populated from the document's existing content; for an
+   ADR, lift the `## 1. Metadata` rows into front-matter, drop the table, and
+   renumber the body sections (§2 -> §1 … §8 -> §7) to match the current template.
+   Show the exact before/after and apply only on approval — no silent rewrite.
 
 ## Rules
 - Confirmation-gated: propose, then apply on approval. No silent rewrites.
