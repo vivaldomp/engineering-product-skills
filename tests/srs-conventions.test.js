@@ -31,3 +31,23 @@ test('srs-template documents IEEE-830 sections and FR/NFR tables', () => {
   assert.match(s, /FR-001/);
   assert.match(s, /NFR-001/);
 });
+
+test('pm-srs-builder skill exists with valid front-matter (name == dir)', () => {
+  const s = read('skills/pm-srs-builder/SKILL.md');
+  assert.match(s, /^---\nname: pm-srs-builder\n/);
+  assert.match(s, /\ndescription:/);
+});
+
+test('pm-srs-builder documents authoring, FR/NFR ownership, derive-then-confirm, and PRD migration', () => {
+  const s = read('skills/pm-srs-builder/SKILL.md');
+  assert.match(s, /\.product\/srs\/srs\.md/);
+  assert.match(s, /FR-NNN/);
+  assert.match(s, /NFR-NNN/);
+  assert.match(s, /derive-then-confirm/i);
+  assert.match(s, /migrat/i);
+});
+
+test('pm-srs command exists and routes to the skill', () => {
+  const s = read('commands/pm-srs.md');
+  assert.match(s, /pm-srs/);
+});
