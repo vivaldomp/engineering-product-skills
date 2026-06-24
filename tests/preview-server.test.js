@@ -24,3 +24,13 @@ test('start/stop scripts reference preview-server.cjs, not bare server.cjs', () 
     assert.equal(bare, null, `${f} still references bare server.cjs`);
   }
 });
+
+test('vendored preview files carry no upstream Superpowers/brainstorm identity', () => {
+  const files = ['preview-server.cjs', 'helper.js', 'start-server.sh', 'stop-server.sh', 'frame-template.html'];
+  for (const f of files) {
+    const txt = fs.readFileSync(path.join(dir, f), 'utf8');
+    for (const re of [/brainstorm/i, /superpowers/i, /BRAINSTORM_/]) {
+      assert.equal(re.test(txt), false, `${f} still contains ${re}`);
+    }
+  }
+});

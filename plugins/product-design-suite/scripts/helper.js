@@ -24,7 +24,7 @@
 
   function sessionKey() {
     try {
-      return window.sessionStorage && window.sessionStorage.getItem('brainstorm-session-key');
+      return window.sessionStorage && window.sessionStorage.getItem('pds-session-key');
     } catch (e) {}
     return null;
   }
@@ -63,13 +63,13 @@
     if (tombstoneShown) return;
     tombstoneShown = true;
     const el = document.createElement('div');
-    el.id = 'bs-tombstone';
+    el.id = 'pds-tombstone';
     el.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;' +
       'align-items:center;justify-content:center;padding:2rem;text-align:center;' +
       'background:rgba(20,20,22,0.92);color:#f5f5f7;font-family:system-ui,sans-serif';
     el.innerHTML = '<div style="max-width:480px">' +
-      '<h2 style="margin:0 0 .5rem;font-weight:600">Companion paused</h2>' +
-      '<p style="margin:0;opacity:.85">This brainstorm companion has stopped. ' +
+      '<h2 style="margin:0 0 .5rem;font-weight:600">Preview paused</h2>' +
+      '<p style="margin:0;opacity:.85">The product-design-suite preview has stopped. ' +
       'Ask your coding agent to bring it back — this page reconnects automatically.</p></div>';
     if (document.body) document.body.appendChild(el);
   }
@@ -158,7 +158,7 @@
   };
 
   // Expose API for explicit use
-  window.brainstorm = {
+  window.pdsPreview = {
     send: sendEvent,
     choice: (value, metadata = {}) => sendEvent({ type: 'choice', value, ...metadata })
   };

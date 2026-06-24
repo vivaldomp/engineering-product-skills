@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Start the brainstorm server and output connection info
+# Start the product-design-suite preview server and output connection info
 # Usage: start-server.sh [--project-dir <path>] [--host <bind-host>] [--url-host <display-host>] [--foreground] [--background]
 #
 # Starts server on a random high port, outputs JSON with URL.
 # Each session gets its own directory to avoid conflicts.
 #
 # Options:
-#   --project-dir <path>  Store session files under <path>/.superpowers/brainstorm/
+#   --project-dir <path>  Store session files under <path>/.product/preview/
 #                         instead of /tmp. Files persist after server stops.
 #   --host <bind-host>    Host/interface to bind (default: 127.0.0.1).
 #                         Use 0.0.0.0 in remote/containerized environments.
@@ -45,7 +45,7 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --open)
-      export BRAINSTORM_OPEN=1
+      export PDS_OPEN=1
       shift
       ;;
     --foreground|--no-daemon)
@@ -76,7 +76,7 @@ if [[ -n "$IDLE_TIMEOUT_MINUTES" ]]; then
     echo "{\"error\": \"--idle-timeout-minutes must be a positive integer\"}"
     exit 1
   fi
-  export BRAINSTORM_IDLE_TIMEOUT_MS=$(( IDLE_TIMEOUT_MINUTES * 60 * 1000 ))
+  export PDS_IDLE_TIMEOUT_MS=$(( IDLE_TIMEOUT_MINUTES * 60 * 1000 ))
 fi
 
 is_windows_like_shell() {
@@ -114,13 +114,13 @@ umask 077
 SESSION_ID="$$-$(date +%s)"
 
 if [[ -n "$PROJECT_DIR" ]]; then
-  SESSION_DIR="${PROJECT_DIR}/.superpowers/brainstorm/${SESSION_ID}"
+  SESSION_DIR="${PROJECT_DIR}/.product/preview/${SESSION_ID}"
   # Persist the bound port and key per project so a restart reuses them and an
   # already-open browser tab reconnects to the same URL with a valid cookie.
-  export BRAINSTORM_PORT_FILE="${PROJECT_DIR}/.superpowers/brainstorm/.last-port"
-  export BRAINSTORM_TOKEN_FILE="${PROJECT_DIR}/.superpowers/brainstorm/.last-token"
+  export PDS_PORT_FILE="${PROJECT_DIR}/.product/preview/.last-port"
+  export PDS_TOKEN_FILE="${PROJECT_DIR}/.product/preview/.last-token"
 else
-  SESSION_DIR="/tmp/brainstorm-${SESSION_ID}"
+  SESSION_DIR="/tmp/pds-preview-${SESSION_ID}"
 fi
 
 STATE_DIR="${SESSION_DIR}/state"
@@ -168,7 +168,7 @@ fi
 
 # Foreground mode for environments that reap detached/background processes.
 if [[ "$FOREGROUND" == "true" ]]; then
-  env BRAINSTORM_DIR="$SESSION_DIR" BRAINSTORM_HOST="$BIND_HOST" BRAINSTORM_URL_HOST="$URL_HOST" BRAINSTORM_OWNER_PID="$OWNER_PID" node preview-server.cjs "--brainstorm-server-id=$SERVER_ID" &
+  env PDS_DIR="$SESSION_DIR" PDS_HOST="$BIND_HOST" PDS_URL_HOST="$URL_HOST" PDS_OWNER_PID="$OWNER_PID" node preview-server.cjs "--pds-server-id=$SERVER_ID" &
   SERVER_PID=$!
   echo "$SERVER_PID" > "$PID_FILE"
   wait "$SERVER_PID"
@@ -177,7 +177,7 @@ fi
 
 # Start server, capturing output to log file
 # Use nohup to survive shell exit; disown to remove from job table
-nohup env BRAINSTORM_DIR="$SESSION_DIR" BRAINSTORM_HOST="$BIND_HOST" BRAINSTORM_URL_HOST="$URL_HOST" BRAINSTORM_OWNER_PID="$OWNER_PID" node preview-server.cjs "--brainstorm-server-id=$SERVER_ID" > "$LOG_FILE" 2>&1 &
+nohup env PDS_DIR="$SESSION_DIR" PDS_HOST="$BIND_HOST" PDS_URL_HOST="$URL_HOST" PDS_OWNER_PID="$OWNER_PID" node preview-server.cjs "--pds-server-id=$SERVER_ID" > "$LOG_FILE" 2>&1 &
 SERVER_PID=$!
 disown "$SERVER_PID" 2>/dev/null
 echo "$SERVER_PID" > "$PID_FILE"
