@@ -150,3 +150,34 @@ test('buildMatrix scopes AR/UAT linkage to a sentence, not the whole paragraph',
   assert.deepEqual(m.ars.find(a => a.id === 'AR-001').tracesTo, ['FR-001']);
   assert.deepEqual(m.ars.find(a => a.id === 'AR-002').tracesTo, ['FR-002']);
 });
+
+test('buildMatrix sources FR/NFR from the SRS when present, BR/UAT from the PRD', () => {
+  const m = t.buildMatrix({
+    prd: 'Business rule BR-001 applies. UAT-001 verifies FR-001.',
+    srs: 'FR-001 login. NFR-001 performance.',
+    sdd: '## 4. Components\nImplements FR-001, NFR-001 and BR-001.',
+    adrs: {},
+  });
+  assert.deepEqual(m.requirements.map(r => r.id).sort(), ['BR-001', 'FR-001', 'NFR-001']);
+  assert.deepEqual(m.uats.map(u => u.id), ['UAT-001']);
+});
+
+test('buildMatrix sources all requirements from the PRD when no SRS (regression)', () => {
+  const m = t.buildMatrix({
+    prd: 'FR-001 a. NFR-001 b. BR-001 c.',
+    sdd: '## 4. X\nFR-001 NFR-001 BR-001.',
+    adrs: {},
+  });
+  assert.deepEqual(m.requirements.map(r => r.id).sort(), ['BR-001', 'FR-001', 'NFR-001']);
+});
+
+test('loadProduct reads srs/srs.md into the srs field', () => {
+  const os = require('node:os');
+  const fsm = require('node:fs');
+  const pth = require('node:path');
+  const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'pm-srs-'));
+  fsm.mkdirSync(pth.join(dir, 'srs'), { recursive: true });
+  fsm.writeFileSync(pth.join(dir, 'srs', 'srs.md'), 'FR-001 from srs');
+  const loaded = t.loadProduct(dir);
+  assert.match(loaded.srs, /FR-001 from srs/);
+});
