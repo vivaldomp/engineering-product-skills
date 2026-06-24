@@ -20,3 +20,24 @@ All builder skills follow this protocol when information is missing.
 The "4 question" counter counts *consecutive* clarifying questions. It resets
 after each pause checkpoint and after the user volunteers a batch of information
 without being asked.
+
+## Derive-then-confirm mode
+
+When the builder has **authoritative source** for the document — mapped content
+handed over by `pm-import`, or source supplied directly by the user — use this mode
+instead of asking a gap question for every section.
+
+1. **Derive** every section the source supports.
+2. **Confirm in one batch.** Present a compact per-section summary of the derived
+   content as a single **confirmation batch**, plus only the **genuine gaps** as
+   questions. The user confirms or corrects the derived content in bulk rather than
+   answering a question per section.
+3. **Gap questions still follow the cadence.** The 4-question pause rule above
+   governs the genuine-gap questions, so even in this mode the user never faces an
+   interrogation wall.
+4. **No silent assumptions.** If the user finalizes before confirming derived
+   content, record that content as assumptions in the **Open Questions** table —
+   never present unconfirmed derivation as fact.
+
+The greenfield gap-question cadence remains the default whenever no authoritative
+source exists.

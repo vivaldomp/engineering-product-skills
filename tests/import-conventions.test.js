@@ -26,3 +26,23 @@ test('pm-import command exists and routes to the skill', () => {
   const s = read('commands/pm-import.md');
   assert.match(s, /pm-import/);
 });
+
+test('questioning-protocol documents derive-then-confirm mode', () => {
+  const s = read('shared/references/questioning-protocol.md');
+  assert.match(s, /derive-then-confirm/i);
+  assert.match(s, /confirmation batch/i);
+  assert.match(s, /genuine gap/i);
+});
+
+test('all three builders support derive-then-confirm mode', () => {
+  for (const b of ['pm-prd-builder', 'pm-sdd-builder', 'pm-adr-builder']) {
+    const s = read(`skills/${b}/SKILL.md`);
+    assert.match(s, /derive-then-confirm/i, `${b} should mention derive-then-confirm`);
+  }
+});
+
+test('pm-product-workflow detects existing source docs and legacy docs', () => {
+  const s = read('skills/pm-product-workflow/SKILL.md');
+  assert.match(s, /pm-import/);
+  assert.match(s, /## 1\. Metadata|front-matter|legacy/i);
+});

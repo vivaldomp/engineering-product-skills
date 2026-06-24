@@ -21,7 +21,10 @@ derived from the PRD.
    a PRD, and offer to run `pm-prd-builder` first (do not hard-block).
 2. Read the SDD template and the PRD. Map PRD `FR-NNN` to Architectural
    Requirements `AR-NNN` in the SDD for traceability (reference the FR IDs).
-3. Fill each required section; ask gap questions per `questioning-protocol.md` (pause after every 4 questions and summarize remaining gaps).
+3. Fill each required section per `questioning-protocol.md`. When authoritative
+   source is provided — mapped content from `pm-import`, or source supplied by the
+   user — use **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask only about genuine gaps. Otherwise ask gap questions
+   (pause after every 4 questions and summarize remaining gaps).
 4. Author diagrams as **inline Mermaid** in `sdd.md`:
    - **Recommend a set.** Read the PRD/SDD and pick diagram archetypes from the
      catalog in `${CLAUDE_PLUGIN_ROOT}/shared/references/structures.md`

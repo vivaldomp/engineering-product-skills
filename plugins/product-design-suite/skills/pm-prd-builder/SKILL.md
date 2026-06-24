@@ -19,9 +19,11 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 1. Ensure `.product/prd/` exists. If `prd.md` exists, load it and treat this as an update.
 2. Read the PRD template and the concepts/structures references.
 3. Fill each required section from what the user has provided.
-4. For any missing required section, ask gap questions following
-   `questioning-protocol.md` (pause after every 4 questions and summarize
-   remaining gaps).
+4. For any missing required section, ask questions following
+   `questioning-protocol.md`. When authoritative source is provided — mapped
+   content from `pm-import`, or source supplied by the user — use **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask
+   only about genuine gaps. Otherwise use the gap-question cadence (pause after
+   every 4 questions and summarize remaining gaps).
 5. Assign stable IDs: functional `FR-NNN`, business rules `BR-NNN`,
    non-functional `NFR-NNN`, UAT `UAT-NNN`. Keep IDs stable across updates.
 6. On finalize, populate the YAML front-matter (`title`, `status`, `version`,

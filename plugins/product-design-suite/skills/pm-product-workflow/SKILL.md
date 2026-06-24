@@ -13,7 +13,13 @@ Drive the sequential PRD -> SDD -> ADR workflow.
 ## Steps
 1. **Initialize** `.product/` if missing: create `prd/ sdd/ adr/ diagrams/
    design/ research/`.
-2. **Detect stage** by inspecting `.product/`:
+2. **Detect stage** by inspecting `.product/` and the working tree:
+   - `.product/` has no `prd/prd.md` yet but existing product docs are present
+     elsewhere (e.g. a `docs/` set with PRD/SRS/ADR/SDD) -> offer `pm-import` first
+     to ingest them and write a gap report before authoring.
+   - a pre-existing `.product/` document predates the metadata convention (no YAML
+     front-matter, or an ADR still carrying a legacy `## 1. Metadata` table) ->
+     offer the `pm-doc-sync` migration before continuing.
    - no `prd/prd.md` -> start with `pm-prd-builder`.
    - PRD exists, no `sdd/sdd.md` -> offer `pm-sdd-builder`.
    - SDD exists -> offer `pm-adr-builder` for flagged decisions.
