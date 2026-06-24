@@ -29,7 +29,7 @@ Record one architectural decision per file in `.product/adr/`.
 6. On finalize, record any unresolved questions or assumptions in the ADR's
    **Assumptions** / **Decision Scope** sections — do not leave silent TBDs.
 7. Write `.product/adr/ADR-NNN-<kebab-title>.md`.
-7. Suggest running `lpp-doc-sync` so the SDD's "Referenced ADRs" stays current.
+8. Suggest running `lpp-doc-sync` so the SDD's "Referenced ADRs" stays current.
 
 ## Rules
 - One decision per ADR. If the user describes several, create several ADRs.

@@ -15,3 +15,12 @@ test('frame-template.html loads no external http(s) resources', () => {
   const html = fs.readFileSync(path.join(dir, 'frame-template.html'), 'utf8');
   assert.ok(!/(src|href)=("|')https?:\/\//.test(html), 'frame template must be self-contained');
 });
+
+test('start/stop scripts reference preview-server.cjs, not bare server.cjs', () => {
+  for (const f of ['start-server.sh', 'stop-server.sh']) {
+    const txt = fs.readFileSync(path.join(dir, f), 'utf8');
+    // any reference to the server file must be the renamed one
+    const bare = txt.match(/(?<!preview-)server\.cjs/);
+    assert.equal(bare, null, `${f} still references bare server.cjs`);
+  }
+});
