@@ -51,3 +51,15 @@ test('pm-sad command exists and routes to the skill', () => {
   const s = read('commands/pm-sad.md');
   assert.match(s, /pm-sad/);
 });
+
+test('pm-sdd-builder documents SAD mode', () => {
+  const sdd = read('skills/pm-sdd-builder/SKILL.md');
+  assert.match(sdd, /SAD/);
+  assert.match(sdd, /\.product\/sad\/sad\.md/);
+});
+
+test('pm-product-workflow documents the optional SAD stage', () => {
+  const s = read('skills/pm-product-workflow/SKILL.md');
+  assert.match(s, /pm-sad-builder/);
+  assert.match(s, /SAD/);
+});

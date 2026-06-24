@@ -15,16 +15,22 @@ derived from the PRD.
 - Template: `${CLAUDE_PLUGIN_ROOT}/shared/templates/sdd-template.md`
 - PRD: `.product/prd/prd.md` (read for requirements to satisfy)
 - SRS (SRS mode): `.product/srs/srs.md` — the canonical `FR`/`NFR` source when it exists
+- SAD (SAD mode): `.product/sad/sad.md` — the canonical macro-architecture and `AR-NNN` source when it exists
 - References: `${CLAUDE_PLUGIN_ROOT}/shared/references/{concepts,structures,questioning-protocol,openui-guide}.md`
 
 ## Steps
 1. If `.product/prd/prd.md` is missing, warn the user that the SDD should follow
    a PRD, and offer to run `pm-prd-builder` first (do not hard-block).
-2. Read the SDD template and the requirements source. Map functional requirements to
-   Architectural Requirements `AR-NNN` in the SDD for traceability (reference the requirement
-   IDs). **SRS mode** — when `.product/srs/srs.md` exists — the canonical `FR-NNN`/`NFR-NNN`
-   live in the SRS, so read the SRS and map its requirements to `AR-NNN`. **Otherwise** map the
-   PRD's `FR-NNN`, as before.
+2. Read the SDD template and the requirements source. **SRS mode** — when `.product/srs/srs.md`
+   exists — the canonical `FR-NNN`/`NFR-NNN` live in the SRS; **otherwise** they live in the PRD.
+   **SAD mode** — when `.product/sad/sad.md` exists — the macro-architecture and the canonical
+   `AR-NNN` table live in the **SAD**, so §3 Architecture Overview **references** the SAD's
+   `AR-NNN` and C4 Context/Container instead of enumerating them, and this SDD focuses on C3
+   Component design, APIs, schemas, and code-level design, mapping its components to the SAD's
+   `AR-NNN`. **No-SAD mode** (default) — the SDD owns `AR-NNN` and the C4 Context/Container
+   diagrams as before, mapping the requirement source's `FR-NNN` to `AR-NNN`. The SDD builder
+   does not move content itself — the SDD→SAD migration is `pm-sad-builder`'s job; the SDD
+   builder only honors the active mode.
 3. Fill each required section per `questioning-protocol.md`. When authoritative
    source is provided — mapped content from `pm-import`, or source supplied by the
    user — use **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask only about genuine gaps. Otherwise ask gap questions

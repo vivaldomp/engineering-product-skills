@@ -8,7 +8,7 @@ metadata:
 
 # pm-product-workflow
 
-Drive the sequential PRD -> (optional) SRS -> SDD -> ADR workflow.
+Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workflow.
 
 ## Steps
 1. **Initialize** `.product/` if missing: create `prd/ sdd/ adr/ diagrams/
@@ -24,8 +24,14 @@ Drive the sequential PRD -> (optional) SRS -> SDD -> ADR workflow.
    - PRD exists, no `srs/srs.md` -> offer `pm-srs-builder` for teams that maintain a formal
      IEEE-830 SRS (optional; skipping it keeps the PRD as the requirements home). If a `docs/`
      SRS was imported, offer the SRS builder here.
-   - PRD exists (and the SRS, if the team uses one), no `sdd/sdd.md` -> offer `pm-sdd-builder`.
-     When `.product/srs/srs.md` exists, the SRS is the requirements source for the SDD.
+   - PRD exists (and the SRS, if the team uses one), no `sad/sad.md` -> offer `pm-sad-builder`
+     for teams that maintain a System Architecture Document (optional; skipping it keeps the
+     macro-architecture and `AR-NNN` in the SDD). If a `docs/` SAD was imported, offer the SAD
+     builder here.
+   - PRD exists (and the SRS/SAD, if the team uses them), no `sdd/sdd.md` -> offer
+     `pm-sdd-builder`. When `.product/srs/srs.md` exists, the SRS is the requirements source;
+     when `.product/sad/sad.md` exists, the SAD is the macro-architecture source and owns
+     `AR-NNN`, so the SDD references it and focuses on C3 component/code design.
    - SDD exists -> offer `pm-adr-builder` for flagged decisions.
    Warn (don't block) if the user wants to skip ahead.
 3. **Enforce cadence** from
@@ -47,7 +53,8 @@ Drive the sequential PRD -> (optional) SRS -> SDD -> ADR workflow.
 
 ## Rules
 - Respect the sequence; the PRD anchors the work, an optional SRS (when present) owns the
-  detailed `FR`/`NFR` that the SDD designs against, and ADRs record decisions made during SDD
-  design. `.product/srs/` is created on demand by `pm-srs-builder` — the workflow need not
-  pre-create it.
+  detailed `FR`/`NFR`, an optional SAD (when present) owns the macro-architecture and `AR-NNN`
+  that the SDD designs against, and ADRs record decisions made during SAD/SDD design.
+  `.product/srs/` and `.product/sad/` are created on demand by their builders — the workflow
+  need not pre-create them.
 - Keep everything inside `.product/`.
