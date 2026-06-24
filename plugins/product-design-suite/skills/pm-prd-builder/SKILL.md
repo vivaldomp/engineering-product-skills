@@ -1,12 +1,12 @@
 ---
-name: lpp-prd-builder
+name: pm-prd-builder
 description: Create or update a Product Requirements Document (PRD). Use when the user wants to write, draft, or revise a PRD, define product requirements, problem statement, personas, scope, functional/non-functional requirements, or acceptance criteria. Writes .product/prd/prd.md.
 metadata:
   author: Vivaldo
   version: "0.1.0"
 ---
 
-# lpp-prd-builder
+# pm-prd-builder
 
 Build or update the PRD at `.product/prd/prd.md` from the shared template.
 
@@ -29,8 +29,8 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 7. Optionally produce `.product/prd/prd-summary.html` (objectives + success
    metrics) by authoring OpenUI Lang and rendering with
    `${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js`.
-8. After writing, hand off: suggest running `lpp-doc-sync` if a prior SDD/ADR
-   exists, then offer to proceed to `lpp-sdd-builder`.
+8. After writing, hand off: suggest running `pm-doc-sync` if a prior SDD/ADR
+   exists, then offer to proceed to `pm-sdd-builder`.
 
 ## Rules
 - Stay product-level: no architecture, schemas, or technology choices unless a

@@ -1,12 +1,12 @@
 ---
-name: lpp-adr-builder
+name: pm-adr-builder
 description: Create or update an Architecture Decision Record (ADR). Use when the user wants to record a single significant architectural decision, capture options considered, trade-offs, the chosen option, consequences, or change an ADR status (proposed/accepted/superseded). Writes .product/adr/ADR-NNN-*.md.
 metadata:
   author: Vivaldo
   version: "0.1.0"
 ---
 
-# lpp-adr-builder
+# pm-adr-builder
 
 Record one architectural decision per file in `.product/adr/`.
 
@@ -29,7 +29,7 @@ Record one architectural decision per file in `.product/adr/`.
 6. On finalize, record any unresolved questions or assumptions in the ADR's
    **Assumptions** / **Decision Scope** sections — do not leave silent TBDs.
 7. Write `.product/adr/ADR-NNN-<kebab-title>.md`.
-8. Suggest running `lpp-doc-sync` so the SDD's "Referenced ADRs" stays current.
+8. Suggest running `pm-doc-sync` so the SDD's "Referenced ADRs" stays current.
 
 ## Rules
 - One decision per ADR. If the user describes several, create several ADRs.

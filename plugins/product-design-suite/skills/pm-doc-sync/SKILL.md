@@ -1,12 +1,12 @@
 ---
-name: lpp-doc-sync
+name: pm-doc-sync
 description: Propagate changes across PRD, SDD, and ADR documents. Use after editing any product document, or when the user asks to sync docs, check cross-document impact, refresh the traceability matrix, or find stale/affected sections. Produces an impact report and confirmation-gated edits in .product/.
 metadata:
   author: Vivaldo
   version: "0.1.0"
 ---
 
-# lpp-doc-sync
+# pm-doc-sync
 
 Keep the PRD/SDD/ADR triad consistent after a change. Never rewrite a document
 without explicit user confirmation.

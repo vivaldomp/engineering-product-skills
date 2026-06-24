@@ -4,7 +4,7 @@
 
 **Goal:** Build a distributable Claude Code marketplace plugin (`product-design-suite`) of Agent Skills that guides a PM through a sequential PRD → SDD → ADR workflow with cross-document sync and framework-free HTML visualizations.
 
-**Architecture:** A marketplace repo (`lpp-skills`) containing one plugin with five `lpp-`-prefixed skills (orchestrator + 3 builders + sync), thin slash-command wrappers, a shared knowledge layer (the existing `concepts.md`/`structures.md`/`templates/`), and three new Node renderers plus the reused superpowers preview server. Skills emit artifacts into `.product/`.
+**Architecture:** A marketplace repo (`pm-skills`) containing one plugin with five `pm-`-prefixed skills (orchestrator + 3 builders + sync), thin slash-command wrappers, a shared knowledge layer (the existing `concepts.md`/`structures.md`/`templates/`), and three new Node renderers plus the reused superpowers preview server. Skills emit artifacts into `.product/`.
 
 **Tech Stack:** Markdown (skills, references, templates, commands), JSON (manifests), Node.js ≥ 18 CommonJS scripts (`traceability.js`, `diagram-render.js`, `openui-render.js`) tested with the built-in `node:test` runner, and self-contained HTML/CSS/inline-JS output.
 
@@ -12,18 +12,18 @@
 
 - All **generated** non-Markdown artifacts must be HTML + CSS + **inline** JS only — no CDN, no framework, must open offline in major browsers. (Dev tooling in `scripts/`/`tools/` may use Node.)
 - Node.js ≥ 18; tests use the built-in `node:test` runner — **no external test dependencies**.
-- Every skill directory name MUST equal its `SKILL.md` `name` field and be prefixed `lpp-` (Agent Skills rule).
+- Every skill directory name MUST equal its `SKILL.md` `name` field and be prefixed `pm-` (Agent Skills rule).
 - `SKILL.md` frontmatter: `name` ≤ 64 chars, lowercase alphanumeric + single hyphens, no leading/trailing/double hyphen; `description` non-empty ≤ 1024 chars.
 - Keep each `SKILL.md` body focused; detailed material lives in `shared/references/` and is loaded on demand.
 - Author identity everywhere: `Vivaldo <vivaldomp@gmail.com>`.
-- Plugin name `product-design-suite`; marketplace name `lpp-skills`; plugin version `0.1.0`.
+- Plugin name `product-design-suite`; marketplace name `pm-skills`; plugin version `0.1.0`.
 - Skills reference shared files as `${CLAUDE_PLUGIN_ROOT}/shared/...` and scripts as `${CLAUDE_PLUGIN_ROOT}/scripts/...`.
 
 ---
 
 ## File Structure
 
-**Repo root (`lpp-skills/`):**
+**Repo root (`pm-skills/`):**
 - `.claude-plugin/marketplace.json` — marketplace manifest
 - `tools/validate-plugin.js` — dev validator (manifests + skills)
 - `tests/*.test.js` — unit tests (node:test), kept out of the shipped plugin
@@ -31,10 +31,10 @@
 
 **Plugin (`plugins/product-design-suite/`):**
 - `.claude-plugin/plugin.json`
-- `skills/lpp-product-workflow/SKILL.md` — orchestrator
-- `skills/lpp-prd-builder/SKILL.md`, `skills/lpp-sdd-builder/SKILL.md`, `skills/lpp-adr-builder/SKILL.md`
-- `skills/lpp-doc-sync/SKILL.md`
-- `commands/lpp-prd.md`, `lpp-sdd.md`, `lpp-adr.md`, `lpp-product.md`
+- `skills/pm-product-workflow/SKILL.md` — orchestrator
+- `skills/pm-prd-builder/SKILL.md`, `skills/pm-sdd-builder/SKILL.md`, `skills/pm-adr-builder/SKILL.md`
+- `skills/pm-doc-sync/SKILL.md`
+- `commands/pm-prd.md`, `pm-sdd.md`, `pm-adr.md`, `pm-product.md`
 - `shared/references/{concepts.md,structures.md,questioning-protocol.md,openui-guide.md}`
 - `shared/templates/{prd-template.md,sdd-template.md,adr-template.md}`
 - `scripts/{traceability.js,diagram-render.js,openui-render.js}` + reused `{preview-server.cjs,start-server.sh,stop-server.sh,frame-template.html,helper.js}`
@@ -85,7 +85,7 @@ Create `.claude-plugin/marketplace.json`:
 
 ```json
 {
-  "name": "lpp-skills",
+  "name": "pm-skills",
   "owner": { "name": "Vivaldo", "email": "vivaldomp@gmail.com" },
   "plugins": [
     {
@@ -115,7 +115,7 @@ Create `plugins/product-design-suite/.claude-plugin/plugin.json`:
 Create `README.md`:
 
 ```markdown
-# lpp-skills
+# pm-skills
 
 Claude Code marketplace containing the **product-design-suite** plugin — a set of
 Agent Skills that guide Product Managers through a sequential PRD -> SDD -> ADR
@@ -126,12 +126,12 @@ Add this repo as a plugin marketplace in Claude Code, then install
 `product-design-suite`.
 
 ## Skills
-- `lpp-product-workflow` — orchestrator (sequence + question cadence)
-- `lpp-prd-builder`, `lpp-sdd-builder`, `lpp-adr-builder` — artifact builders
-- `lpp-doc-sync` — cross-document impact + sync
+- `pm-product-workflow` — orchestrator (sequence + question cadence)
+- `pm-prd-builder`, `pm-sdd-builder`, `pm-adr-builder` — artifact builders
+- `pm-doc-sync` — cross-document impact + sync
 
 ## Commands
-`/lpp-product`, `/lpp-prd`, `/lpp-sdd`, `/lpp-adr`
+`/pm-product`, `/pm-prd`, `/pm-sdd`, `/pm-adr`
 
 Generated artifacts are written to `.product/`.
 
@@ -184,14 +184,14 @@ const path = require('node:path');
 const v = require('../tools/validate-plugin.js');
 
 test('parseFrontmatter reads name and description', () => {
-  const fm = v.parseFrontmatter('---\nname: lpp-prd-builder\ndescription: Build a PRD\n---\nbody');
-  assert.equal(fm.name, 'lpp-prd-builder');
+  const fm = v.parseFrontmatter('---\nname: pm-prd-builder\ndescription: Build a PRD\n---\nbody');
+  assert.equal(fm.name, 'pm-prd-builder');
   assert.equal(fm.description, 'Build a PRD');
 });
 
 test('validateSkill flags name != dir', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lpp-'));
-  const skill = path.join(dir, 'lpp-prd-builder');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-'));
+  const skill = path.join(dir, 'pm-prd-builder');
   fs.mkdirSync(skill);
   fs.writeFileSync(path.join(skill, 'SKILL.md'), '---\nname: wrong-name\ndescription: x\n---\n');
   const errs = v.validateSkill(skill);
@@ -199,15 +199,15 @@ test('validateSkill flags name != dir', () => {
 });
 
 test('validateSkill passes a correct skill', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lpp-'));
-  const skill = path.join(dir, 'lpp-adr-builder');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-'));
+  const skill = path.join(dir, 'pm-adr-builder');
   fs.mkdirSync(skill);
-  fs.writeFileSync(path.join(skill, 'SKILL.md'), '---\nname: lpp-adr-builder\ndescription: Build an ADR\n---\n');
+  fs.writeFileSync(path.join(skill, 'SKILL.md'), '---\nname: pm-adr-builder\ndescription: Build an ADR\n---\n');
   assert.deepEqual(v.validateSkill(skill), []);
 });
 
 test('validateJson flags missing keys', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lpp-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-'));
   const p = path.join(dir, 'm.json');
   fs.writeFileSync(p, JSON.stringify({ name: 'x' }));
   const errs = v.validateJson(p, ['name', 'owner']);
@@ -317,7 +317,7 @@ git commit -m "feat: add plugin/skill validator with tests"
 - Test: `tests/traceability.test.js`
 
 **Interfaces:**
-- Produces (CommonJS exports): `extractIds(text) -> string[]`; `buildMatrix({prd, sdd, adrs}) -> Array<{id, inSdd, adrs}>` where `adrs` input is `{ 'ADR-001': text }`; `renderMatrixMarkdown(rows) -> string`; `renderMatrixHtml(rows) -> string`; `loadProduct(dir) -> {prd, sdd, adrs}`. CLI writes `<dir>/traceability.md` and `<dir>/traceability.html`. Consumed by `lpp-doc-sync` (Task 9).
+- Produces (CommonJS exports): `extractIds(text) -> string[]`; `buildMatrix({prd, sdd, adrs}) -> Array<{id, inSdd, adrs}>` where `adrs` input is `{ 'ADR-001': text }`; `renderMatrixMarkdown(rows) -> string`; `renderMatrixHtml(rows) -> string`; `loadProduct(dir) -> {prd, sdd, adrs}`. CLI writes `<dir>/traceability.md` and `<dir>/traceability.html`. Consumed by `pm-doc-sync` (Task 9).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -446,7 +446,7 @@ git commit -m "feat: add traceability matrix builder with tests"
 - Test: `tests/diagram-render.test.js`
 
 **Interfaces:**
-- Produces (CommonJS exports): `renderSvg(spec) -> string` and `renderDiagram(spec) -> string` (full self-contained HTML). `spec = { title, nodes:[{id,label,kind}], edges:[{from,to,label}] }`. CLI: `node diagram-render.js <spec.json> <out.html>`. Consumed by `lpp-sdd-builder` (Task 8).
+- Produces (CommonJS exports): `renderSvg(spec) -> string` and `renderDiagram(spec) -> string` (full self-contained HTML). `spec = { title, nodes:[{id,label,kind}], edges:[{from,to,label}] }`. CLI: `node diagram-render.js <spec.json> <out.html>`. Consumed by `pm-sdd-builder` (Task 8).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -568,7 +568,7 @@ git commit -m "feat: add inline-SVG diagram renderer with tests"
 - Test: `tests/openui-render.test.js`
 
 **Interfaces:**
-- Produces (CommonJS exports): `parseOpenUI(src) -> {rootId, defs}` (defs maps id → AST node); `renderOpenUI(src) -> string` (self-contained HTML). Supported components: `Root, Section, Grid, Card, Navbar, Link, StatCard, Heading, Text, Button, Input, Form`. CLI: `node openui-render.js <in.openui> <out.html>`. Consumed by `lpp-sdd-builder`/`lpp-prd-builder` (Tasks 8/8a) and `openui-guide.md` (Task 7).
+- Produces (CommonJS exports): `parseOpenUI(src) -> {rootId, defs}` (defs maps id → AST node); `renderOpenUI(src) -> string` (self-contained HTML). Supported components: `Root, Section, Grid, Card, Navbar, Link, StatCard, Heading, Text, Button, Input, Form`. CLI: `node openui-render.js <in.openui> <out.html>`. Consumed by `pm-sdd-builder`/`pm-prd-builder` (Tasks 8/8a) and `openui-guide.md` (Task 7).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -768,7 +768,7 @@ git commit -m "feat: add OpenUI Lang renderer with tests"
 
 **Interfaces:**
 - Consumes: `renderOpenUI` and `renderDiagram` (Tasks 4–5) for preview content.
-- Produces: a runnable preview server; verified here only by a non-network smoke test (syntax loads + frame template references no external URLs). Consumed by `lpp-product-workflow` (Task 10) for live iteration.
+- Produces: a runnable preview server; verified here only by a non-network smoke test (syntax loads + frame template references no external URLs). Consumed by `pm-product-workflow` (Task 10) for live iteration.
 
 - [ ] **Step 1: Copy the reused files**
 
@@ -934,31 +934,31 @@ git commit -m "docs: add questioning protocol and OpenUI authoring guide"
 
 ---
 
-### Task 8: Builder skills — `lpp-prd-builder`, `lpp-sdd-builder`, `lpp-adr-builder`
+### Task 8: Builder skills — `pm-prd-builder`, `pm-sdd-builder`, `pm-adr-builder`
 
 **Files:**
-- Create: `plugins/product-design-suite/skills/lpp-prd-builder/SKILL.md`
-- Create: `plugins/product-design-suite/skills/lpp-sdd-builder/SKILL.md`
-- Create: `plugins/product-design-suite/skills/lpp-adr-builder/SKILL.md`
+- Create: `plugins/product-design-suite/skills/pm-prd-builder/SKILL.md`
+- Create: `plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md`
+- Create: `plugins/product-design-suite/skills/pm-adr-builder/SKILL.md`
 
 **Interfaces:**
 - Consumes: shared templates/references (Task 1, 7), `diagram-render.js` and `openui-render.js` (Tasks 4–5).
 - Produces: three valid skills writing to `.product/{prd,sdd,adr}`. Validated by Task 2's validator.
 
-- [ ] **Step 1: Write `lpp-prd-builder/SKILL.md`**
+- [ ] **Step 1: Write `pm-prd-builder/SKILL.md`**
 
-Create `plugins/product-design-suite/skills/lpp-prd-builder/SKILL.md`:
+Create `plugins/product-design-suite/skills/pm-prd-builder/SKILL.md`:
 
 ```markdown
 ---
-name: lpp-prd-builder
+name: pm-prd-builder
 description: Create or update a Product Requirements Document (PRD). Use when the user wants to write, draft, or revise a PRD, define product requirements, problem statement, personas, scope, functional/non-functional requirements, or acceptance criteria. Writes .product/prd/prd.md.
 metadata:
   author: Vivaldo
   version: "0.1.0"
 ---
 
-# lpp-prd-builder
+# pm-prd-builder
 
 Build or update the PRD at `.product/prd/prd.md` from the shared template.
 
@@ -981,8 +981,8 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 7. Optionally produce `.product/prd/prd-summary.html` (objectives + success
    metrics) by authoring OpenUI Lang and rendering with
    `${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js`.
-8. After writing, hand off: suggest running `lpp-doc-sync` if a prior SDD/ADR
-   exists, then offer to proceed to `lpp-sdd-builder`.
+8. After writing, hand off: suggest running `pm-doc-sync` if a prior SDD/ADR
+   exists, then offer to proceed to `pm-sdd-builder`.
 
 ## Rules
 - Stay product-level: no architecture, schemas, or technology choices unless a
@@ -990,20 +990,20 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 - Do not invent requirements; ask instead.
 ```
 
-- [ ] **Step 2: Write `lpp-sdd-builder/SKILL.md`**
+- [ ] **Step 2: Write `pm-sdd-builder/SKILL.md`**
 
-Create `plugins/product-design-suite/skills/lpp-sdd-builder/SKILL.md`:
+Create `plugins/product-design-suite/skills/pm-sdd-builder/SKILL.md`:
 
 ```markdown
 ---
-name: lpp-sdd-builder
+name: pm-sdd-builder
 description: Create or update a Software Design Document (SDD). Use when the user wants to design the technical solution, architecture, C4 diagrams, components, data model, APIs, security, observability, or testing strategy derived from a PRD. Writes .product/sdd/sdd.md and diagrams to .product/diagrams/.
 metadata:
   author: Vivaldo
   version: "0.1.0"
 ---
 
-# lpp-sdd-builder
+# pm-sdd-builder
 
 Build or update the SDD at `.product/sdd/sdd.md` from the shared template,
 derived from the PRD.
@@ -1015,7 +1015,7 @@ derived from the PRD.
 
 ## Steps
 1. If `.product/prd/prd.md` is missing, warn the user that the SDD should follow
-   a PRD, and offer to run `lpp-prd-builder` first (do not hard-block).
+   a PRD, and offer to run `pm-prd-builder` first (do not hard-block).
 2. Read the SDD template and the PRD. Map PRD `FR-NNN` to Architectural
    Requirements `AR-NNN` in the SDD for traceability (reference the FR IDs).
 3. Fill each required section; ask gap questions per `questioning-protocol.md`.
@@ -1026,30 +1026,30 @@ derived from the PRD.
 5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`
    and render with `openui-render.js` to `.product/design/*.html`.
 6. Identify decisions with significant trade-offs and flag them as ADR
-   candidates; hand each to `lpp-adr-builder`. Reference resulting `ADR-NNN`
+   candidates; hand each to `pm-adr-builder`. Reference resulting `ADR-NNN`
    in the SDD's "Referenced ADRs" section.
 7. On finalize, write the SDD and record unresolved gaps in Open Questions.
-8. Suggest running `lpp-doc-sync` to refresh the traceability matrix.
+8. Suggest running `pm-doc-sync` to refresh the traceability matrix.
 
 ## Rules
 - Every major design choice should map back to a PRD requirement or an ADR.
 - Cover failure modes, security, observability, and operations — not only happy paths.
 ```
 
-- [ ] **Step 3: Write `lpp-adr-builder/SKILL.md`**
+- [ ] **Step 3: Write `pm-adr-builder/SKILL.md`**
 
-Create `plugins/product-design-suite/skills/lpp-adr-builder/SKILL.md`:
+Create `plugins/product-design-suite/skills/pm-adr-builder/SKILL.md`:
 
 ```markdown
 ---
-name: lpp-adr-builder
+name: pm-adr-builder
 description: Create or update an Architecture Decision Record (ADR). Use when the user wants to record a single significant architectural decision, capture options considered, trade-offs, the chosen option, consequences, or change an ADR status (proposed/accepted/superseded). Writes .product/adr/ADR-NNN-*.md.
 metadata:
   author: Vivaldo
   version: "0.1.0"
 ---
 
-# lpp-adr-builder
+# pm-adr-builder
 
 Record one architectural decision per file in `.product/adr/`.
 
@@ -1069,7 +1069,7 @@ Record one architectural decision per file in `.product/adr/`.
    the Status History table. When superseding, link the superseding ADR both
    ways.
 6. Write `.product/adr/ADR-NNN-<kebab-title>.md`.
-7. Suggest running `lpp-doc-sync` so the SDD's "Referenced ADRs" stays current.
+7. Suggest running `pm-doc-sync` so the SDD's "Referenced ADRs" stays current.
 
 ## Rules
 - One decision per ADR. If the user describes several, create several ADRs.
@@ -1084,35 +1084,35 @@ Expected: `OK: plugin valid`
 - [ ] **Step 5: Commit**
 
 ```bash
-git add plugins/product-design-suite/skills/lpp-prd-builder plugins/product-design-suite/skills/lpp-sdd-builder plugins/product-design-suite/skills/lpp-adr-builder
+git add plugins/product-design-suite/skills/pm-prd-builder plugins/product-design-suite/skills/pm-sdd-builder plugins/product-design-suite/skills/pm-adr-builder
 git commit -m "feat: add prd/sdd/adr builder skills"
 ```
 
 ---
 
-### Task 9: `lpp-doc-sync` skill
+### Task 9: `pm-doc-sync` skill
 
 **Files:**
-- Create: `plugins/product-design-suite/skills/lpp-doc-sync/SKILL.md`
+- Create: `plugins/product-design-suite/skills/pm-doc-sync/SKILL.md`
 
 **Interfaces:**
 - Consumes: `scripts/traceability.js` (Task 3) and the artifacts under `.product/`.
 - Produces: a valid skill that generates an impact report and confirmation-gated edits, and refreshes `.product/traceability.{md,html}`. Validated by Task 2.
 
-- [ ] **Step 1: Write `lpp-doc-sync/SKILL.md`**
+- [ ] **Step 1: Write `pm-doc-sync/SKILL.md`**
 
-Create `plugins/product-design-suite/skills/lpp-doc-sync/SKILL.md`:
+Create `plugins/product-design-suite/skills/pm-doc-sync/SKILL.md`:
 
 ```markdown
 ---
-name: lpp-doc-sync
+name: pm-doc-sync
 description: Propagate changes across PRD, SDD, and ADR documents. Use after editing any product document, or when the user asks to sync docs, check cross-document impact, refresh the traceability matrix, or find stale/affected sections. Produces an impact report and confirmation-gated edits in .product/.
 metadata:
   author: Vivaldo
   version: "0.1.0"
 ---
 
-# lpp-doc-sync
+# pm-doc-sync
 
 Keep the PRD/SDD/ADR triad consistent after a change. Never rewrite a document
 without explicit user confirmation.
@@ -1146,35 +1146,35 @@ Expected: `OK: plugin valid`
 - [ ] **Step 3: Commit**
 
 ```bash
-git add plugins/product-design-suite/skills/lpp-doc-sync
+git add plugins/product-design-suite/skills/pm-doc-sync
 git commit -m "feat: add doc-sync skill"
 ```
 
 ---
 
-### Task 10: `lpp-product-workflow` orchestrator skill
+### Task 10: `pm-product-workflow` orchestrator skill
 
 **Files:**
-- Create: `plugins/product-design-suite/skills/lpp-product-workflow/SKILL.md`
+- Create: `plugins/product-design-suite/skills/pm-product-workflow/SKILL.md`
 
 **Interfaces:**
 - Consumes: all four other skills, the preview server (Task 6), and `${CLAUDE_PLUGIN_ROOT}/shared/...`.
 - Produces: a valid orchestrator skill. Validated by Task 2.
 
-- [ ] **Step 1: Write `lpp-product-workflow/SKILL.md`**
+- [ ] **Step 1: Write `pm-product-workflow/SKILL.md`**
 
-Create `plugins/product-design-suite/skills/lpp-product-workflow/SKILL.md`:
+Create `plugins/product-design-suite/skills/pm-product-workflow/SKILL.md`:
 
 ```markdown
 ---
-name: lpp-product-workflow
+name: pm-product-workflow
 description: Orchestrate the end-to-end product design workflow (PRD then SDD then ADR). Use when the user wants to start designing a product, run the full product-spec workflow, or is unsure which document to write next. Initializes .product/, enforces the question cadence, and dispatches to the prd/sdd/adr builders and doc-sync.
 metadata:
   author: Vivaldo
   version: "0.1.0"
 ---
 
-# lpp-product-workflow
+# pm-product-workflow
 
 Drive the sequential PRD -> SDD -> ADR workflow.
 
@@ -1182,9 +1182,9 @@ Drive the sequential PRD -> SDD -> ADR workflow.
 1. **Initialize** `.product/` if missing: create `prd/ sdd/ adr/ diagrams/
    design/ research/`.
 2. **Detect stage** by inspecting `.product/`:
-   - no `prd/prd.md` -> start with `lpp-prd-builder`.
-   - PRD exists, no `sdd/sdd.md` -> offer `lpp-sdd-builder`.
-   - SDD exists -> offer `lpp-adr-builder` for flagged decisions.
+   - no `prd/prd.md` -> start with `pm-prd-builder`.
+   - PRD exists, no `sdd/sdd.md` -> offer `pm-sdd-builder`.
+   - SDD exists -> offer `pm-adr-builder` for flagged decisions.
    Warn (don't block) if the user wants to skip ahead.
 3. **Enforce cadence** from
    `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md` across the
@@ -1195,7 +1195,7 @@ Drive the sequential PRD -> SDD -> ADR workflow.
    `bash "${CLAUDE_PLUGIN_ROOT}/scripts/start-server.sh"` to show diagrams/
    mockups in a browser tab; stop it with `stop-server.sh` when done.
 6. **Sync after edits**: whenever a document is created or changed, run
-   `lpp-doc-sync` to propagate impacts and refresh the traceability matrix.
+   `pm-doc-sync` to propagate impacts and refresh the traceability matrix.
 7. **Advance** to the next stage when the current document is finalized.
 
 ## Rules
@@ -1212,7 +1212,7 @@ Expected: `OK: plugin valid`
 - [ ] **Step 3: Commit**
 
 ```bash
-git add plugins/product-design-suite/skills/lpp-product-workflow
+git add plugins/product-design-suite/skills/pm-product-workflow
 git commit -m "feat: add product-workflow orchestrator skill"
 ```
 
@@ -1221,66 +1221,66 @@ git commit -m "feat: add product-workflow orchestrator skill"
 ### Task 11: Slash-command wrappers
 
 **Files:**
-- Create: `plugins/product-design-suite/commands/lpp-prd.md`
-- Create: `plugins/product-design-suite/commands/lpp-sdd.md`
-- Create: `plugins/product-design-suite/commands/lpp-adr.md`
-- Create: `plugins/product-design-suite/commands/lpp-product.md`
+- Create: `plugins/product-design-suite/commands/pm-prd.md`
+- Create: `plugins/product-design-suite/commands/pm-sdd.md`
+- Create: `plugins/product-design-suite/commands/pm-adr.md`
+- Create: `plugins/product-design-suite/commands/pm-product.md`
 
 **Interfaces:**
 - Produces: four command files that invoke the matching skills. Verified by a presence/content check.
 
 - [ ] **Step 1: Write the four command files**
 
-Create `plugins/product-design-suite/commands/lpp-prd.md`:
+Create `plugins/product-design-suite/commands/pm-prd.md`:
 
 ```markdown
 ---
-description: Create or update the PRD via the lpp-prd-builder skill
+description: Create or update the PRD via the pm-prd-builder skill
 argument-hint: [what to add or change]
 ---
-Use the lpp-prd-builder skill to create or update `.product/prd/prd.md`. $ARGUMENTS
+Use the pm-prd-builder skill to create or update `.product/prd/prd.md`. $ARGUMENTS
 ```
 
-Create `plugins/product-design-suite/commands/lpp-sdd.md`:
+Create `plugins/product-design-suite/commands/pm-sdd.md`:
 
 ```markdown
 ---
-description: Create or update the SDD via the lpp-sdd-builder skill
+description: Create or update the SDD via the pm-sdd-builder skill
 argument-hint: [what to design or change]
 ---
-Use the lpp-sdd-builder skill to create or update `.product/sdd/sdd.md` and its diagrams. $ARGUMENTS
+Use the pm-sdd-builder skill to create or update `.product/sdd/sdd.md` and its diagrams. $ARGUMENTS
 ```
 
-Create `plugins/product-design-suite/commands/lpp-adr.md`:
+Create `plugins/product-design-suite/commands/pm-adr.md`:
 
 ```markdown
 ---
-description: Record or update an ADR via the lpp-adr-builder skill
+description: Record or update an ADR via the pm-adr-builder skill
 argument-hint: [the decision]
 ---
-Use the lpp-adr-builder skill to record or update an ADR in `.product/adr/`. $ARGUMENTS
+Use the pm-adr-builder skill to record or update an ADR in `.product/adr/`. $ARGUMENTS
 ```
 
-Create `plugins/product-design-suite/commands/lpp-product.md`:
+Create `plugins/product-design-suite/commands/pm-product.md`:
 
 ```markdown
 ---
-description: Run the end-to-end product design workflow via lpp-product-workflow
+description: Run the end-to-end product design workflow via pm-product-workflow
 argument-hint: [product idea or next step]
 ---
-Use the lpp-product-workflow skill to drive the PRD -> SDD -> ADR workflow. $ARGUMENTS
+Use the pm-product-workflow skill to drive the PRD -> SDD -> ADR workflow. $ARGUMENTS
 ```
 
 - [ ] **Step 2: Verify the wrappers reference the right skills**
 
-Run: `for c in prd sdd adr product; do grep -q "lpp-${c/product/product-workflow}" "plugins/product-design-suite/commands/lpp-$c.md" || echo "MISSING ref in lpp-$c.md"; done; echo CHECK_DONE`
+Run: `for c in prd sdd adr product; do grep -q "pm-${c/product/product-workflow}" "plugins/product-design-suite/commands/pm-$c.md" || echo "MISSING ref in pm-$c.md"; done; echo CHECK_DONE`
 Expected: `CHECK_DONE` with no `MISSING` lines.
 
 - [ ] **Step 3: Commit**
 
 ```bash
 git add plugins/product-design-suite/commands
-git commit -m "feat: add lpp-prefixed slash command wrappers"
+git commit -m "feat: add pm-prefixed slash command wrappers"
 ```
 
 ---
@@ -1363,7 +1363,7 @@ git commit -m "test: add end-to-end smoke test for the toolchain"
 - D1 architecture (orchestrator + 3 builders + sync) → Tasks 8, 9, 10. ✓
 - D2 sync = impact report + confirmed edits + traceability → Tasks 3, 9. ✓
 - D3 rendering = inline SVG + OpenUI→HTML, framework-free → Tasks 4, 5, 7; constraint asserted by tests in Tasks 4/5/12. ✓
-- D4/D5 `lpp-` prefix on skills + 4 commands → Tasks 8–11; enforced by validator (Task 2). ✓
+- D4/D5 `pm-` prefix on skills + 4 commands → Tasks 8–11; enforced by validator (Task 2). ✓
 - D6 author identity → Tasks 1, 8–10. ✓
 - D7 move shared content → Task 1. ✓
 - Marketplace plugin packaging → Task 1 manifests; structure verified Task 12. ✓

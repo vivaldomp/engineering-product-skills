@@ -37,8 +37,8 @@ A distributable **Claude Code marketplace plugin**, `product-design-suite`, comp
 | D1 | Skill-set architecture | Orchestrator + 3 builders + sync (5 skills) |
 | D2 | Cross-document propagation | Impact report → user-confirmed edits, driven by traceability IDs + generated matrix |
 | D3 | Diagram / mockup rendering | Agent-authored inline SVG (via bundled `diagram-render.js`) + OpenUI Lang → HTML (via bundled `openui-render.js`); no CDN, no framework |
-| D4 | Namespacing | Prefix `lpp` applied consistently to all skill names and command wrappers |
-| D5 | Command wrappers | Included: `/lpp-prd`, `/lpp-sdd`, `/lpp-adr`, `/lpp-product` |
+| D4 | Namespacing | Prefix `pm` applied consistently to all skill names and command wrappers |
+| D5 | Command wrappers | Included: `/pm-prd`, `/pm-sdd`, `/pm-adr`, `/pm-product` |
 | D6 | Author field | `Vivaldo <vivaldomp@gmail.com>` |
 | D7 | Shared content | Existing `concepts.md` / `structures.md` / `templates/` move into the plugin's `shared/` |
 
@@ -47,7 +47,7 @@ A distributable **Claude Code marketplace plugin**, `product-design-suite`, comp
 ## 3. Packaging & Repository Layout (marketplace format)
 
 ```
-lpp-skills/                              # git repo = marketplace
+pm-skills/                              # git repo = marketplace
 ├── .claude-plugin/
 │   └── marketplace.json                # owner + plugin entry list
 ├── plugins/
@@ -55,16 +55,16 @@ lpp-skills/                              # git repo = marketplace
 │       ├── .claude-plugin/
 │       │   └── plugin.json             # name, version, description, author
 │       ├── skills/
-│       │   ├── lpp-product-workflow/SKILL.md
-│       │   ├── lpp-prd-builder/SKILL.md
-│       │   ├── lpp-sdd-builder/SKILL.md
-│       │   ├── lpp-adr-builder/SKILL.md
-│       │   └── lpp-doc-sync/SKILL.md
+│       │   ├── pm-product-workflow/SKILL.md
+│       │   ├── pm-prd-builder/SKILL.md
+│       │   ├── pm-sdd-builder/SKILL.md
+│       │   ├── pm-adr-builder/SKILL.md
+│       │   └── pm-doc-sync/SKILL.md
 │       ├── commands/
-│       │   ├── lpp-prd.md
-│       │   ├── lpp-sdd.md
-│       │   ├── lpp-adr.md
-│       │   └── lpp-product.md
+│       │   ├── pm-prd.md
+│       │   ├── pm-sdd.md
+│       │   ├── pm-adr.md
+│       │   └── pm-product.md
 │       ├── shared/
 │       │   ├── references/
 │       │   │   ├── concepts.md             # moved from repo root
@@ -88,7 +88,7 @@ lpp-skills/                              # git repo = marketplace
 ```
 
 ### Conventions
-- **Skill name = directory name** (Agent Skills rule). All prefixed with `lpp-`.
+- **Skill name = directory name** (Agent Skills rule). All prefixed with `pm-`.
 - Skills reference shared files via `${CLAUDE_PLUGIN_ROOT}/shared/...` and scripts via `${CLAUDE_PLUGIN_ROOT}/scripts/...`. Trade-off: this is a Claude-Code convenience that keeps assets DRY across skills at the cost of strict single-skill portability; acceptable because the unit of distribution is the plugin, not the individual skill.
 - Each `SKILL.md` body stays under ~500 lines; detailed material lives in `shared/references/` and is loaded on demand (progressive disclosure).
 - `marketplace.json` and `plugin.json` follow the Claude Code plugin schema (name, description, version, author; marketplace lists the plugin path).
@@ -97,30 +97,30 @@ lpp-skills/                              # git repo = marketplace
 
 ## 4. The Five Skills
 
-### 4.1 `lpp-product-workflow` (orchestrator)
-- **Triggers:** "design a product", "start product spec", "run the product workflow", end-to-end intent; backed by `/lpp-product`.
+### 4.1 `pm-product-workflow` (orchestrator)
+- **Triggers:** "design a product", "start product spec", "run the product workflow", end-to-end intent; backed by `/pm-product`.
 - **Responsibilities:**
   - Detect current stage by inspecting `.product/` (no docs → start PRD; PRD present → offer SDD; SDD present → offer ADRs).
   - Enforce the **sequential order** PRD → SDD → ADR; warn (don't block) if a stage is skipped.
   - Initialize the `.product/` structure on first run.
   - Own and apply the **gap-question cadence** (see §5) by delegating to the active builder.
-  - Dispatch to the correct builder skill; after any upstream edit, invoke `lpp-doc-sync`.
+  - Dispatch to the correct builder skill; after any upstream edit, invoke `pm-doc-sync`.
 - **Inputs:** user intent, existing `.product/` state. **Outputs:** stage transitions, delegated artifact writes.
 
-### 4.2 `lpp-prd-builder`
-- **Triggers:** "write/update a PRD"; `/lpp-prd`.
+### 4.2 `pm-prd-builder`
+- **Triggers:** "write/update a PRD"; `/pm-prd`.
 - **Responsibilities:** Fill `prd-template.md` into `.product/prd/prd.md`; ask gap questions per §5; assign and register **FR / BR / NFR / UAT** IDs into the traceability backbone; optionally emit `.product/prd/prd-summary.html` (objectives & success-metrics dashboard, inline SVG/CSS).
 - **Finalize:** record unresolved gaps in the template's **Open Questions** table.
 
-### 4.3 `lpp-sdd-builder`
-- **Triggers:** "write/update an SDD"; `/lpp-sdd`.
-- **Responsibilities:** Fill `sdd-template.md` into `.product/sdd/sdd.md`; derive **Architectural Requirements (AR)** from PRD **FR** for traceability; emit C4 (context/container/component) and sequence/flow diagrams as inline-SVG HTML in `.product/diagrams/`; **flag decisions that warrant an ADR** and hand them to `lpp-adr-builder`; author UI/frontend design sections in **OpenUI Lang** on finalize (rendered to `.product/design/*.html`).
+### 4.3 `pm-sdd-builder`
+- **Triggers:** "write/update an SDD"; `/pm-sdd`.
+- **Responsibilities:** Fill `sdd-template.md` into `.product/sdd/sdd.md`; derive **Architectural Requirements (AR)** from PRD **FR** for traceability; emit C4 (context/container/component) and sequence/flow diagrams as inline-SVG HTML in `.product/diagrams/`; **flag decisions that warrant an ADR** and hand them to `pm-adr-builder`; author UI/frontend design sections in **OpenUI Lang** on finalize (rendered to `.product/design/*.html`).
 
-### 4.4 `lpp-adr-builder`
-- **Triggers:** "record/update an ADR"; `/lpp-adr`.
+### 4.4 `pm-adr-builder`
+- **Triggers:** "record/update an ADR"; `/pm-adr`.
 - **Responsibilities:** One decision per `ADR-NNN-*.md` in `.product/adr/`; link related PRD/SDD sections; manage the status lifecycle (Proposed → Accepted → Superseded → Deprecated → Rejected) and the Status History table; optional options-comparison HTML.
 
-### 4.5 `lpp-doc-sync`
+### 4.5 `pm-doc-sync`
 - **Triggers:** invoked by the orchestrator after edits, or "sync docs / check impact".
 - **Responsibilities:** Run `traceability.js` to refresh the index; compute what changed; produce an **impact report** (Markdown + `.product/traceability.html`) listing each affected downstream/upstream item; **propose concrete edits the user approves** before any write; never silently rewrite. Bidirectional (PRD→SDD→ADR and back-references).
 
@@ -167,7 +167,7 @@ A single definition reused by all skills:
 
 - **Backbone:** the IDs already defined in the templates — **FR / BR / NFR / AR / ADR / UAT** — plus the "Source" / "Acceptance Reference" / "Referenced ADRs" cross-reference columns.
 - `traceability.js` scans `.product/` for these IDs and their cross-references and builds `traceability.md` + `traceability.html` (a matrix: PRD requirement → SDD section → test/AC → ADR).
-- `lpp-doc-sync` consumes the matrix to generate the impact report and propose confirmation-gated edits, keeping the triad consistent in both directions.
+- `pm-doc-sync` consumes the matrix to generate the impact report and propose confirmation-gated edits, keeping the triad consistent in both directions.
 
 ---
 

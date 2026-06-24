@@ -1,4 +1,4 @@
-# lpp-skills
+# pm-skills
 
 Claude Code marketplace containing the **product-design-suite** plugin — a set of
 Agent Skills that guide Product Managers through a sequential PRD -> SDD -> ADR
@@ -9,12 +9,12 @@ Add this repo as a plugin marketplace in Claude Code, then install
 `product-design-suite`.
 
 ## Skills
-- `lpp-product-workflow` — orchestrator (sequence + question cadence)
-- `lpp-prd-builder`, `lpp-sdd-builder`, `lpp-adr-builder` — artifact builders
-- `lpp-doc-sync` — cross-document impact + sync
+- `pm-product-workflow` — orchestrator (sequence + question cadence)
+- `pm-prd-builder`, `pm-sdd-builder`, `pm-adr-builder` — artifact builders
+- `pm-doc-sync` — cross-document impact + sync
 
 ## Commands
-`/lpp-product`, `/lpp-prd`, `/lpp-sdd`, `/lpp-adr`
+`/pm-product`, `/pm-prd`, `/pm-sdd`, `/pm-adr`
 
 Generated artifacts are written to `.product/`.
 

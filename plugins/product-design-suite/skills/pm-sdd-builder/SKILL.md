@@ -1,12 +1,12 @@
 ---
-name: lpp-sdd-builder
+name: pm-sdd-builder
 description: Create or update a Software Design Document (SDD). Use when the user wants to design the technical solution, architecture, C4 diagrams, components, data model, APIs, security, observability, or testing strategy derived from a PRD. Writes .product/sdd/sdd.md and diagrams to .product/diagrams/.
 metadata:
   author: Vivaldo
   version: "0.1.0"
 ---
 
-# lpp-sdd-builder
+# pm-sdd-builder
 
 Build or update the SDD at `.product/sdd/sdd.md` from the shared template,
 derived from the PRD.
@@ -18,7 +18,7 @@ derived from the PRD.
 
 ## Steps
 1. If `.product/prd/prd.md` is missing, warn the user that the SDD should follow
-   a PRD, and offer to run `lpp-prd-builder` first (do not hard-block).
+   a PRD, and offer to run `pm-prd-builder` first (do not hard-block).
 2. Read the SDD template and the PRD. Map PRD `FR-NNN` to Architectural
    Requirements `AR-NNN` in the SDD for traceability (reference the FR IDs).
 3. Fill each required section; ask gap questions per `questioning-protocol.md` (pause after every 4 questions and summarize remaining gaps).
@@ -29,10 +29,10 @@ derived from the PRD.
 5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`
    and render with `${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js` to `.product/design/*.html`.
 6. Identify decisions with significant trade-offs and flag them as ADR
-   candidates; hand each to `lpp-adr-builder`. Reference resulting `ADR-NNN`
+   candidates; hand each to `pm-adr-builder`. Reference resulting `ADR-NNN`
    in the SDD's "Referenced ADRs" section.
 7. On finalize, write the SDD and record unresolved gaps in Open Questions.
-8. Suggest running `lpp-doc-sync` to refresh the traceability matrix.
+8. Suggest running `pm-doc-sync` to refresh the traceability matrix.
 
 ## Rules
 - Every major design choice should map back to a PRD requirement or an ADR.
