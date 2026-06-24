@@ -1,6 +1,6 @@
 ---
 name: pm-sdd-builder
-description: Create or update a Software Design Document (SDD). Use when the user wants to design the technical solution, architecture, C4 diagrams, components, data model, APIs, security, observability, or testing strategy derived from a PRD. Writes .product/sdd/sdd.md and diagrams to .product/diagrams/.
+description: Create or update a Software Design Document (SDD). Use when the user wants to design the technical solution, architecture, C4 diagrams, components, data model, APIs, security, observability, or testing strategy derived from a PRD. Writes .product/sdd/sdd.md with inline Mermaid diagrams (and optional exports to .product/diagrams/).
 metadata:
   author: Vivaldo
   version: "0.1.0"
@@ -22,10 +22,26 @@ derived from the PRD.
 2. Read the SDD template and the PRD. Map PRD `FR-NNN` to Architectural
    Requirements `AR-NNN` in the SDD for traceability (reference the FR IDs).
 3. Fill each required section; ask gap questions per `questioning-protocol.md` (pause after every 4 questions and summarize remaining gaps).
-4. Render diagrams as self-contained HTML into `.product/diagrams/`:
-   - Build a compact spec `{title, nodes, edges}` and run
-     `${CLAUDE_PLUGIN_ROOT}/scripts/diagram-render.js <spec.json> .product/diagrams/<name>.html`
-     for C4 context/container/component and sequence/flow diagrams.
+4. Author diagrams as **inline Mermaid** in `sdd.md`:
+   - **Recommend a set.** Read the PRD/SDD and pick diagram archetypes from the
+     catalog in `${CLAUDE_PLUGIN_ROOT}/shared/references/structures.md`
+     ("Diagram archetypes (Mermaid)"), driven by the system's shape — e.g. auth
+     handshake → `sequenceDiagram`, background jobs → `stateDiagram-v2`,
+     privacy/LGPD data crossing zones → `flowchart` DFD with `subgraph` trust
+     boundaries, multi-store → `erDiagram`/deployment. Present the recommended set
+     with a one-line rationale each and let the user confirm or adjust.
+   - **Draft** Mermaid source for each chosen type (`C4Context`/`C4Container`/
+     `C4Component`, `sequenceDiagram`, `stateDiagram-v2`, `erDiagram`, `flowchart`).
+   - **Present for approval.** Show the Mermaid source in the conversation, and
+     offer a rendered preview: write the drafts to a scratch markdown file and run
+     `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`,
+     served via the preview server (`start-server.sh`). Mermaid is vendored
+     locally, so the preview works offline. Iterate until the user approves.
+   - **Write** the approved ` ```mermaid ` blocks inline into the relevant `sdd.md`
+     sections (§3 Architecture Overview, §7 Flows and Behavior). These inline blocks
+     are the source of truth.
+   - **Optionally export** standalone files to `.product/diagrams/{c4,sequence,state,data,deployment,flow}/`
+     only if the user wants separate artifacts.
 5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`
    and render with `${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js` to `.product/design/*.html`.
 6. Identify decisions with significant trade-offs and flag them as ADR
