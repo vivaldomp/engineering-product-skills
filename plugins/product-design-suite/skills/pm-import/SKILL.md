@@ -27,7 +27,7 @@ afterwards in derive-then-confirm mode.
    never move, rename, or edit source files.
 2. **Classify each candidate** by type (PRD / SRS / SAD / ADR / SDD) from filename and
    heading heuristics, and confirm the classification with the user before mapping.
-3. **Map to templates.** For each PRD/SDD/ADR/SRS source, match its content to the
+3. **Map to templates.** For each PRD/SDD/ADR/SRS/SAD source, match its content to the
    corresponding template's sections. An **SRS source maps to `srs-template.md`**
    (`.product/srs/srs.md`); its `FR-NNN`/`NFR-NNN` are the canonical functional and
    non-functional requirements (the PRD then references them). The source location stays
