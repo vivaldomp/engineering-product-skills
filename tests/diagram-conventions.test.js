@@ -15,3 +15,14 @@ test('sdd-template uses inline mermaid for C4 and sequence diagrams', () => {
   // The old HTML-render placeholder phrasing is gone:
   assert.ok(!/Insert or reference the C4 context diagram/.test(t));
 });
+
+test('structures.md ships a mermaid diagram archetype catalog', () => {
+  const s = read('shared/references/structures.md');
+  assert.match(s, /Diagram archetypes \(Mermaid\)/);
+  assert.match(s, /C4Container/);
+  assert.match(s, /sequenceDiagram/);
+  assert.match(s, /erDiagram/);
+  assert.match(s, /trust boundary/i);
+  // expanded export subfolders documented:
+  assert.match(s, /state\//);
+});

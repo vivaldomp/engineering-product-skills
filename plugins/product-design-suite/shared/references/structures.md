@@ -275,6 +275,25 @@ SDD
 - Major trade-offs link to ADRs.
 - The testing strategy proves the most important requirements and risks.
 
+### Diagram archetypes (Mermaid)
+
+Diagrams are authored as inline Mermaid fenced blocks in the SDD, so they render
+in GitHub/GitLab/VS Code/IDEs with no build step. Choose diagrams by the system's
+shape, not a fixed C4 default. The SDD builder reads the PRD/SDD and recommends a
+set from this catalog:
+
+| Archetype | Mermaid kind | Recommend when |
+| --- | --- | --- |
+| C4 Context | `C4Context` | always — system boundary and external actors |
+| C4 Container | `C4Container` | multi-container / multi-service systems |
+| C4 Component | `C4Component` | a container with nontrivial internal structure |
+| Sequence | `sequenceDiagram` | auth handshakes, multi-step protocols (e.g. a gated-install 401-abort) |
+| State machine | `stateDiagram-v2` | background jobs, export/install lifecycles, run states |
+| ER / data | `erDiagram` | multi-entity data models, multiple datastores |
+| Deployment | `C4Deployment` or `flowchart` | multiple runtime environments / infra topology |
+| DFD + trust boundary | `flowchart` with `subgraph` boundaries | privacy/security/LGPD review, data crossing trust zones |
+| Flow / activity | `flowchart` | general process or branching logic |
+
 ## 3. ADR (Architecture Decision Record)
 
 Each ADR documents one decision. It should be concise, traceable, and durable enough for future maintainers to understand the reasoning without reopening old discussions.
@@ -383,11 +402,13 @@ docs/
 |   |-- ADR-004-workflow-engine.md
 |   `-- ADR-005-kubernetes.md
 |
-|-- diagrams/
+|-- diagrams/            # optional exports; inline mermaid in the SDD is the source of truth
 |   |-- c4/
 |   |-- sequence/
+|   |-- state/
+|   |-- data/
 |   |-- deployment/
-|   `-- domain/
+|   `-- flow/
 |
 |-- api/
 |   |-- openapi.yaml
