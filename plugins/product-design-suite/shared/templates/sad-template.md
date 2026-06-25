@@ -35,8 +35,8 @@ date: <YYYY-MM-DD>
 
 ### Related ADRs
 
-- <ADR-001: Title>
-- <ADR-002: Title>
+- <ADR-NNN: Title>
+- <ADR-NNN: Title>
 
 ### Glossary
 
@@ -57,8 +57,8 @@ date: <YYYY-MM-DD>
 
 | ID | Requirement | Source | Design Impact |
 | --- | --- | --- | --- |
-| AR-001 | <Requirement> | <PRD/SRS/ADR/stakeholder> | <Impact> |
-| AR-002 | <Requirement> | <Source> | <Impact> |
+| AR-NNN | <Requirement> | <PRD/SRS/ADR/stakeholder> | <Impact> |
+| AR-NNN | <Requirement> | <Source> | <Impact> |
 
 ### Technical Constraints
 

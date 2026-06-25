@@ -49,3 +49,9 @@ presents the result as **one confirmation batch** — a single consolidated
 summary of what was derived plus the list of gaps — and asks for one approval.
 Builders MUST NOT trickle confirmations section-by-section. This contract is
 defined here once; builders reference it rather than restating it.
+
+## Consolidated decision ledger
+
+Instead of many separate question rounds, each builder run emits ONE structured
+**"Open decisions + recommended defaults"** block: a single list where every open
+decision shows a recommended default, so the user confirms the whole set in one pass.

@@ -47,3 +47,10 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 - Stay product-level: no architecture, schemas, or technology choices unless a
   hard constraint (see concepts.md "What a PRD should avoid").
 - Do not invent requirements; ask instead.
+
+## Guards
+- **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored
+  artifacts live under `.product/`.
+- **Version bump** (document `version` front-matter): patch = typo/clarification/formatting,
+  no requirement change; minor = new section/requirement/ADR added (backward-compatible);
+  major = restructure, or removed/renamed requirements.

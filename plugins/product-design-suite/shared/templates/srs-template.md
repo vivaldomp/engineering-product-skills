@@ -69,21 +69,21 @@ date: <YYYY-MM-DD>
 | --- | --- | --- |
 | <Interface> | <User / Hardware / Software / Communication> | <Description> |
 
-> ID format follows the [canonical ID conventions](../references/id-conventions.md): `FR-001`/`NFR-001` or category-grouped `NFR-P1`.
+> ID format follows the [canonical ID conventions](../references/id-conventions.md): `FR-NNN`/`NFR-NNN` or category-grouped `NFR-P1`.
 
 ### Functional Requirements
 
 | ID | Requirement | Priority | Source | Acceptance Reference |
 | --- | --- | --- | --- | --- |
-| FR-001 | <Requirement> | <Must/Should/Could> | <Source> | <AC reference> |
-| FR-002 | <Requirement> | <Must/Should/Could> | <Source> | <AC reference> |
+| FR-NNN | <Requirement> | <Must/Should/Could> | <Source> | <AC reference> |
+| FR-NNN | <Requirement> | <Must/Should/Could> | <Source> | <AC reference> |
 
 ### Non-Functional Requirements
 
 | ID | Category | Requirement | Target or Threshold | Measurement Method |
 | --- | --- | --- | --- | --- |
-| NFR-001 | Performance | <Requirement> | <Target> | <How measured> |
-| NFR-002 | Security | <Requirement> | <Target> | <How measured> |
+| NFR-NNN | Performance | <Requirement> | <Target> | <How measured> |
+| NFR-NNN | Security | <Requirement> | <Target> | <How measured> |
 
 ### Design Constraints and Standards Compliance
 

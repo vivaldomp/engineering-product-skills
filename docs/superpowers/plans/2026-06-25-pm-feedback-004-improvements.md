@@ -12,7 +12,7 @@
 
 - **Zero runtime dependencies.** Only `node:` builtins + the vendored browser-side `scripts/vendor/mermaid.min.js`. Never add a `package.json`/`node_modules` to a shippable script.
 - **Single ID source of truth.** The requirement/ADR/constraint ID regex lives only in `scripts/id-conventions.js`. New code imports it; never re-declares it.
-- **Tests are `node:test`.** Run the whole suite with `node --test tests/` from the repo root (`/home/vivaldo/projetos/ferramentas/pm-skills`). It must stay green after every task.
+- **Tests are `node:test`.** Run the whole suite with `node --test tests/*.test.js` from the repo root (`/home/vivaldo/projetos/ferramentas/pm-skills`). It must stay green after every task.
 - **Repo root** for all commands: `/home/vivaldo/projetos/ferramentas/pm-skills`.
 - **Plugin scripts dir:** `plugins/product-design-suite/scripts/`.
 - **`stripCode` is for ID scanning only.** `mermaid-lint.js` reads RAW markdown (never stripped).
@@ -49,7 +49,7 @@
 **Interfaces:**
 - Produces: `stripCode(text: string|null) -> string` — exported from `id-conventions.js`. Removes fenced code blocks (```` ``` ````-delimited, multi-line) then inline-code spans (`` ` ``-delimited), replacing each with a single space. Idempotent.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Add to `tests/id-conventions.test.js`:
 
@@ -65,12 +65,12 @@ test('stripCode removes fenced blocks and inline spans, keeps prose', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/id-conventions.test.js`
 Expected: FAIL — `C.stripCode is not a function`.
 
-- [ ] **Step 3: Implement `stripCode`**
+- [x] **Step 3: Implement `stripCode`**
 
 In `scripts/id-conventions.js`, add before `module.exports`:
 
@@ -90,12 +90,12 @@ And add `stripCode` to the exports object:
 module.exports = { PREFIXES, PREFIX, CAT, MEMBER, MEMBER_RE, REQ_RE, parseMember, classify, familyOf, stripCode };
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `node --test tests/id-conventions.test.js`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/id-conventions.js tests/id-conventions.test.js
@@ -114,7 +114,7 @@ git commit -m "feat: stripCode helper in id-conventions (IMP-1b)"
 - Consumes: `C.stripCode` from Task 1.
 - Produces: `parseRefs` and `linksWithin` ignore IDs that appear inside code. Signatures unchanged.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Add to `tests/traceability.test.js`:
 
@@ -129,12 +129,12 @@ test('parseRefs ignores IDs inside fenced and inline code (IMP-1b)', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/traceability.test.js`
 Expected: FAIL — `refs` still includes `FR-777`/`NFR-888`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `scripts/traceability.js`, the file already does `const C = require('./id-conventions.js');`. Change `parseRefs`:
 
@@ -153,12 +153,12 @@ And in `linksWithin`, strip the whole text before splitting into segments (so mu
   for (const seg of C.stripCode(text).split(/\n+|(?<=\.)\s+/)) {
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `node --test tests/traceability.test.js`
 Expected: PASS (and all pre-existing traceability tests still pass).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/traceability.js tests/traceability.test.js
@@ -177,7 +177,7 @@ git commit -m "feat: traceability scanner ignores IDs inside code (IMP-1b)"
 - Consumes: `C.stripCode` from Task 1.
 - Produces: `lintText`/`lintProduct` ignore IDs inside code. Signatures unchanged.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Add to `tests/lint-ids.test.js`:
 
@@ -189,12 +189,12 @@ test('lintText ignores malformed IDs shown inside code (IMP-1b)', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/lint-ids.test.js`
 Expected: FAIL — `NFR_P9` is flagged.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `scripts/lint-ids.js`, `lintText` becomes:
 
@@ -223,12 +223,12 @@ In `lintProduct`, strip once and use the stripped text for the duplicate/seen sc
       }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `node --test tests/lint-ids.test.js`
 Expected: PASS (existing lint-ids tests still pass).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/lint-ids.js tests/lint-ids.test.js
@@ -246,7 +246,7 @@ git commit -m "feat: id linter ignores IDs inside code (IMP-1b)"
 **Interfaces:**
 - Produces: template example rows use `-NNN` placeholders that do not match the canonical `\d+` member regex.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Add to `tests/metadata-conventions.test.js`:
 
@@ -264,12 +264,12 @@ test('templates use non-matching placeholder IDs, not real example IDs (IMP-1a)'
 
 (`read` is the existing helper at the top of `metadata-conventions.test.js`.)
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/metadata-conventions.test.js`
 Expected: FAIL — lists `FR-001`/`NFR-001`/etc rows.
 
-- [ ] **Step 3: Replace example IDs with placeholders**
+- [x] **Step 3: Replace example IDs with placeholders**
 
 Apply these exact replacements (digits → `NNN`):
 
@@ -280,12 +280,12 @@ Apply these exact replacements (digits → `NNN`):
 
 Note: the `adr-template.md` front-matter comments (`e.g. [ADR-003]`) are illustrative comments and are NOT requirement-table rows; leave them (they do not produce phantom orphans). The test above does not scan `adr-template.md`.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `node --test tests/metadata-conventions.test.js`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add shared/templates/*.md tests/metadata-conventions.test.js
@@ -306,7 +306,7 @@ git commit -m "feat: non-matching placeholder IDs in templates (IMP-1a)"
   - `runGate(dir)` resolves `dir` to absolute via `path.resolve`, and computes `pass` from `error`-level checks only.
   - New `error`-level check `inputs-present`: fails when zero `.product/*.md` files exist under the resolved dir.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Add to `tests/consistency-gate.test.js`:
 
@@ -324,12 +324,12 @@ test('every gate check carries an error|warn level (IMP-2)', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `node --test tests/consistency-gate.test.js`
 Expected: FAIL — no `inputs-present` check; `level` undefined.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `scripts/consistency-gate.js`, add a `.product/*.md` counter near the top (after the requires):
 
@@ -391,12 +391,12 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `node --test tests/consistency-gate.test.js`
 Expected: PASS (existing gate tests still pass).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/consistency-gate.js tests/consistency-gate.test.js
@@ -415,7 +415,7 @@ git commit -m "feat: gate error/warn levels + cwd-safety + fail-loud inputs-pres
 - Consumes: gate `level` infra from Task 5.
 - Produces: `lintProduct(dir)` returns `{ malformed, duplicates, definitionDuplicates }`. `definitionDuplicates` = IDs that appear in the **first cell of a Markdown table row** in more than one file. `duplicates` (cross-doc mentions) is unchanged. Gate `id-lint` errors on `malformed` + `definitionDuplicates`; the mention count is labelled informational.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Add to `tests/lint-ids.test.js`:
 
@@ -442,12 +442,12 @@ test('id-lint detail labels cross-doc mentions as expected (IMP-8)', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `node --test tests/lint-ids.test.js tests/consistency-gate.test.js`
 Expected: FAIL — `definitionDuplicates` undefined; detail lacks new labels.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `scripts/lint-ids.js`, add a table-definition extractor:
 
@@ -491,12 +491,12 @@ In `scripts/consistency-gate.js`, change the `id-lint` check:
       detail: `${lint.malformed.length} malformed, ${lint.definitionDuplicates.length} duplicate-definitions, ${lint.duplicates.length} cross-doc mentions (expected)` },
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `node --test tests/lint-ids.test.js tests/consistency-gate.test.js`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/lint-ids.js plugins/product-design-suite/scripts/consistency-gate.js tests/lint-ids.test.js tests/consistency-gate.test.js
@@ -521,7 +521,7 @@ git commit -m "feat: split duplicate definitions from cross-doc mentions in id-l
   - `validateProduct(dir) -> Array<{ file, missing, merged }>` — over `prd/srs/sad/sdd` docs that exist.
   - Gate gains a **`warn`**-level `structure` check.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/validate-structure.test.js`:
 
@@ -565,12 +565,12 @@ test('structure check is warn-level and never fails the gate (IMP-3)', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `node --test tests/validate-structure.test.js tests/consistency-gate.test.js`
 Expected: FAIL — module not found; no `structure` check.
 
-- [ ] **Step 3: Implement `validate-structure.js`**
+- [x] **Step 3: Implement `validate-structure.js`**
 
 Create `plugins/product-design-suite/scripts/validate-structure.js`:
 
@@ -636,7 +636,7 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Wire into the gate**
+- [x] **Step 4: Wire into the gate**
 
 In `scripts/consistency-gate.js`, add `const structure = require('./validate-structure.js');` to the requires, and inside `runGate` (after `const mdCount = ...`):
 
@@ -653,12 +653,12 @@ Add this check to the `checks` array (after `adr-reciprocity`):
         : 'matches templates' },
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `node --test tests/validate-structure.test.js tests/consistency-gate.test.js`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/validate-structure.js plugins/product-design-suite/scripts/consistency-gate.js tests/validate-structure.test.js tests/consistency-gate.test.js
@@ -682,7 +682,7 @@ git commit -m "feat: validate-structure.js drift validator, warn-level in gate (
   - `lintProductDiagrams(dir) -> Array<{ file, errors }>`.
   - Gate gains an **`error`**-level `mermaid-lint` check.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/mermaid-lint.test.js`:
 
@@ -731,12 +731,12 @@ test('mermaid-lint is error-level and fails a bad diagram (IMP-6)', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `node --test tests/mermaid-lint.test.js tests/consistency-gate.test.js`
 Expected: FAIL — module not found; no `mermaid-lint` check.
 
-- [ ] **Step 3: Implement `mermaid-lint.js`**
+- [x] **Step 3: Implement `mermaid-lint.js`**
 
 Create `plugins/product-design-suite/scripts/mermaid-lint.js`:
 
@@ -798,7 +798,7 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Wire into the gate**
+- [x] **Step 4: Wire into the gate**
 
 In `scripts/consistency-gate.js`, add `const mermaid = require('./mermaid-lint.js');` to the requires, and in `runGate` (after `const drift = ...`):
 
@@ -815,12 +815,12 @@ Add this check (after `structure`):
         : 'diagrams parse-clean (rule-based)' },
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `node --test tests/mermaid-lint.test.js tests/consistency-gate.test.js`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/mermaid-lint.js plugins/product-design-suite/scripts/consistency-gate.js tests/mermaid-lint.test.js tests/consistency-gate.test.js
@@ -845,7 +845,7 @@ git commit -m "feat: mermaid-lint.js rule-based diagram linter, error-level in g
   - `renderIndex(adrs) -> string` — Markdown table `ADR | Title | Status | Date`, wrapped in `ADR-INDEX:START/END` markers.
   - `writeIndex(dir) -> adrs` — writes `.product/adr/index.md`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/adr-index.test.js`:
 
@@ -888,12 +888,12 @@ test('writeIndex writes .product/adr/index.md and skips itself on re-run', () =>
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/adr-index.test.js`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Implement `adr-index.js`**
+- [x] **Step 3: Implement `adr-index.js`**
 
 Create `plugins/product-design-suite/scripts/adr-index.js`:
 
@@ -942,12 +942,12 @@ if (require.main === module) {
 
 (SDD §15 status sync is added in Task 10; this task ships index generation only.)
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `node --test tests/adr-index.test.js`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/adr-index.js tests/adr-index.test.js
@@ -968,7 +968,7 @@ git commit -m "feat: adr-index.js generates .product/adr/index.md from front-mat
   - `syncSddStatus(sddText, adrs) -> string` — between the `ADR-STATUS:START/END` markers, rewrites the `Status` column of each table data row whose first cell is an ADR id, using the ADR's front-matter `status`. Other cells untouched. No markers ⇒ text returned unchanged.
   - `S_START`/`S_END` exported.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Add to `tests/adr-index.test.js`:
 
@@ -996,12 +996,12 @@ test('syncSddStatus is a no-op without markers', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/adr-index.test.js`
 Expected: FAIL — `a.syncSddStatus is not a function`.
 
-- [ ] **Step 3: Implement `syncSddStatus`**
+- [x] **Step 3: Implement `syncSddStatus`**
 
 In `scripts/adr-index.js`, add markers and the function, and extend exports:
 
@@ -1051,7 +1051,7 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Add markers to the SDD template §15**
+- [x] **Step 4: Add markers to the SDD template §15**
 
 In `shared/templates/sdd-template.md`, wrap the §15 table with the status markers:
 
@@ -1065,7 +1065,7 @@ In `shared/templates/sdd-template.md`, wrap the §15 table with the status marke
 <!-- ADR-STATUS:END -->
 ```
 
-- [ ] **Step 5: Wire into pm-doc-sync**
+- [x] **Step 5: Wire into pm-doc-sync**
 
 In `skills/pm-doc-sync/SKILL.md`, add a new step after step 1 (renumber following steps):
 
@@ -1077,12 +1077,12 @@ In `skills/pm-doc-sync/SKILL.md`, add a new step after step 1 (renumber followin
     single source of truth — never hand-edit the §15 Status column.
 ```
 
-- [ ] **Step 6: Run test to verify it passes**
+- [x] **Step 6: Run test to verify it passes**
 
 Run: `node --test tests/adr-index.test.js`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/adr-index.js shared/templates/sdd-template.md skills/pm-doc-sync/SKILL.md tests/adr-index.test.js
@@ -1102,7 +1102,7 @@ git commit -m "feat: sync SDD §15 ADR status from front-matter via adr-index + 
 **Interfaces:**
 - Produces: the SDD concern-status enum is `designed | partial | gap | planned | n/a` everywhere.
 
-- [ ] **Step 1: Update the failing test**
+- [x] **Step 1: Update the failing test**
 
 In `tests/metadata-conventions.test.js`, replace the `sdd §9/§10/§14 carry a per-concern status field (D3)` test body with the new enum:
 
@@ -1116,12 +1116,12 @@ test('sdd §9/§10/§14 carry a per-concern status field with planned (D3, IMP-5
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/metadata-conventions.test.js`
 Expected: FAIL — template still has the four-value enum.
 
-- [ ] **Step 3: Update the template**
+- [x] **Step 3: Update the template**
 
 In `shared/templates/sdd-template.md`, replace every occurrence of `designed | partial | gap | n/a` with `designed | partial | gap | planned | n/a` (the 3 legend lines at 345/386/526 and every concern-status table cell). Add a one-line gloss after each legend, e.g.:
 
@@ -1129,12 +1129,12 @@ In `shared/templates/sdd-template.md`, replace every occurrence of `designed | p
 **Concern status** (`designed | partial | gap | planned | n/a`) — `planned` = designed but not yet built; `gap` = design missing:
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `node --test tests/metadata-conventions.test.js`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add shared/templates/sdd-template.md tests/metadata-conventions.test.js
@@ -1152,7 +1152,7 @@ git commit -m "feat: add planned concern status to SDD enum (IMP-5)"
 **Interfaces:**
 - Produces: every builder SKILL states the `docs/` read-only guard and a version-bump heuristic; `questioning-protocol.md` defines the consolidated decision-ledger convention.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Add to `tests/metadata-conventions.test.js`:
 
@@ -1170,12 +1170,12 @@ test('questioning-protocol defines a consolidated decision ledger (IMP-10)', () 
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/metadata-conventions.test.js`
 Expected: FAIL — guard/heuristic/ledger text absent.
 
-- [ ] **Step 3: Add the guidance**
+- [x] **Step 3: Add the guidance**
 
 To each of the five builder SKILLs, add a `## Guards` (or extend an existing rules section) with:
 
@@ -1198,12 +1198,12 @@ Instead of many separate question rounds, each builder run emits ONE structured
 decision shows a recommended default, so the user confirms the whole set in one pass.
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `node --test tests/metadata-conventions.test.js`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add skills/pm-prd-builder/SKILL.md skills/pm-srs-builder/SKILL.md skills/pm-sad-builder/SKILL.md skills/pm-sdd-builder/SKILL.md skills/pm-adr-builder/SKILL.md shared/references/questioning-protocol.md tests/metadata-conventions.test.js
@@ -1224,7 +1224,7 @@ git commit -m "docs: docs/ guard, decision ledger, version-bump heuristic in bui
 - Consumes: gate `level` infra; existing `checkReciprocity`/`loadAdrs`.
 - Produces: `checkRelatedReciprocity(adrs) -> string[]` — one-directional `related-adrs` links. Surfaced as a **`warn`**-level `related-adrs` gate check; never fails the gate. Existing `adr-reciprocity` (supersedes/amends) stays error-level.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Add to `tests/consistency-gate.test.js`:
 
@@ -1243,12 +1243,12 @@ test('one-directional related-adrs warns but does not fail the gate (IMP-7)', ()
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/consistency-gate.test.js`
 Expected: FAIL — no `related-adrs` check.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `scripts/consistency-gate.js`, add the checker next to `checkReciprocity`:
 
@@ -1287,12 +1287,12 @@ Export it: change the exports line to include `checkRelatedReciprocity`:
 module.exports = { runGate, checkReciprocity, checkRelatedReciprocity, readFrontMatter };
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `node --test tests/consistency-gate.test.js`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add plugins/product-design-suite/scripts/consistency-gate.js tests/consistency-gate.test.js
@@ -1303,17 +1303,17 @@ git commit -m "feat: warn on one-directional related-adrs links (IMP-7)"
 
 ## Final verification
 
-- [ ] **Run the full suite**
+- [x] **Run the full suite**
 
-Run: `node --test tests/`
+Run: `node --test tests/*.test.js`
 Expected: all tests pass, 0 failures.
 
-- [ ] **Run the plugin validator**
+- [x] **Run the plugin validator**
 
 Run: `node tools/validate-plugin.js`
 Expected: PASS (no structural regressions).
 
-- [ ] **Smoke-test the gate end to end**
+- [x] **Smoke-test the gate end to end**
 
 Run: `node plugins/product-design-suite/scripts/consistency-gate.js /tmp/nonexistent-product`
 Expected: `[FAIL] inputs-present: no .product/*.md found …` and `consistency-gate: FAIL` (exit 1) — proving the fail-loud behavior (IMP-2).

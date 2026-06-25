@@ -160,15 +160,15 @@ date: <YYYY-MM-DD>
 
 | ID | Requirement | Priority | Source | Acceptance Reference |
 | --- | --- | --- | --- | --- |
-| FR-001 | <Requirement> | <Must/Should/Could> | <Source> | <AC reference> |
-| FR-002 | <Requirement> | <Must/Should/Could> | <Source> | <AC reference> |
+| FR-NNN | <Requirement> | <Must/Should/Could> | <Source> | <AC reference> |
+| FR-NNN | <Requirement> | <Must/Should/Could> | <Source> | <AC reference> |
 
 ## 8. Business Rules
 
 | ID | Rule | Applies To | Notes |
 | --- | --- | --- | --- |
-| BR-001 | <Business rule> | <User/process/data> | <Notes> |
-| BR-002 | <Business rule> | <User/process/data> | <Notes> |
+| BR-NNN | <Business rule> | <User/process/data> | <Notes> |
+| BR-NNN | <Business rule> | <User/process/data> | <Notes> |
 
 ## 9. Non-Functional Requirements
 
@@ -231,7 +231,7 @@ date: <YYYY-MM-DD>
 
 | ID | Scenario | Given | When | Then |
 | --- | --- | --- | --- | --- |
-| UAT-001 | <Scenario> | <Given> | <When> | <Then> |
+| UAT-NNN | <Scenario> | <Given> | <When> | <Then> |
 
 ### Definition of Done
 

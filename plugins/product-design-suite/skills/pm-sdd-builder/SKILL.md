@@ -80,3 +80,10 @@ derived from the PRD.
 ## Rules
 - Every major design choice should map back to a PRD requirement or an ADR.
 - Cover failure modes, security, observability, and operations — not only happy paths.
+
+## Guards
+- **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored
+  artifacts live under `.product/`.
+- **Version bump** (document `version` front-matter): patch = typo/clarification/formatting,
+  no requirement change; minor = new section/requirement/ADR added (backward-compatible);
+  major = restructure, or removed/renamed requirements.

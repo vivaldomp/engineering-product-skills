@@ -296,3 +296,27 @@ test('buildMatrix surfaces constraints and what they trace to (A4)', () => {
   assert.ok(c1.tracesTo.includes('FR-012'));
   assert.ok(c1.adrs.includes('ADR-003'));
 });
+
+test('parseRefs ignores IDs inside fenced and inline code (IMP-1b)', () => {
+  const md = 'Real FR-001 here.\n```\nFR-777 example\n```\nInline `NFR-888`.';
+  const refs = t.parseRefs(md);
+  assert.ok(refs.includes('FR-001'));
+  assert.ok(!refs.includes('FR-777'));
+  assert.ok(!refs.includes('NFR-888'));
+});
+
+test('traceability CLI resolves an absolute dir and writes outputs (IMP-2)', () => {
+  const cp = require('node:child_process');
+  const os = require('node:os');
+  const fsm = require('node:fs');
+  const pth = require('node:path');
+  const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'trace-cli-'));
+  fsm.mkdirSync(pth.join(dir, 'prd'), { recursive: true });
+  fsm.mkdirSync(pth.join(dir, 'sdd'), { recursive: true });
+  fsm.writeFileSync(pth.join(dir, 'prd', 'prd.md'), '# PRD\n\nFR-001 export feature.');
+  fsm.writeFileSync(pth.join(dir, 'sdd', 'sdd.md'), '## 4. Components\nImplements FR-001.\n');
+  const script = pth.resolve('plugins/product-design-suite/scripts/traceability.js');
+  cp.execFileSync('node', [script, dir], { cwd: os.tmpdir() });
+  assert.ok(fsm.existsSync(pth.join(dir, 'traceability.md')), 'traceability.md written to the absolute dir');
+  assert.ok(fsm.existsSync(pth.join(dir, 'traceability.html')), 'traceability.html written to the absolute dir');
+});

@@ -33,3 +33,13 @@ test('parseMember preserves leading zeros in the number', () => {
   assert.equal(c.parseMember('AR-042').num, '042');
   assert.equal(c.parseMember('FR-001').num, '001');
 });
+
+test('stripCode removes fenced blocks and inline spans, keeps prose', () => {
+  const C = require('../plugins/product-design-suite/scripts/id-conventions.js');
+  const text = 'See FR-001 in prose.\n```\nexample FR-999 here\n```\nAnd inline `NFR-888` too.';
+  const out = C.stripCode(text);
+  assert.ok(out.includes('FR-001'), 'prose ID kept');
+  assert.ok(!out.includes('FR-999'), 'fenced ID removed');
+  assert.ok(!out.includes('NFR-888'), 'inline ID removed');
+  assert.equal(C.stripCode(C.stripCode(text)), C.stripCode(text), 'idempotent');
+});

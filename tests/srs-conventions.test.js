@@ -28,8 +28,8 @@ test('srs-template documents IEEE-830 sections and FR/NFR tables', () => {
   assert.match(s, /## 3\. Specific Requirements/);
   assert.match(s, /### Functional Requirements/);
   assert.match(s, /### Non-Functional Requirements/);
-  assert.match(s, /FR-001/);
-  assert.match(s, /NFR-001/);
+  assert.match(s, /FR-NNN/);
+  assert.match(s, /NFR-NNN/);
 });
 
 test('pm-srs-builder skill exists with valid front-matter (name == dir)', () => {

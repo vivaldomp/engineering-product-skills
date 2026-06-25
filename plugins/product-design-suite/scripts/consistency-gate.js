@@ -6,6 +6,22 @@ const fs = require('node:fs');
 const path = require('node:path');
 const trace = require('./traceability.js');
 const { lintProduct } = require('./lint-ids.js');
+const structure = require('./validate-structure.js');
+const mermaid = require('./mermaid-lint.js');
+
+function countProductMd(dir) {
+  let n = 0;
+  const walk = d => {
+    if (!fs.existsSync(d)) return;
+    for (const ent of fs.readdirSync(d, { withFileTypes: true })) {
+      const p = path.join(d, ent.name);
+      if (ent.isDirectory()) walk(p);
+      else if (ent.name.endsWith('.md')) n++;
+    }
+  };
+  walk(dir);
+  return n;
+}
 
 function readFrontMatter(text) {
   const m = String(text || '').match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -52,31 +68,65 @@ function checkReciprocity(adrs) {
   return problems;
 }
 
+// related-adrs should be symmetric: if A lists B, B should list A (advisory).
+function checkRelatedReciprocity(adrs) {
+  const problems = [];
+  for (const [id, fm] of Object.entries(adrs)) {
+    for (const other of (fm['related-adrs'] || [])) {
+      const target = adrs[other];
+      if (!target || !(target['related-adrs'] || []).includes(id)) {
+        problems.push(`${id} lists related-adrs ${other} but ${other} does not list ${id}`);
+      }
+    }
+  }
+  return problems;
+}
+
 function runGate(dir) {
+  dir = path.resolve(dir);                       // cwd-safety (IMP-2)
   const product = trace.loadProduct(dir);
   const matrix = trace.buildMatrix(product);
   const lint = lintProduct(dir);
   const adrs = loadAdrs(dir);
   const recip = checkReciprocity(adrs);
+  const relRecip = checkRelatedReciprocity(adrs);
+  const mdCount = countProductMd(dir);
+  const drift = structure.validateProduct(dir);
+  const mermaidErrs = mermaid.lintProductDiagrams(dir);
 
   const checks = [
-    { name: 'traceability', pass: matrix.orphans.length === 0,
+    { name: 'inputs-present', level: 'error', pass: mdCount > 0,
+      detail: mdCount > 0 ? `${mdCount} .product doc(s)` : `no .product/*.md found under ${dir}` },
+    { name: 'traceability', level: 'error', pass: matrix.orphans.length === 0,
       detail: matrix.orphans.length ? `orphans: ${matrix.orphans.join(', ')}` : 'no orphans' },
-    { name: 'id-lint', pass: lint.malformed.length === 0,
-      detail: `${lint.malformed.length} malformed, ${lint.duplicates.length} duplicate` },
-    { name: 'unclassified', pass: matrix.unclassified.length === 0,  // intentional 4th check: surfaces IDs buildMatrix couldn't classify
+    { name: 'id-lint', level: 'error', pass: lint.malformed.length === 0 && lint.definitionDuplicates.length === 0,
+      detail: `${lint.malformed.length} malformed, ${lint.definitionDuplicates.length} duplicate-definitions, ${lint.duplicates.length} cross-doc mentions (expected)` },
+    { name: 'unclassified', level: 'error', pass: matrix.unclassified.length === 0,  // intentional 4th check: surfaces IDs buildMatrix couldn't classify
       detail: matrix.unclassified.join(', ') || 'none' },
-    { name: 'adr-reciprocity', pass: recip.length === 0,
+    { name: 'adr-reciprocity', level: 'error', pass: recip.length === 0,
       detail: recip.join('; ') || 'reciprocal' },
+    { name: 'structure', level: 'warn', pass: drift.length === 0,
+      detail: drift.length
+        ? drift.map(d => `${d.file}: ${[...d.missing.map(m => 'missing ' + m), ...d.merged.map(m => 'merged ' + m)].join(', ')}`).join('; ')
+        : 'matches templates' },
+    { name: 'mermaid-lint', level: 'error', pass: mermaidErrs.length === 0,
+      detail: mermaidErrs.length
+        ? mermaidErrs.map(d => `${path.basename(d.file)}: ${d.errors.join('; ')}`).join(' | ')
+        : 'diagrams parse-clean (rule-based)' },
+    { name: 'related-adrs', level: 'warn', pass: relRecip.length === 0,
+      detail: relRecip.join('; ') || 'reciprocal' },
   ];
-  return { pass: checks.every(c => c.pass), checks };
+  return { pass: checks.filter(c => c.level === 'error').every(c => c.pass), checks };
 }
 
-module.exports = { runGate, checkReciprocity, readFrontMatter };
+module.exports = { runGate, checkReciprocity, checkRelatedReciprocity, readFrontMatter };
 
 if (require.main === module) {
   const { pass, checks } = runGate(process.argv[2] || '.product');
-  for (const c of checks) console.log(`[${c.pass ? 'PASS' : 'FAIL'}] ${c.name}: ${c.detail}`);
+  for (const c of checks) {
+    const tag = c.pass ? 'PASS' : (c.level === 'warn' ? 'WARN' : 'FAIL');
+    console.log(`[${tag}] ${c.name}: ${c.detail}`);
+  }
   console.log(pass ? 'consistency-gate: PASS' : 'consistency-gate: FAIL');
   process.exit(pass ? 0 : 1);
 }

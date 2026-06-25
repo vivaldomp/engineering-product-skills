@@ -17,6 +17,11 @@ without explicit user confirmation.
    This writes `.product/traceability.md` and `.product/traceability.html`, and injects
    the coverage index into `.product/sdd/sdd.md` §16 between the COVERAGE-INDEX markers
    (content outside the markers is never touched).
+1b. Regenerate the ADR index and sync ADR status:
+    `node "${CLAUDE_PLUGIN_ROOT}/scripts/adr-index.js" .product`
+    This writes `.product/adr/index.md` from each ADR's front-matter and populates
+    the SDD §15 `Status` column between the ADR-STATUS markers. Front-matter is the
+    single source of truth — never hand-edit the §15 Status column.
 2. Determine what changed (use git diff if available, else ask the user which
    document/section changed).
 3. Using the traceability matrix, build an **impact report** listing each

@@ -76,3 +76,10 @@ SDD owns those as usual — creating this file is what puts the project into "SA
   schemas, and implementation-level security stay in the SDD.
 - Confirmation-gated: propose the SDD migration, then apply on approval. No silent rewrites.
 - Reuse source IDs verbatim; keep `AR-NNN` IDs stable across updates.
+
+## Guards
+- **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored
+  artifacts live under `.product/`.
+- **Version bump** (document `version` front-matter): patch = typo/clarification/formatting,
+  no requirement change; minor = new section/requirement/ADR added (backward-compatible);
+  major = restructure, or removed/renamed requirements.

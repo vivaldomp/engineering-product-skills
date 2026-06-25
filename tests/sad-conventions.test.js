@@ -29,7 +29,7 @@ test('sad-template documents the AR table and C4/architecture sections', () => {
   assert.match(s, /## 4\. Container and Infrastructure/);
   assert.match(s, /## 5\. Data Flow and Integration Patterns/);
   assert.match(s, /## 6\. Security and Compliance Architecture/);
-  assert.match(s, /AR-001/);
+  assert.match(s, /AR-NNN/);
   assert.match(s, /C4Context/);
 });
 

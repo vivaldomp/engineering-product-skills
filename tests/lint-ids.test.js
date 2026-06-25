@@ -28,6 +28,12 @@ test('lintText still flags digit-bearing near-misses amid prose', () => {
   assert.ok(!r.malformed.includes('C-suite'));
 });
 
+test('lintText ignores malformed IDs shown inside code (IMP-1b)', () => {
+  const r = l.lintText('Prose NFR_P1 is bad. But `NFR_P9` in code is fine.');
+  assert.ok(r.malformed.includes('NFR_P1'), 'prose near-miss still flagged');
+  assert.ok(!r.malformed.includes('NFR_P9'), 'in-code near-miss ignored');
+});
+
 test('lintProduct detects duplicate IDs across files', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lint-'));
   try {
@@ -40,4 +46,14 @@ test('lintProduct detects duplicate IDs across files', () => {
   } finally {
     fs.rmSync(dir, { recursive: true });
   }
+});
+
+test('lintProduct separates duplicate table definitions from mentions (IMP-8)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lintdef-'));
+  // FR-001 DEFINED (first table cell) in two files; FR-002 only mentioned in prose twice.
+  fs.writeFileSync(path.join(dir, 'a.md'), '| ID | Req |\n| --- | --- |\n| FR-001 | x |\nMentions FR-002.');
+  fs.writeFileSync(path.join(dir, 'b.md'), '| ID | Req |\n| --- | --- |\n| FR-001 | y |\nAlso FR-002.');
+  const r = l.lintProduct(dir);
+  assert.ok(r.definitionDuplicates.find(d => d.id === 'FR-001'), 'FR-001 is a duplicate definition');
+  assert.ok(!r.definitionDuplicates.find(d => d.id === 'FR-002'), 'FR-002 is only a mention, not a definition');
 });

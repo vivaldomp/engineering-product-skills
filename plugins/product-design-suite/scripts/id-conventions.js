@@ -33,4 +33,12 @@ function familyOf(id) {
   return `${m.prefix}-${m.cat}`;
 }
 
-module.exports = { PREFIXES, PREFIX, CAT, MEMBER, MEMBER_RE, REQ_RE, parseMember, classify, familyOf };
+// Remove code so example IDs shown in code never count as references (feedback IMP-1b).
+// Fenced blocks first (multi-line), then inline spans. Used only for ID scanning.
+function stripCode(text) {
+  return String(text == null ? '' : text)
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`\n]*`/g, ' ');
+}
+
+module.exports = { PREFIXES, PREFIX, CAT, MEMBER, MEMBER_RE, REQ_RE, parseMember, classify, familyOf, stripCode };

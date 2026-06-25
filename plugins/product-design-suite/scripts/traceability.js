@@ -92,7 +92,7 @@ function refCompare(a, b) {
 }
 
 function parseRefs(text) {
-  const groups = String(text || '').match(GROUP_RE) || [];
+  const groups = C.stripCode(text).match(GROUP_RE) || [];
   const all = [];
   for (const g of groups) all.push(...parseGroup(g));
   return [...new Set(all)].sort(refCompare);
@@ -124,7 +124,7 @@ function linksWithin(text, leftRe, rightRe) {
   const map = new Map();
   // Scope co-reference to a single sentence or line, not the whole paragraph,
   // so "AR-001 implements FR-001. AR-002 implements FR-002." does not cross-link.
-  for (const seg of String(text || '').split(/\n+|(?<=\.)\s+/)) {
+  for (const seg of C.stripCode(text).split(/\n+|(?<=\.)\s+/)) {
     const ids = parseRefs(seg);
     const lefts = ids.filter(id => leftRe.test(id));
     const rights = ids.filter(id => rightRe.test(id));
@@ -317,18 +317,23 @@ module.exports = {
 };
 
 if (require.main === module) {
-  const dir = process.argv[2] || '.product';
+  const dir = path.resolve(process.argv[2] || '.product');
   const matrix = buildMatrix(loadProduct(dir));
   if (matrix.unclassified.length) {
     console.warn(`traceability: saw ${matrix.unclassified.length} token(s) it could not classify: ${matrix.unclassified.join(', ')}`);
   }
-  fs.writeFileSync(path.join(dir, 'traceability.md'), renderMarkdown(matrix));
-  fs.writeFileSync(path.join(dir, 'traceability.html'), renderHtml(matrix));
-  const sddPath = path.join(dir, 'sdd', 'sdd.md');
-  if (fs.existsSync(sddPath)) {
-    fs.writeFileSync(sddPath, injectCoverage(fs.readFileSync(sddPath, 'utf8'), renderCoverageBlock(matrix)));
-  } else {
-    console.warn(`traceability: ${sddPath} not found; skipped coverage-index injection.`);
+  try {
+    fs.writeFileSync(path.join(dir, 'traceability.md'), renderMarkdown(matrix));
+    fs.writeFileSync(path.join(dir, 'traceability.html'), renderHtml(matrix));
+    const sddPath = path.join(dir, 'sdd', 'sdd.md');
+    if (fs.existsSync(sddPath)) {
+      fs.writeFileSync(sddPath, injectCoverage(fs.readFileSync(sddPath, 'utf8'), renderCoverageBlock(matrix)));
+    } else {
+      console.warn(`traceability: ${sddPath} not found; skipped coverage-index injection.`);
+    }
+  } catch (err) {
+    console.error(`traceability: failed to write outputs under ${dir}: ${err.message}`);
+    process.exit(1);
   }
   console.log(`Wrote traceability for ${matrix.requirements.length} requirements (${matrix.orphans.length} orphan(s)).`);
 }
