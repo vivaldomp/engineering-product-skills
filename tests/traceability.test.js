@@ -213,3 +213,16 @@ test('loadProduct reads sad/sad.md into the sad field', () => {
   const loaded = t.loadProduct(dir);
   assert.match(loaded.sad, /AR-001 from sad/);
 });
+
+test('parseRefs recognizes category-lettered NFR ids (A1)', () => {
+  assert.deepEqual(t.parseRefs('Targets NFR-P1 and NFR-S4 and NFR-PR1.'),
+    ['NFR-P1', 'NFR-PR1', 'NFR-S4']);
+});
+
+test('parseRefs expands a category-lettered range', () => {
+  assert.deepEqual(t.parseRefs('NFR-P1..P3'), ['NFR-P1', 'NFR-P2', 'NFR-P3']);
+});
+
+test('parseRefs recognizes constraint ids (A4 prefix)', () => {
+  assert.ok(t.parseRefs('Bounded by C-1 and C-8.').includes('C-1'));
+});
