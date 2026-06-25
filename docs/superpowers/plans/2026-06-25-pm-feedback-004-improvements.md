@@ -12,7 +12,7 @@
 
 - **Zero runtime dependencies.** Only `node:` builtins + the vendored browser-side `scripts/vendor/mermaid.min.js`. Never add a `package.json`/`node_modules` to a shippable script.
 - **Single ID source of truth.** The requirement/ADR/constraint ID regex lives only in `scripts/id-conventions.js`. New code imports it; never re-declares it.
-- **Tests are `node:test`.** Run the whole suite with `node --test tests/` from the repo root (`/home/vivaldo/projetos/ferramentas/pm-skills`). It must stay green after every task.
+- **Tests are `node:test`.** Run the whole suite with `node --test tests/*.test.js` from the repo root (`/home/vivaldo/projetos/ferramentas/pm-skills`). It must stay green after every task.
 - **Repo root** for all commands: `/home/vivaldo/projetos/ferramentas/pm-skills`.
 - **Plugin scripts dir:** `plugins/product-design-suite/scripts/`.
 - **`stripCode` is for ID scanning only.** `mermaid-lint.js` reads RAW markdown (never stripped).
@@ -1305,7 +1305,7 @@ git commit -m "feat: warn on one-directional related-adrs links (IMP-7)"
 
 - [ ] **Run the full suite**
 
-Run: `node --test tests/`
+Run: `node --test tests/*.test.js`
 Expected: all tests pass, 0 failures.
 
 - [ ] **Run the plugin validator**
