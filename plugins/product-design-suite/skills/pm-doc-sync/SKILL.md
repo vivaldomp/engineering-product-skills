@@ -52,6 +52,12 @@ without explicit user confirmation.
    renumber the body sections (§2 -> §1 … §8 -> §7) to match the current template.
    Show the exact before/after and apply only on approval — no silent rewrite.
 
+8. **Final consistency check**: after applying all edits, run
+   `node scripts/consistency-gate.js .product` as the final step — it
+   aggregates traceability, ID linting, and ADR supersede/amend reciprocity
+   into one pass/fail summary, making it easy to confirm the product is
+   internally consistent before committing.
+
 ## Rules
 - Confirmation-gated: propose, then apply on approval. No silent rewrites.
 - Bidirectional: check both downstream (PRD->SDD->ADR) and back-references.

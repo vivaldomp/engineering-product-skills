@@ -52,6 +52,10 @@ Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workf
 6. **Sync after edits**: whenever a document is created or changed, run
    `pm-doc-sync` to propagate impacts and refresh the traceability matrix.
 7. **Advance** to the next stage when the current document is finalized.
+8. **Final consistency check**: before closing a workflow session, run
+   `node scripts/consistency-gate.js .product` to execute traceability,
+   ID linting, and ADR supersede/amend reciprocity in one pass and get a
+   single PASS/FAIL summary.
 
 ## Rules
 - Respect the sequence; the PRD anchors the work, an optional SRS (when present) owns the
