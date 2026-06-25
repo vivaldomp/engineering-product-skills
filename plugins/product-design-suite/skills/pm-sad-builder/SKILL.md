@@ -29,7 +29,7 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    from the non-functional requirements (`NFR-NNN`) in the SRS, or the PRD when no SRS exists.
 3. Fill each required section per `questioning-protocol.md`. When authoritative source is
    provided — mapped content from `pm-import`, or source supplied by the user — use
-   **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask
+   **derive-then-confirm mode**: derive the sections, present one confirmation batch (see the one-confirmation-batch contract in `questioning-protocol.md`), and ask
    only about genuine gaps. Otherwise ask gap questions (pause after every 4 questions and
    summarize remaining gaps).
 4. **Own the `AR-NNN` IDs.** Assign stable, zero-padded Architectural Requirement IDs and keep

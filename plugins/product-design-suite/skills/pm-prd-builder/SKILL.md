@@ -21,7 +21,7 @@ Build or update the PRD at `.product/prd/prd.md` from the shared template.
 3. Fill each required section from what the user has provided.
 4. For any missing required section, ask questions following
    `questioning-protocol.md`. When authoritative source is provided — mapped
-   content from `pm-import`, or source supplied by the user — use **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask
+   content from `pm-import`, or source supplied by the user — use **derive-then-confirm mode**: derive the sections, present one confirmation batch (see the one-confirmation-batch contract in `questioning-protocol.md`), and ask
    only about genuine gaps. Otherwise use the gap-question cadence (pause after
    every 4 questions and summarize remaining gaps).
 5. Assign stable IDs (keep them stable across updates):

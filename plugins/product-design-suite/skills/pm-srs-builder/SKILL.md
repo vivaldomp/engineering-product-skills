@@ -27,7 +27,7 @@ the PRD owns those requirements as usual — creating this file is what puts the
    tests (`UAT-NNN`) stay in the PRD and must not be moved here.
 3. Fill each required section per `questioning-protocol.md`. When authoritative source is
    provided — mapped content from `pm-import`, or source supplied by the user — use
-   **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask
+   **derive-then-confirm mode**: derive the sections, present one confirmation batch (see the one-confirmation-batch contract in `questioning-protocol.md`), and ask
    only about genuine gaps. Otherwise ask gap questions (pause after every 4 questions and
    summarize remaining gaps).
 4. **Own the `FR-NNN`/`NFR-NNN` IDs.** Assign stable, zero-padded IDs and keep them stable

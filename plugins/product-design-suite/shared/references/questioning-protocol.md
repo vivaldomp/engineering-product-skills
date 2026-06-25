@@ -41,3 +41,11 @@ instead of asking a gap question for every section.
 
 The greenfield gap-question cadence remains the default whenever no authoritative
 source exists.
+
+## The one-confirmation-batch contract
+
+In derive-then-confirm mode, a builder derives all sections it can, then
+presents the result as **one confirmation batch** — a single consolidated
+summary of what was derived plus the list of gaps — and asks for one approval.
+Builders MUST NOT trickle confirmations section-by-section. This contract is
+defined here once; builders reference it rather than restating it.

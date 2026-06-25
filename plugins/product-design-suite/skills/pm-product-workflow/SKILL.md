@@ -37,7 +37,8 @@ Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workf
 3. **Enforce cadence** from
    `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md` across the
    active builder (gap-only questions; pause after every 4; summarize remaining
-   gaps).
+   gaps). Each builder follows the confirmation batch contract in
+   `shared/references/questioning-protocol.md`.
 4. **Dispatch** to the appropriate builder skill for the current stage.
 5. **Preview (optional)** during iteration: start the live preview server with
    `bash "${CLAUDE_PLUGIN_ROOT}/scripts/start-server.sh"`. Render SDD diagrams for

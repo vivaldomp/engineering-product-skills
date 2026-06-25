@@ -20,7 +20,7 @@ Record one architectural decision per file in `.product/adr/`.
 2. Confirm the decision is significant and scoped to exactly ONE decision.
 3. Fill the ADR template per `questioning-protocol.md`. When authoritative source
    is provided — mapped content from `pm-import`, or source supplied by the user —
-   use **derive-then-confirm mode**: derive the sections, present one confirmation batch, and ask only about genuine gaps. Otherwise ask gap questions (pause after
+   use **derive-then-confirm mode**: derive the sections, present one confirmation batch (see the one-confirmation-batch contract in `questioning-protocol.md`), and ask only about genuine gaps. Otherwise ask gap questions (pause after
    every 4 questions and summarize remaining gaps). Options considered must be real
    alternatives (include "do nothing" when relevant).
 4. Populate the YAML front-matter (`id`, `title`, `status`, `date`, `author`,

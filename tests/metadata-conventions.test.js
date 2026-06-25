@@ -97,3 +97,8 @@ test('sdd §9/§10/§14 carry a per-concern status field (D3)', () => {
   // appears for each of the three sections
   assert.ok((tpl.match(/designed \| partial \| gap \| n\/a/g) || []).length >= 3);
 });
+
+test('confirmation-batch contract is defined once and referenced by workflow (F1)', () => {
+  assert.match(read('shared/references/questioning-protocol.md'), /one confirmation batch/i);
+  assert.match(read('skills/pm-product-workflow/SKILL.md'), /confirmation batch/i);
+});
