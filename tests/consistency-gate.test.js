@@ -64,3 +64,10 @@ test('id-lint detail labels cross-doc mentions as expected (IMP-8)', () => {
   assert.match(idLint.detail, /duplicate-definitions/);
   assert.match(idLint.detail, /cross-doc mentions/);
 });
+
+test('structure check is warn-level and never fails the gate (IMP-3)', () => {
+  const r = g.runGate(scaffold());
+  const s = r.checks.find(c => c.name === 'structure');
+  assert.ok(s, 'structure check present');
+  assert.equal(s.level, 'warn');
+});
