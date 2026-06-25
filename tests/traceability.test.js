@@ -261,3 +261,26 @@ test('buildMatrix folds AR-table sources into AR traces', () => {
   const ar = m.ars.find(a => a.id === 'AR-001');
   assert.ok(ar.tracesTo.includes('FR-012'));
 });
+
+test('buildMatrix unions AR-table sources with prose AR traces', () => {
+  const sad = [
+    '| ID | Requirement | Source |',
+    '| --- | --- | --- |',
+    '| AR-001 | Scale. | FR-012 |',
+    '',
+    'AR-001 depends on NFR-01 for latency.',
+  ].join('\n');
+  const m = t.buildMatrix({ prd: 'FR-012 NFR-01.', sdd: '## 4\nFR-012 NFR-01', sad });
+  const ar = m.ars.find(a => a.id === 'AR-001');
+  assert.ok(ar.tracesTo.includes('FR-012'), 'table link');
+  assert.ok(ar.tracesTo.includes('NFR-01'), 'prose link');
+});
+
+test('parseArTable detects ID/Source columns regardless of order', () => {
+  const sad = [
+    '| Source | ID | Requirement |',
+    '| --- | --- | --- |',
+    '| FR-012 | AR-001 | Scale. |',
+  ].join('\n');
+  assert.deepEqual(t.parseArTable(sad).get('AR-001'), ['FR-012']);
+});
