@@ -9,7 +9,7 @@
     {
       "name": "product-design-suite",
       "source": "./plugins/product-design-suite",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Guided PRD/SDD/ADR product-design workflow with cross-document sync and framework-free HTML visualizations.",
       "author": {
           "name": "Vivaldo Mendonça Pinto",
