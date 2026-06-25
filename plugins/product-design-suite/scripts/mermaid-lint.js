@@ -4,13 +4,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { extractMermaidBlocks } = require('./mermaid-preview.js');
 
-const TYPE_RE = /^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram(-v2)?|erDiagram|journey|gantt|pie|C4Context|C4Container|C4Component|C4Dynamic|mindmap|timeline|gitGraph)\b/;
+const TYPE_RE = /^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram(-v2)?|erDiagram|journey|gantt|pie|C4Context|C4Container|C4Component|C4Dynamic|mindmap|timeline|gitGraph|requirementDiagram|quadrantChart)\b/;
 
 function lintBlock(src) {
   const errs = [];
   const lines = String(src || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   if (!lines.length) { errs.push('empty mermaid block'); return errs; }
   if (!TYPE_RE.test(lines[0])) errs.push(`unknown/missing diagram type on first line: "${lines[0]}"`);
+  // Deliberately-lightweight heuristic: counts all bracket pairs without parsing node-label content.
+  // May over-count brackets inside quoted text within node labels, but avoids parser complexity.
   for (const [open, close] of [['[', ']'], ['(', ')'], ['{', '}']]) {
     const o = (src.match(new RegExp('\\' + open, 'g')) || []).length;
     const c = (src.match(new RegExp('\\' + close, 'g')) || []).length;

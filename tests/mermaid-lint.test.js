@@ -25,3 +25,13 @@ test('lintMarkdown reads fenced mermaid blocks', () => {
   const md = 'text\n```mermaid\nsequenceDiagram\n  A->>B: x; y\n```\n';
   assert.ok(m.lintMarkdown(md).some(e => /semicolon/.test(e)));
 });
+
+test('lintBlock accepts requirementDiagram without type error', () => {
+  const errs = m.lintBlock('requirementDiagram\n  requirement r { id: 1, text: test }');
+  assert.ok(!errs.some(e => /diagram type/.test(e)), 'requirementDiagram should be recognized');
+});
+
+test('lintBlock accepts quadrantChart without type error', () => {
+  const errs = m.lintBlock('quadrantChart\n  title X\n  A,B: 0.3, 0.6');
+  assert.ok(!errs.some(e => /diagram type/.test(e)), 'quadrantChart should be recognized');
+});

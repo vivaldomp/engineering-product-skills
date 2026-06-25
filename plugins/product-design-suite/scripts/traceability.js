@@ -317,18 +317,23 @@ module.exports = {
 };
 
 if (require.main === module) {
-  const dir = process.argv[2] || '.product';
+  const dir = path.resolve(process.argv[2] || '.product');
   const matrix = buildMatrix(loadProduct(dir));
   if (matrix.unclassified.length) {
     console.warn(`traceability: saw ${matrix.unclassified.length} token(s) it could not classify: ${matrix.unclassified.join(', ')}`);
   }
-  fs.writeFileSync(path.join(dir, 'traceability.md'), renderMarkdown(matrix));
-  fs.writeFileSync(path.join(dir, 'traceability.html'), renderHtml(matrix));
-  const sddPath = path.join(dir, 'sdd', 'sdd.md');
-  if (fs.existsSync(sddPath)) {
-    fs.writeFileSync(sddPath, injectCoverage(fs.readFileSync(sddPath, 'utf8'), renderCoverageBlock(matrix)));
-  } else {
-    console.warn(`traceability: ${sddPath} not found; skipped coverage-index injection.`);
+  try {
+    fs.writeFileSync(path.join(dir, 'traceability.md'), renderMarkdown(matrix));
+    fs.writeFileSync(path.join(dir, 'traceability.html'), renderHtml(matrix));
+    const sddPath = path.join(dir, 'sdd', 'sdd.md');
+    if (fs.existsSync(sddPath)) {
+      fs.writeFileSync(sddPath, injectCoverage(fs.readFileSync(sddPath, 'utf8'), renderCoverageBlock(matrix)));
+    } else {
+      console.warn(`traceability: ${sddPath} not found; skipped coverage-index injection.`);
+    }
+  } catch (err) {
+    console.error(`traceability: failed to write outputs under ${dir}: ${err.message}`);
+    process.exit(1);
   }
   console.log(`Wrote traceability for ${matrix.requirements.length} requirements (${matrix.orphans.length} orphan(s)).`);
 }
