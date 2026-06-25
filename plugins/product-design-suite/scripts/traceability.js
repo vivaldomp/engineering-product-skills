@@ -92,7 +92,7 @@ function refCompare(a, b) {
 }
 
 function parseRefs(text) {
-  const groups = String(text || '').match(GROUP_RE) || [];
+  const groups = C.stripCode(text).match(GROUP_RE) || [];
   const all = [];
   for (const g of groups) all.push(...parseGroup(g));
   return [...new Set(all)].sort(refCompare);
@@ -124,7 +124,7 @@ function linksWithin(text, leftRe, rightRe) {
   const map = new Map();
   // Scope co-reference to a single sentence or line, not the whole paragraph,
   // so "AR-001 implements FR-001. AR-002 implements FR-002." does not cross-link.
-  for (const seg of String(text || '').split(/\n+|(?<=\.)\s+/)) {
+  for (const seg of C.stripCode(text).split(/\n+|(?<=\.)\s+/)) {
     const ids = parseRefs(seg);
     const lefts = ids.filter(id => leftRe.test(id));
     const rights = ids.filter(id => rightRe.test(id));

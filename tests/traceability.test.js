@@ -296,3 +296,11 @@ test('buildMatrix surfaces constraints and what they trace to (A4)', () => {
   assert.ok(c1.tracesTo.includes('FR-012'));
   assert.ok(c1.adrs.includes('ADR-003'));
 });
+
+test('parseRefs ignores IDs inside fenced and inline code (IMP-1b)', () => {
+  const md = 'Real FR-001 here.\n```\nFR-777 example\n```\nInline `NFR-888`.';
+  const refs = t.parseRefs(md);
+  assert.ok(refs.includes('FR-001'));
+  assert.ok(!refs.includes('FR-777'));
+  assert.ok(!refs.includes('NFR-888'));
+});
