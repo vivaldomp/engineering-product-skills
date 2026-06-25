@@ -28,6 +28,12 @@ test('lintText still flags digit-bearing near-misses amid prose', () => {
   assert.ok(!r.malformed.includes('C-suite'));
 });
 
+test('lintText ignores malformed IDs shown inside code (IMP-1b)', () => {
+  const r = l.lintText('Prose NFR_P1 is bad. But `NFR_P9` in code is fine.');
+  assert.ok(r.malformed.includes('NFR_P1'), 'prose near-miss still flagged');
+  assert.ok(!r.malformed.includes('NFR_P9'), 'in-code near-miss ignored');
+});
+
 test('lintProduct detects duplicate IDs across files', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lint-'));
   try {

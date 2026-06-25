@@ -12,7 +12,7 @@ const C = require('./id-conventions.js');
 const SHAPED_RE = new RegExp('\\b(?:' + C.PREFIXES.join('|') + ')[-_][A-Za-z]{0,2}\\d[A-Za-z0-9]*', 'g');
 
 function lintText(text) {
-  const shaped = String(text || '').match(SHAPED_RE) || [];
+  const shaped = C.stripCode(text).match(SHAPED_RE) || [];
   const malformed = [...new Set(shaped.filter(tok => !C.MEMBER_RE.test(tok)))];
   return { malformed };
 }
@@ -27,8 +27,9 @@ function lintProduct(dir) {
       if (ent.isDirectory()) walk(p);
       else if (ent.name.endsWith('.md')) {
         const text = fs.readFileSync(p, 'utf8');
+        const stripped = C.stripCode(text);
         for (const tok of lintText(text).malformed) malformed.push({ file: p, token: tok });
-        for (const tok of (text.match(SHAPED_RE) || [])) {
+        for (const tok of (stripped.match(SHAPED_RE) || [])) {
           if (C.MEMBER_RE.test(tok)) {
             const set = seen.get(tok) || new Set();
             set.add(p);
