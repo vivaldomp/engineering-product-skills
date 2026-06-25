@@ -57,6 +57,8 @@ SDD owns those as usual — creating this file is what puts the project into "SA
 8. On finalize, populate the YAML front-matter (`title`, `status`, `version`, `owner`, `date`)
    — bump `version` and refresh `date` on an update — write `.product/sad/sad.md`, and record
    unresolved gaps in §8 Open Questions rather than leaving silent TBDs.
+   Fill the `MODE-BANNER` slot with a concise orientation note (e.g., "This SAD owns the macro-architecture and AR-NNN")
+   to signal the SAD's role in the documentation architecture, or leave it empty if unused.
 9. Suggest running `pm-doc-sync` to refresh the traceability matrix and propagate the new
    `AR` source to the SDD.
 

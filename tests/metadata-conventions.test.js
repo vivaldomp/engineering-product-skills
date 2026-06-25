@@ -84,3 +84,9 @@ test('pm-adr-builder and pm-doc-sync mention related-srs', () => {
   assert.match(read('skills/pm-adr-builder/SKILL.md'), /related-srs/);
   assert.match(read('skills/pm-doc-sync/SKILL.md'), /related-srs/);
 });
+
+test('srs and sad templates ship a mode-banner slot (D2)', () => {
+  assert.match(read('shared/templates/srs-template.md'), /MODE-BANNER:START/);
+  assert.match(read('shared/templates/srs-template.md'), /MODE-BANNER:END/);
+  assert.match(read('shared/templates/sad-template.md'), /MODE-BANNER:START/);
+});

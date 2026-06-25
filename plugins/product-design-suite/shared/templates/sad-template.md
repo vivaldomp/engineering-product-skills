@@ -6,6 +6,9 @@ owner: <Name or team>
 date: <YYYY-MM-DD>
 ---
 
+<!-- MODE-BANNER:START — optional orientation note (e.g. "This SAD owns the macro-architecture and AR-NNN"); leave as-is if unused -->
+<!-- MODE-BANNER:END -->
+
 # SAD: <System or Initiative Name>
 
 ## 1. Introduction

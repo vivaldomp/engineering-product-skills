@@ -6,6 +6,9 @@ owner: <Name or team>
 date: <YYYY-MM-DD>
 ---
 
+<!-- MODE-BANNER:START — optional orientation note (e.g. "This SRS owns the canonical FR/NFR"); leave as-is if unused -->
+<!-- MODE-BANNER:END -->
+
 # SRS: <System or Initiative Name>
 
 ## 1. Introduction

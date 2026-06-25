@@ -42,6 +42,8 @@ the PRD owns those requirements as usual — creating this file is what puts the
 6. On finalize, populate the YAML front-matter (`title`, `status`, `version`, `owner`, `date`)
    — bump `version` and refresh `date` on an update — write `.product/srs/srs.md`, and record
    unresolved gaps in the SRS's traceability/assumptions notes rather than leaving silent TBDs.
+   Fill the `MODE-BANNER` slot with a concise orientation note (e.g., "This SRS owns the canonical FR/NFR")
+   to signal the SRS's role in the documentation architecture, or leave it empty if unused.
 7. Suggest running `pm-doc-sync` to refresh the traceability matrix and propagate the new
    requirements source to the SDD and PRD references.
 
