@@ -7,6 +7,20 @@ const path = require('node:path');
 const trace = require('./traceability.js');
 const { lintProduct } = require('./lint-ids.js');
 
+function countProductMd(dir) {
+  let n = 0;
+  const walk = d => {
+    if (!fs.existsSync(d)) return;
+    for (const ent of fs.readdirSync(d, { withFileTypes: true })) {
+      const p = path.join(d, ent.name);
+      if (ent.isDirectory()) walk(p);
+      else if (ent.name.endsWith('.md')) n++;
+    }
+  };
+  walk(dir);
+  return n;
+}
+
 function readFrontMatter(text) {
   const m = String(text || '').match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!m) return {};
@@ -53,30 +67,37 @@ function checkReciprocity(adrs) {
 }
 
 function runGate(dir) {
+  dir = path.resolve(dir);                       // cwd-safety (IMP-2)
   const product = trace.loadProduct(dir);
   const matrix = trace.buildMatrix(product);
   const lint = lintProduct(dir);
   const adrs = loadAdrs(dir);
   const recip = checkReciprocity(adrs);
+  const mdCount = countProductMd(dir);
 
   const checks = [
-    { name: 'traceability', pass: matrix.orphans.length === 0,
+    { name: 'inputs-present', level: 'error', pass: mdCount > 0,
+      detail: mdCount > 0 ? `${mdCount} .product doc(s)` : `no .product/*.md found under ${dir}` },
+    { name: 'traceability', level: 'error', pass: matrix.orphans.length === 0,
       detail: matrix.orphans.length ? `orphans: ${matrix.orphans.join(', ')}` : 'no orphans' },
-    { name: 'id-lint', pass: lint.malformed.length === 0,
+    { name: 'id-lint', level: 'error', pass: lint.malformed.length === 0,
       detail: `${lint.malformed.length} malformed, ${lint.duplicates.length} duplicate` },
-    { name: 'unclassified', pass: matrix.unclassified.length === 0,  // intentional 4th check: surfaces IDs buildMatrix couldn't classify
+    { name: 'unclassified', level: 'error', pass: matrix.unclassified.length === 0,  // intentional 4th check: surfaces IDs buildMatrix couldn't classify
       detail: matrix.unclassified.join(', ') || 'none' },
-    { name: 'adr-reciprocity', pass: recip.length === 0,
+    { name: 'adr-reciprocity', level: 'error', pass: recip.length === 0,
       detail: recip.join('; ') || 'reciprocal' },
   ];
-  return { pass: checks.every(c => c.pass), checks };
+  return { pass: checks.filter(c => c.level === 'error').every(c => c.pass), checks };
 }
 
 module.exports = { runGate, checkReciprocity, readFrontMatter };
 
 if (require.main === module) {
   const { pass, checks } = runGate(process.argv[2] || '.product');
-  for (const c of checks) console.log(`[${c.pass ? 'PASS' : 'FAIL'}] ${c.name}: ${c.detail}`);
+  for (const c of checks) {
+    const tag = c.pass ? 'PASS' : (c.level === 'warn' ? 'WARN' : 'FAIL');
+    console.log(`[${tag}] ${c.name}: ${c.detail}`);
+  }
   console.log(pass ? 'consistency-gate: PASS' : 'consistency-gate: FAIL');
   process.exit(pass ? 0 : 1);
 }

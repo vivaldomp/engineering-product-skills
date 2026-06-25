@@ -45,3 +45,15 @@ test('gate passes when quoted ADR IDs in front-matter are matched after quote-st
   assert.equal(r.pass, true);
   assert.ok(r.checks.find(c => c.name === 'adr-reciprocity' && c.pass));
 });
+
+test('gate FAILs loudly on a directory with no product docs (IMP-2)', () => {
+  const empty = fs.mkdtempSync(path.join(os.tmpdir(), 'gate-empty-'));
+  const r = g.runGate(empty);
+  assert.equal(r.pass, false);
+  assert.ok(r.checks.find(c => c.name === 'inputs-present' && !c.pass));
+});
+
+test('every gate check carries an error|warn level (IMP-2)', () => {
+  const r = g.runGate(scaffold());
+  assert.ok(r.checks.every(c => c.level === 'error' || c.level === 'warn'));
+});
