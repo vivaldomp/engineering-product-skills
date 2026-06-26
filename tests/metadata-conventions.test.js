@@ -48,20 +48,20 @@ test('ADR template drops the Metadata section and renumbers Context to 1', () =>
   assert.match(tpl, /## Status History/);
 });
 
-test('pm-adr-builder documents structured supersede/amend front-matter', () => {
-  const s = read('skills/pm-adr-builder/SKILL.md');
+test('egp-adr-builder documents structured supersede/amend front-matter', () => {
+  const s = read('skills/egp-adr-builder/SKILL.md');
   assert.match(s, /front-matter/i);
   assert.match(s, /supersed/i);
   assert.match(s, /amend/i);
 });
 
-test('pm-prd-builder and pm-sdd-builder populate front-matter', () => {
-  assert.match(read('skills/pm-prd-builder/SKILL.md'), /front-matter/i);
-  assert.match(read('skills/pm-sdd-builder/SKILL.md'), /front-matter/i);
+test('egp-prd-builder and egp-sdd-builder populate front-matter', () => {
+  assert.match(read('skills/egp-prd-builder/SKILL.md'), /front-matter/i);
+  assert.match(read('skills/egp-sdd-builder/SKILL.md'), /front-matter/i);
 });
 
-test('pm-doc-sync checks supersede/amend link symmetry', () => {
-  const s = read('skills/pm-doc-sync/SKILL.md');
+test('egp-doc-sync checks supersede/amend link symmetry', () => {
+  const s = read('skills/egp-doc-sync/SKILL.md');
   assert.match(s, /supersed/i);
   assert.match(s, /symmetr|asymmetr|reciprocal/i);
 });
@@ -80,9 +80,9 @@ test('adr template front-matter includes related-srs (D1)', () => {
   assert.match(tpl, /related-srs:\s*\[\]/);
 });
 
-test('pm-adr-builder and pm-doc-sync mention related-srs', () => {
-  assert.match(read('skills/pm-adr-builder/SKILL.md'), /related-srs/);
-  assert.match(read('skills/pm-doc-sync/SKILL.md'), /related-srs/);
+test('egp-adr-builder and egp-doc-sync mention related-srs', () => {
+  assert.match(read('skills/egp-adr-builder/SKILL.md'), /related-srs/);
+  assert.match(read('skills/egp-doc-sync/SKILL.md'), /related-srs/);
 });
 
 test('srs and sad templates ship a mode-banner slot (D2)', () => {
@@ -101,7 +101,7 @@ test('sdd §9/§10/§14 carry a per-concern status field with planned (D3, IMP-5
 
 test('confirmation-batch contract is defined once and referenced by workflow (F1)', () => {
   assert.match(read('shared/references/questioning-protocol.md'), /one confirmation batch/i);
-  assert.match(read('skills/pm-product-workflow/SKILL.md'), /confirmation batch/i);
+  assert.match(read('skills/egp-product-workflow/SKILL.md'), /confirmation batch/i);
 });
 
 test('templates use non-matching placeholder IDs, not real example IDs (IMP-1a)', () => {
@@ -115,7 +115,7 @@ test('templates use non-matching placeholder IDs, not real example IDs (IMP-1a)'
 });
 
 test('builders carry the docs/ guard and version-bump heuristic (IMP-9, IMP-11)', () => {
-  for (const b of ['pm-prd-builder', 'pm-srs-builder', 'pm-sad-builder', 'pm-sdd-builder', 'pm-adr-builder']) {
+  for (const b of ['egp-prd-builder', 'egp-srs-builder', 'egp-sad-builder', 'egp-sdd-builder', 'egp-adr-builder']) {
     const s = read(`skills/${b}/SKILL.md`);
     assert.match(s, /docs\//, `${b} must mention the docs/ guard`);
     assert.match(s, /version/i, `${b} must mention version-bump guidance`);

@@ -32,14 +32,14 @@ test('srs-template documents IEEE-830 sections and FR/NFR tables', () => {
   assert.match(s, /NFR-NNN/);
 });
 
-test('pm-srs-builder skill exists with valid front-matter (name == dir)', () => {
-  const s = read('skills/pm-srs-builder/SKILL.md');
-  assert.match(s, /^---\nname: pm-srs-builder\n/);
+test('egp-srs-builder skill exists with valid front-matter (name == dir)', () => {
+  const s = read('skills/egp-srs-builder/SKILL.md');
+  assert.match(s, /^---\nname: egp-srs-builder\n/);
   assert.match(s, /\ndescription:/);
 });
 
-test('pm-srs-builder documents authoring, FR/NFR ownership, derive-then-confirm, and PRD migration', () => {
-  const s = read('skills/pm-srs-builder/SKILL.md');
+test('egp-srs-builder documents authoring, FR/NFR ownership, derive-then-confirm, and PRD migration', () => {
+  const s = read('skills/egp-srs-builder/SKILL.md');
   assert.match(s, /\.product\/srs\/srs\.md/);
   assert.match(s, /FR-NNN/);
   assert.match(s, /NFR-NNN/);
@@ -47,30 +47,30 @@ test('pm-srs-builder documents authoring, FR/NFR ownership, derive-then-confirm,
   assert.match(s, /migrat/i);
 });
 
-test('pm-srs command exists and routes to the skill', () => {
-  const s = read('commands/pm-srs.md');
-  assert.match(s, /pm-srs/);
+test('egp-srs command exists and routes to the skill', () => {
+  const s = read('commands/egp-srs.md');
+  assert.match(s, /egp-srs/);
 });
 
-test('pm-prd-builder and pm-sdd-builder document SRS mode', () => {
-  const prd = read('skills/pm-prd-builder/SKILL.md');
+test('egp-prd-builder and egp-sdd-builder document SRS mode', () => {
+  const prd = read('skills/egp-prd-builder/SKILL.md');
   assert.match(prd, /SRS/);
   assert.match(prd, /\.product\/srs\/srs\.md/);
-  const sdd = read('skills/pm-sdd-builder/SKILL.md');
+  const sdd = read('skills/egp-sdd-builder/SKILL.md');
   assert.match(sdd, /SRS/);
   assert.match(sdd, /\.product\/srs\/srs\.md/);
 });
 
-test('pm-product-workflow documents the optional SRS stage', () => {
-  const s = read('skills/pm-product-workflow/SKILL.md');
-  assert.match(s, /pm-srs-builder/);
+test('egp-product-workflow documents the optional SRS stage', () => {
+  const s = read('skills/egp-product-workflow/SKILL.md');
+  assert.match(s, /egp-srs-builder/);
   assert.match(s, /SRS/);
 });
 
-test('pm-doc-sync and pm-import handle the SRS', () => {
-  const sync = read('skills/pm-doc-sync/SKILL.md');
+test('egp-doc-sync and egp-import handle the SRS', () => {
+  const sync = read('skills/egp-doc-sync/SKILL.md');
   assert.match(sync, /SRS/);
-  const imp = read('skills/pm-import/SKILL.md');
+  const imp = read('skills/egp-import/SKILL.md');
   assert.match(imp, /srs-template|\.product\/srs/i);
   assert.doesNotMatch(imp, /no native template/i);
 });

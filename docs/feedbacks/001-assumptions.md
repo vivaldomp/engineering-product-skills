@@ -1,11 +1,11 @@
 # Assumptions & Plugin Feedback
 
 > Author: Claude (Opus 4.8) · Date: 2026-06-24
-> Context: Ran `product-design-suite:pm-product-workflow` to regenerate `docs/PRD.md`,
+> Context: Ran `product-design-suite:egp-product-workflow` to regenerate `docs/PRD.md`,
 > `docs/SRS.md`, `docs/ADR.md`, `docs/SDD.md` into the plugin's native templates under
 > `.product/`. The SRS was intentionally **not** touched. This file records (A) the assumptions
 > I made while generating the documents, and (B) my feedback and proposed improvements to the
-> `pm-skills / product-design-suite` plugin, with the assumptions behind each proposal.
+> `engineering-product-skills / product-design-suite` plugin, with the assumptions behind each proposal.
 
 ---
 
@@ -87,7 +87,7 @@ Ordered by impact. Each item states the **problem observed**, the **proposal**, 
 - **Problem:** The builder asks *which* diagrams to include but never (a) lets the user pick a
   **diagram tool/style**, (b) shows output for **approval before finalizing**, or (c) surfaces the
   renderer's limitations. I shipped diagrams without a "do you like these?" checkpoint.
-- **Proposal:** In `pm-sdd-builder`, after choosing diagram *types*, render drafts, present them,
+- **Proposal:** In `egp-sdd-builder`, after choosing diagram *types*, render drafts, present them,
   and confirm/iterate before writing. Add a one-time "diagram engine" preference (mermaid /
   plantuml / structurizr / none).
 - **Assumption:** diagrams are a primary architectural communication artifact; their style is a
@@ -127,7 +127,7 @@ Ordered by impact. Each item states the **problem observed**, the **proposal**, 
 - **Problem:** The workflow assumes greenfield authoring. There is no first-class "I already have
   docs — ingest them, map to templates, flag gaps" mode. I did this by hand (read docs → map →
   ask only gap questions).
-- **Proposal:** Add a `pm-import` / bootstrap step that ingests existing PRD/SRS/ADR/SDD, maps to
+- **Proposal:** Add a `egp-import` / bootstrap step that ingests existing PRD/SRS/ADR/SDD, maps to
   templates, and produces a gap report before any writing.
 - **Assumption:** most real teams adopt the plugin with documents already in flight, not from zero.
 

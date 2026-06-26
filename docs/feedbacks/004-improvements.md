@@ -2,8 +2,8 @@
 
 **Date:** 2026-06-25
 **Reviewer:** Claude (Opus 4.8) — based on building the full `.product/` suite for Application Demo
-**Plugin reviewed:** `product-design-suite` v0.1.1 (`~/.claude/plugins/cache/pm-skills/product-design-suite/0.1.1`)
-**Basis:** Read all 5 templates (`prd/srs/sad/sdd/adr`), the `pm-import` skill, the
+**Plugin reviewed:** `product-design-suite` v0.1.1 (`~/.claude/plugins/cache/engineering-product-skills/product-design-suite/0.1.1`)
+**Basis:** Read all 5 templates (`prd/srs/sad/sdd/adr`), the `egp-import` skill, the
 references (`id-conventions.md`, `concepts.md`, `structures.md`, `questioning-protocol.md`),
 and the `traceability.js` / `consistency-gate.js` scripts; compared them against the
 documents actually produced this session.
@@ -17,7 +17,7 @@ Everything was authored inside `.product/` as the workflow requires. The only no
 files are scratch render/preview files (written to the system temp dir and cleaned up) and
 **this file**, which exists only because it was explicitly requested. The two import JSONs
 (`import-map.json`, `import-state.json`) and `import-gap-report.md` are **prescribed outputs**
-of `pm-import` (confirmed in its SKILL.md Output section), not improvised artifacts. `docs/`
+of `egp-import` (confirmed in its SKILL.md Output section), not improvised artifacts. `docs/`
 was never touched.
 
 ### Sections / structure inside files — **Yes, a few genuine deviations.**
@@ -38,7 +38,7 @@ After comparing the produced SDD to `sdd-template.md`, I introduced structural d
    dropping Severity/Runbook/Owner.
 3. **Minor embellishments** beyond the bare template (color-coded zones + legend on the SAD
    data-flow diagram; RED-method framing in §9). These are within the builders' stated latitude
-   (the `pm-sad-builder` explicitly allows a trust-boundary flowchart), but worth noting.
+   (the `egp-sad-builder` explicitly allows a trust-boundary flowchart), but worth noting.
 
 Everything *else* I might have suspected as an addition turned out to be **template- or
 skill-sanctioned**: the `designed|partial|gap|n/a` concern-status tables, the §16 COVERAGE-INDEX
@@ -83,7 +83,7 @@ surfaced the consolidation explicitly.
   ADR status + titles are duplicated by hand in `SDD §15`, `SDD §2 Related ADRs`, and
   `SAD §7/§1`. Driving ADR-017→Accepted and adding ADR-018 meant editing **5–7 places** and risked
   drift. Generate `.product/adr/index.md` and **populate the SDD §15 `Status` column from each
-  ADR's front-matter** during `pm-doc-sync` (same mechanism as the §16 coverage index), so
+  ADR's front-matter** during `egp-doc-sync` (same mechanism as the §16 coverage index), so
   front-matter is the single source of truth.
 
 ### Medium value

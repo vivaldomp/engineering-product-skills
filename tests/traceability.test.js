@@ -175,7 +175,7 @@ test('loadProduct reads srs/srs.md into the srs field', () => {
   const os = require('node:os');
   const fsm = require('node:fs');
   const pth = require('node:path');
-  const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'pm-srs-'));
+  const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'egp-srs-'));
   fsm.mkdirSync(pth.join(dir, 'srs'), { recursive: true });
   fsm.writeFileSync(pth.join(dir, 'srs', 'srs.md'), 'FR-001 from srs');
   const loaded = t.loadProduct(dir);
@@ -207,7 +207,7 @@ test('loadProduct reads sad/sad.md into the sad field', () => {
   const os = require('node:os');
   const fsm = require('node:fs');
   const pth = require('node:path');
-  const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'pm-sad-'));
+  const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'egp-sad-'));
   fsm.mkdirSync(pth.join(dir, 'sad'), { recursive: true });
   fsm.writeFileSync(pth.join(dir, 'sad', 'sad.md'), 'AR-001 from sad');
   const loaded = t.loadProduct(dir);

@@ -31,7 +31,7 @@ Prioritized by impact. Most come from friction I actually hit in the past run.
 - **B3 — Make the approval gate explicit in derive-then-confirm mode.** The skills don't say whether
   derive-then-confirm *subsumes* the diagram approval loop or runs *in addition to* it. Clarify.
 
-### C. `pm-import`
+### C. `egp-import`
 
 - **C1 — Emit a machine-readable mapping** (JSON) alongside the prose gap report, so builders consume
   a structured map instead of re-reading prose.
@@ -55,7 +55,7 @@ Prioritized by impact. Most come from friction I actually hit in the past run.
 - **E1 — Publish ONE canonical ID spec** shared by the templates *and* `traceability.js`, with a
   linter that fails when a project's IDs don't match. Right now drift is silent (Part 4-A1/A3).
 
-### F. Workflow orchestration (`pm-product-workflow`)
+### F. Workflow orchestration (`egp-product-workflow`)
 
 - **F1 — Enforce the derive-then-confirm "one confirmation batch" contract centrally** instead of
   leaving each builder to self-police; it's applied inconsistently.

@@ -27,20 +27,20 @@ test('structures.md ships a mermaid diagram archetype catalog', () => {
   assert.match(s, /state\//);
 });
 
-test('pm-sdd-builder uses mermaid-preview and inline diagrams, not diagram-render', () => {
-  const s = read('skills/pm-sdd-builder/SKILL.md');
+test('egp-sdd-builder uses mermaid-preview and inline diagrams, not diagram-render', () => {
+  const s = read('skills/egp-sdd-builder/SKILL.md');
   assert.match(s, /mermaid-preview\.js/);
   assert.match(s, /inline/i);
   assert.ok(!/diagram-render/.test(s));
 });
 
-test('pm-product-workflow preview step references mermaid-preview', () => {
-  const w = read('skills/pm-product-workflow/SKILL.md');
+test('egp-product-workflow preview step references mermaid-preview', () => {
+  const w = read('skills/egp-product-workflow/SKILL.md');
   assert.match(w, /mermaid-preview\.js/);
 });
 
 test('sad/sdd builders distinguish derived vs net-new diagram approval (B1/B3)', () => {
-  for (const skill of ['skills/pm-sad-builder/SKILL.md', 'skills/pm-sdd-builder/SKILL.md']) {
+  for (const skill of ['skills/egp-sad-builder/SKILL.md', 'skills/egp-sdd-builder/SKILL.md']) {
     const s = read(skill);
     assert.match(s, /net-new/i);
     assert.match(s, /batch-confirm|faithful conversion|derived/i);

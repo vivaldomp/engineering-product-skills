@@ -234,10 +234,10 @@ answers *how* a module is built, the SAD answers *where* components live and the
 
 1. Start with a PRD when the problem, audience, expected outcomes, and scope need alignment.
    - *(Optional)* If the team maintains a formal SRS, author it after the PRD with
-     `pm-srs-builder`; the SRS then owns the detailed `FR`/`NFR` that the PRD references and
+     `egp-srs-builder`; the SRS then owns the detailed `FR`/`NFR` that the PRD references and
      the SDD designs against.
    - *(Optional)* If the team maintains a System Architecture Document, author it after the
-     requirements with `pm-sad-builder`; the SAD then owns the macro-architecture and `AR-NNN`
+     requirements with `egp-sad-builder`; the SAD then owns the macro-architecture and `AR-NNN`
      that the SDD designs against and references.
 2. Draft or update the SDD when the team is ready to design the technical solution. When a SAD
    exists, the SDD references its macro-architecture and `AR-NNN` and focuses on C3
