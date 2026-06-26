@@ -24,7 +24,7 @@ without being asked.
 ## Derive-then-confirm mode
 
 When the builder has **authoritative source** for the document — mapped content
-handed over by `pm-import`, or source supplied directly by the user — use this mode
+handed over by `egp-import`, or source supplied directly by the user — use this mode
 instead of asking a gap question for every section.
 
 1. **Derive** every section the source supports.

@@ -6,15 +6,15 @@ const path = require('node:path');
 const v = require('../tools/validate-plugin.js');
 
 test('parseFrontmatter reads name and description', () => {
-  const fm = v.parseFrontmatter('---\nname: pm-prd-builder\ndescription: Build a PRD\n---\nbody');
-  assert.equal(fm.name, 'pm-prd-builder');
+  const fm = v.parseFrontmatter('---\nname: egp-prd-builder\ndescription: Build a PRD\n---\nbody');
+  assert.equal(fm.name, 'egp-prd-builder');
   assert.equal(fm.description, 'Build a PRD');
 });
 
 test('validateSkill flags name != dir', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'egp-'));
   try {
-    const skill = path.join(dir, 'pm-prd-builder');
+    const skill = path.join(dir, 'egp-prd-builder');
     fs.mkdirSync(skill);
     fs.writeFileSync(path.join(skill, 'SKILL.md'), '---\nname: wrong-name\ndescription: x\n---\n');
     const errs = v.validateSkill(skill);
@@ -25,11 +25,11 @@ test('validateSkill flags name != dir', () => {
 });
 
 test('validateSkill passes a correct skill', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'egp-'));
   try {
-    const skill = path.join(dir, 'pm-adr-builder');
+    const skill = path.join(dir, 'egp-adr-builder');
     fs.mkdirSync(skill);
-    fs.writeFileSync(path.join(skill, 'SKILL.md'), '---\nname: pm-adr-builder\ndescription: Build an ADR\n---\n');
+    fs.writeFileSync(path.join(skill, 'SKILL.md'), '---\nname: egp-adr-builder\ndescription: Build an ADR\n---\n');
     assert.deepEqual(v.validateSkill(skill), []);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
@@ -37,7 +37,7 @@ test('validateSkill passes a correct skill', () => {
 });
 
 test('validateJson flags missing keys', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'egp-'));
   try {
     const p = path.join(dir, 'm.json');
     fs.writeFileSync(p, JSON.stringify({ name: 'x' }));
@@ -49,7 +49,7 @@ test('validateJson flags missing keys', () => {
 });
 
 test('validatePlugin happy path returns empty array', () => {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-validate-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'egp-validate-'));
   try {
     // Create marketplace.json
     const marketplaceDir = path.join(tmp, '.claude-plugin');
@@ -62,9 +62,9 @@ test('validatePlugin happy path returns empty array', () => {
     fs.writeFileSync(path.join(pluginDir, 'plugin.json'), JSON.stringify({ name: 'product-design-suite', version: '0.1.0', description: 'd' }));
 
     // Create skill with valid frontmatter
-    const skillDir = path.join(tmp, 'plugins/product-design-suite/skills/pm-x');
+    const skillDir = path.join(tmp, 'plugins/product-design-suite/skills/egp-x');
     fs.mkdirSync(skillDir, { recursive: true });
-    fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: pm-x\ndescription: ok\n---\n');
+    fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: egp-x\ndescription: ok\n---\n');
 
     assert.deepEqual(v.validatePlugin(tmp), []);
   } finally {
@@ -73,7 +73,7 @@ test('validatePlugin happy path returns empty array', () => {
 });
 
 test('validatePlugin flags skill name mismatch', () => {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-validate-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'egp-validate-'));
   try {
     // Create marketplace.json
     const marketplaceDir = path.join(tmp, '.claude-plugin');
@@ -86,7 +86,7 @@ test('validatePlugin flags skill name mismatch', () => {
     fs.writeFileSync(path.join(pluginDir, 'plugin.json'), JSON.stringify({ name: 'product-design-suite', version: '0.1.0', description: 'd' }));
 
     // Create skill with mismatched name
-    const skillDir = path.join(tmp, 'plugins/product-design-suite/skills/pm-x');
+    const skillDir = path.join(tmp, 'plugins/product-design-suite/skills/egp-x');
     fs.mkdirSync(skillDir, { recursive: true });
     fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: wrong-name\ndescription: ok\n---\n');
 

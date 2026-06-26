@@ -33,41 +33,41 @@ test('sad-template documents the AR table and C4/architecture sections', () => {
   assert.match(s, /C4Context/);
 });
 
-test('pm-sad-builder skill exists with valid front-matter (name == dir)', () => {
-  const s = read('skills/pm-sad-builder/SKILL.md');
-  assert.match(s, /^---\nname: pm-sad-builder\n/);
+test('egp-sad-builder skill exists with valid front-matter (name == dir)', () => {
+  const s = read('skills/egp-sad-builder/SKILL.md');
+  assert.match(s, /^---\nname: egp-sad-builder\n/);
   assert.match(s, /\ndescription:/);
 });
 
-test('pm-sad-builder documents authoring, AR ownership, derive-then-confirm, and SDD migration', () => {
-  const s = read('skills/pm-sad-builder/SKILL.md');
+test('egp-sad-builder documents authoring, AR ownership, derive-then-confirm, and SDD migration', () => {
+  const s = read('skills/egp-sad-builder/SKILL.md');
   assert.match(s, /\.product\/sad\/sad\.md/);
   assert.match(s, /AR-NNN/);
   assert.match(s, /derive-then-confirm/i);
   assert.match(s, /migrat/i);
 });
 
-test('pm-sad command exists and routes to the skill', () => {
-  const s = read('commands/pm-sad.md');
-  assert.match(s, /pm-sad/);
+test('egp-sad command exists and routes to the skill', () => {
+  const s = read('commands/egp-sad.md');
+  assert.match(s, /egp-sad/);
 });
 
-test('pm-sdd-builder documents SAD mode', () => {
-  const sdd = read('skills/pm-sdd-builder/SKILL.md');
+test('egp-sdd-builder documents SAD mode', () => {
+  const sdd = read('skills/egp-sdd-builder/SKILL.md');
   assert.match(sdd, /SAD/);
   assert.match(sdd, /\.product\/sad\/sad\.md/);
 });
 
-test('pm-product-workflow documents the optional SAD stage', () => {
-  const s = read('skills/pm-product-workflow/SKILL.md');
-  assert.match(s, /pm-sad-builder/);
+test('egp-product-workflow documents the optional SAD stage', () => {
+  const s = read('skills/egp-product-workflow/SKILL.md');
+  assert.match(s, /egp-sad-builder/);
   assert.match(s, /SAD/);
 });
 
-test('pm-doc-sync and pm-import handle the SAD', () => {
-  const sync = read('skills/pm-doc-sync/SKILL.md');
+test('egp-doc-sync and egp-import handle the SAD', () => {
+  const sync = read('skills/egp-doc-sync/SKILL.md');
   assert.match(sync, /SAD/);
-  const imp = read('skills/pm-import/SKILL.md');
+  const imp = read('skills/egp-import/SKILL.md');
   assert.match(imp, /sad-template|\.product\/sad/i);
 });
 

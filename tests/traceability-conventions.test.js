@@ -14,8 +14,8 @@ test('sdd template ships the coverage-index markers and an appendices section', 
   assert.match(tpl, /## 17\. Appendices/);
 });
 
-test('pm-doc-sync documents coverage injection and orphan reporting', () => {
-  const s = read('skills/pm-doc-sync/SKILL.md');
+test('egp-doc-sync documents coverage injection and orphan reporting', () => {
+  const s = read('skills/egp-doc-sync/SKILL.md');
   assert.match(s, /COVERAGE-INDEX|§16|coverage index/i);
   assert.match(s, /orphan/i);
 });
@@ -25,8 +25,8 @@ test('structures.md documents range-aware traceability and orphans', () => {
   assert.match(s, /orphan/i);
 });
 
-test('pm-sdd-builder notes the generated coverage index', () => {
-  const s = read('skills/pm-sdd-builder/SKILL.md');
+test('egp-sdd-builder notes the generated coverage index', () => {
+  const s = read('skills/egp-sdd-builder/SKILL.md');
   assert.match(s, /generated|§16/i);
 });
 
