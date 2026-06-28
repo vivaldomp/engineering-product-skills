@@ -1,4 +1,4 @@
-# assumptions003 — Feedback on the `product-design-suite` plugin
+# assumptions004 — Feedback on the `product-design-suite` plugin
 
 **Date:** 2026-06-25
 **Reviewer:** Claude (Opus 4.8) — based on building the full `.product/` suite for Application Demo
