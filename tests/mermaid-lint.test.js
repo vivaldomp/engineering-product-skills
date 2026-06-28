@@ -35,3 +35,13 @@ test('lintBlock accepts quadrantChart without type error', () => {
   const errs = m.lintBlock('quadrantChart\n  title X\n  A,B: 0.3, 0.6');
   assert.ok(!errs.some(e => /diagram type/.test(e)), 'quadrantChart should be recognized');
 });
+
+test('flags a semicolon in a sequenceDiagram Note line (005 #1)', () => {
+  const errs = m.lintBlock('sequenceDiagram\n  Note over L: reachable; cached');
+  assert.ok(errs.some(e => /semicolon/.test(e)));
+});
+
+test('flags a literal \\n inside a flowchart node label (005 #3)', () => {
+  const errs = m.lintBlock('flowchart TD\n  A[Ingest API\\nscrub free text] --> B[End]');
+  assert.ok(errs.some(e => /node label/.test(e)));
+});

@@ -19,8 +19,17 @@ function lintBlock(src) {
     if (o !== c) errs.push(`unbalanced ${open}${close} (${o} open, ${c} close)`);
   }
   if (/^sequenceDiagram/.test(lines[0])) {
+    // Mermaid treats ';' as a statement separator on ANY line — notes/fragments
+    // included, not only arrow messages (feedback 005 #1). Skip the type line.
+    for (const l of lines.slice(1)) {
+      if (l.includes(';')) errs.push(`semicolon in sequenceDiagram line (';' is a statement separator): "${l}"`);
+    }
+  }
+  if (/^(graph|flowchart)\b/.test(lines[0])) {
+    // A literal '\n' in a node label renders as text, not a line break; use <br/>
+    // with the label quoted (feedback 005 #3).
     for (const l of lines) {
-      if (/(--?>>?|-->>?)/.test(l) && l.includes(';')) errs.push(`semicolon in sequenceDiagram message: "${l}"`);
+      if (/[[({].*\\n.*[\])}]/.test(l)) errs.push(`literal \\n inside a node label (use <br/> with a quoted label): "${l}"`);
     }
   }
   return errs;
