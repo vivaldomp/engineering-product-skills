@@ -64,6 +64,7 @@ date: <YYYY-MM-DD>
 
 ### Architectural Requirements
 
+<!-- 006 D: AR ownership is configuration-dependent — when a SAD is active it owns AR-NNN, so reference them here (non-first column or COVERAGE-INDEX markers), do NOT redefine in the first cell; in SDD-only mode this table owns AR. -->
 | ID | Requirement | Source | Design Impact |
 | --- | --- | --- | --- |
 | AR-NNN | <Requirement> | <PRD/ADR/stakeholder> | <Impact> |
