@@ -58,6 +58,21 @@ Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workf
    ID linting, and ADR supersede/amend reciprocity in one pass and get a
    single PASS/FAIL summary.
 
+## Batch / derive-all mode (opt-in, 006 F)
+
+Default mode is interactive derive-then-confirm, one builder at a time. For a full
+suite, the user may request **batch / derive-all** mode:
+
+- **Dependency order is explicit:** ADRs → SRS/SAD → SDD/PRD. ADR IDs must exist
+  before docs cite them; the SAD mints `AR-NNN` the SDD references; the SRS owns
+  `FR`/`NFR` the PRD/SDD reference. Author in this order.
+- **Author derivable content first.** Produce everything derivable from the source +
+  prior decisions without stopping, then surface the **consolidated** gap questions
+  once at the end instead of interrupting per document.
+- **Safe to parallelize across non-conflicting files** (different target docs),
+  provided the dependency order above is respected. Still run the diagram approval
+  gate (step 5) and the consistency gate before marking the suite done.
+
 ## Rules
 - Respect the sequence; the PRD anchors the work, an optional SRS (when present) owns the
   detailed `FR`/`NFR`, an optional SAD (when present) owns the macro-architecture and `AR-NNN`
