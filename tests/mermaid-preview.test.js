@@ -56,6 +56,15 @@ test('renderPreview neutralizes a </script> sequence inside injected mermaidJs',
   assert.match(html, /a<\\\/script>/);
 });
 
+test('renderStaticSvgPage builds a JS-free page, one figure per svg (006 A2)', () => {
+  const html = m.renderStaticSvgPage(['<svg id="a">A</svg>', '<svg id="b">B</svg>'], { title: 'Diagrams' });
+  assert.match(html, /<!DOCTYPE html>/);
+  assert.equal((html.match(/<figure>/g) || []).length, 2);
+  assert.ok(html.includes('<svg id="a">A</svg>'));
+  assert.ok(html.includes('<svg id="b">B</svg>'));
+  assert.ok(!/<script/i.test(html), 'static page must contain no script');
+});
+
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
