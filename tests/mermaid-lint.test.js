@@ -45,3 +45,8 @@ test('flags a literal \\n inside a flowchart node label (005 #3)', () => {
   const errs = m.lintBlock('flowchart TD\n  A[Ingest API\\nscrub free text] --> B[End]');
   assert.ok(errs.some(e => /node label/.test(e)));
 });
+
+test('erDiagram with crow-foot cardinality is not flagged as unbalanced braces (006 C)', () => {
+  const errs = m.lintBlock('erDiagram\n  telemetry_raw ||..o{ telemetry_summary : aggregates\n  user }o..|| account : owns');
+  assert.ok(!errs.some(e => /unbalanced/.test(e)), `erDiagram cardinality must not trip brace check: ${errs.join(', ')}`);
+});

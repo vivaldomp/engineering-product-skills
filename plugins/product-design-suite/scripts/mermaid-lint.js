@@ -12,8 +12,10 @@ function lintBlock(src) {
   if (!lines.length) { errs.push('empty mermaid block'); return errs; }
   if (!TYPE_RE.test(lines[0])) errs.push(`unknown/missing diagram type on first line: "${lines[0]}"`);
   // Deliberately-lightweight heuristic: counts all bracket pairs without parsing node-label content.
-  // May over-count brackets inside quoted text within node labels, but avoids parser complexity.
-  for (const [open, close] of [['[', ']'], ['(', ')'], ['{', '}']]) {
+  // erDiagram cardinality uses brace tokens (o{, }o, |{, }|) that are NOT block braces, so skip {} there (006 C).
+  const isEr = /^erDiagram\b/.test(lines[0]);
+  const pairs = isEr ? [['[', ']'], ['(', ')']] : [['[', ']'], ['(', ')'], ['{', '}']];
+  for (const [open, close] of pairs) {
     const o = (src.match(new RegExp('\\' + open, 'g')) || []).length;
     const c = (src.match(new RegExp('\\' + close, 'g')) || []).length;
     if (o !== c) errs.push(`unbalanced ${open}${close} (${o} open, ${c} close)`);
