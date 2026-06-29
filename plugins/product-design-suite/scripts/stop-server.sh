@@ -1,16 +1,44 @@
 #!/usr/bin/env bash
 # Stop the product-design-suite preview server and clean up
-# Usage: stop-server.sh <session_dir>
+# Usage: stop-server.sh [--latest] [--project-dir <path>] [<session_dir>]
 #
 # Kills the server process. Only deletes session directory if it's
 # under /tmp (ephemeral). Persistent directories (.product/preview/) are
 # kept so mockups can be reviewed later.
 
-SESSION_DIR="$1"
+# Resolve the session dir. Accepts an explicit positional <session_dir> (back-compat),
+# or --latest / no args to pick the newest session under a search root (006 H2).
+PROJECT_DIR=""
+SESSION_DIR=""
+WANT_LATEST="false"
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --project-dir) PROJECT_DIR="$2"; shift 2 ;;
+    --latest)      WANT_LATEST="true"; shift ;;
+    *)             SESSION_DIR="$1"; shift ;;
+  esac
+done
 
-if [[ -z "$SESSION_DIR" ]]; then
-  echo '{"error": "Usage: stop-server.sh <session_dir>"}'
-  exit 1
+resolve_latest() {
+  local root="$1" d mt newest="" newest_mt=0
+  shopt -s nullglob
+  local candidates=()
+  if [[ -n "$root" ]]; then candidates=("$root"/.product/preview/*/); else candidates=(/tmp/pds-preview-*/); fi
+  for d in "${candidates[@]}"; do
+    d="${d%/}"
+    [[ -f "$d/state/server.pid" ]] || continue
+    mt="$(stat -c %Y "$d/state/server.pid" 2>/dev/null || stat -f %m "$d/state/server.pid" 2>/dev/null || echo 0)"
+    if (( mt >= newest_mt )); then newest_mt="$mt"; newest="$d"; fi
+  done
+  printf '%s\n' "$newest"
+}
+
+if [[ -z "$SESSION_DIR" || "$WANT_LATEST" == "true" ]]; then
+  SESSION_DIR="$(resolve_latest "$PROJECT_DIR")"
+  if [[ -z "$SESSION_DIR" ]]; then
+    echo '{"status": "not_running", "note": "no session found"}'
+    exit 0
+  fi
 fi
 
 STATE_DIR="${SESSION_DIR}/state"
