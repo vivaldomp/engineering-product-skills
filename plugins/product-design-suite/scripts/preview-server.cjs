@@ -265,6 +265,10 @@ function companionUrl() {
   return 'http://' + urlHostForHttp(URL_HOST) + ':' + PORT + '/?key=' + TOKEN;
 }
 
+function markdownLink() {
+  return '[Open diagram preview](' + companionUrl() + ')';
+}
+
 function browserLauncherForPlatform(url, {
   platform = process.platform,
   osRelease = require('os').release(),
@@ -658,7 +662,7 @@ function startServer() {
     }
     const info = JSON.stringify({
       type: 'server-started', port: Number(PORT), host: HOST,
-      url_host: URL_HOST, url: companionUrl(),
+      url_host: URL_HOST, url: companionUrl(), markdown_link: markdownLink(),
       screen_dir: CONTENT_DIR, state_dir: STATE_DIR, idle_timeout_ms: IDLE_TIMEOUT_MS
     });
     console.log(info);
@@ -697,6 +701,7 @@ module.exports = {
   decodeFrame,
   browserLauncherForPlatform,
   wrapInFrame,
+  markdownLink,
   OPCODES,
   MAX_FRAME_PAYLOAD_BYTES
 };

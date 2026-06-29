@@ -42,3 +42,8 @@ test('wrapInFrame inserts content verbatim even with $ replacement patterns (006
   const html = srv.wrapInFrame(content);
   assert.ok(html.includes(content), 'content with $-sequences must appear verbatim, not interpreted');
 });
+
+test('markdownLink wraps the companion URL as a clickable Markdown link (006 B2)', () => {
+  const link = srv.markdownLink();
+  assert.match(link, /^\[Open diagram preview\]\(http:\/\/.+\)$/);
+});
