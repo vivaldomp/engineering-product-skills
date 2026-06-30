@@ -87,7 +87,10 @@ SDD owns those as usual — creating this file is what puts the project into "SA
 7. Identify structural decisions with significant trade-offs and flag them as ADR candidates;
    hand each to `egp-adr-builder` and reference the resulting `ADR-NNN` in §7. Offer to set the
    ADR's `related-sad` front-matter field.
-8. On finalize, populate the YAML front-matter (`title`, `status`, `version`, `owner`, `date`)
+8. On finalize, before writing the file: if any gaps remain unresolved, run the
+   interactive gap checkpoint (see `questioning-protocol.md` → *Interactive gap checkpoint*);
+   finalize with gaps only on the user's explicit choice.
+   Then populate the YAML front-matter (`title`, `status`, `version`, `owner`, `date`)
    — bump `version` and refresh `date` on an update — write `.product/sad/sad.md`, and record
    unresolved gaps in §8 Open Questions rather than leaving silent TBDs.
    Fill the `MODE-BANNER` slot with a concise orientation note (e.g., "This SAD owns the macro-architecture and AR-NNN")

@@ -11,7 +11,8 @@ All builder skills follow this protocol when information is missing.
 3. **One topic per question.** Keep each question answerable in isolation.
 4. **Pause after every 4 consecutive questions.** Stop and ask the user:
    *"Continue answering, or finalize the document now?"* — and include a bulleted
-   **summary of the remaining gaps** so the user can decide with full context.
+   **summary of the remaining gaps** so the user can decide with full context —
+   ask this through the host's question UI, not as prose.
 5. **Finalize cleanly.** If the user chooses to finalize, write the document and
    record every unresolved gap explicitly in the template's **Open Questions**
    table. Never leave silent `TBD`s in the body.
@@ -41,6 +42,21 @@ instead of asking a gap question for every section.
 
 The greenfield gap-question cadence remains the default whenever no authoritative
 source exists.
+
+## Interactive gap checkpoint (007 #5)
+
+The "Continue resolving gaps, or finalize now?" decision is an **explicit
+interactive prompt** — asked through the host's question / multiple-choice UI,
+never a sentence buried in prose. It fires:
+
+- on the 4-question cadence (Rule 4 above), **and**
+- **mandatorily before finalizing any document that still has unresolved gaps** —
+  including in derive-then-confirm and batch / derive-all modes, not only greenfield.
+
+Even when a builder has derived every section it can, it MUST still ask the
+genuine-gap questions interactively rather than only listing them in Open
+Questions. Finalizing with gaps open is recorded in Open Questions only **after**
+the user is asked and chooses to finalize — it is never the default.
 
 ## The one-confirmation-batch contract
 

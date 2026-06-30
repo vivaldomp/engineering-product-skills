@@ -82,6 +82,13 @@ test('concepts documents the SAD as an optional document', () => {
   assert.match(s, /\.product\/sad\/sad\.md/);
 });
 
+test('questioning-protocol mandates an interactive finalize-with-gaps checkpoint (007 #5)', () => {
+  const s = read('shared/references/questioning-protocol.md');
+  assert.match(s, /before finaliz/i, 'must require a checkpoint before finalizing with gaps');
+  assert.match(s, /interactive|question UI|multiple-choice/i, 'checkpoint must be an explicit interactive prompt');
+  assert.match(s, /derive-then-confirm|batch/i, 'must apply beyond greenfield');
+});
+
 test('egp-sad-builder requires render-verify before the approval link and a C4 fallback (007)', () => {
   const s = read('skills/egp-sad-builder/SKILL.md');
   assert.match(s, /--verify/, 'gate must run mermaid-preview.js --verify');
