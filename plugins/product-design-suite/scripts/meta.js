@@ -11,7 +11,11 @@ const isAdr = rel => rel.startsWith(W.REL.adrDir + path.sep);
 
 // prd.md -> prd.meta.json; import-map.json -> import-map.meta.json
 function sidecarPath(rel) {
-  return rel.replace(/\.[^.\\/]+$/, '.meta.json');
+  const result = rel.replace(/\.[^.\\/]+$/, '.meta.json');
+  if (result === rel) {
+    throw new Error(`sidecarPath: extensionless path cannot be sidecar-mapped: ${rel}`);
+  }
+  return result;
 }
 
 function hashFile(abs) {

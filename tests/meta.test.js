@@ -94,3 +94,18 @@ test('inputs are recorded on an import run and empty otherwise', () => {
   M.writeSidecars({ root: root2, skill: 'egp-prd-builder', runId: 'R1', version: '0.1.1' });
   assert.deepEqual(read(root2, 'planning/prd.meta.json').inputs, []);
 });
+
+test('sidecarPath rejects extensionless paths; normal and dotted-directory paths resolve correctly', () => {
+  // Extensionless path must throw.
+  assert.throws(
+    () => M.sidecarPath('planning/prd'),
+    { message: /extensionless path/ }
+  );
+
+  // Normal cases must work.
+  assert.equal(M.sidecarPath('planning/prd.md'), 'planning/prd.meta.json');
+  assert.equal(M.sidecarPath('governance/import-map.json'), 'governance/import-map.meta.json');
+
+  // Dotted directory names must not be mistaken for extensions.
+  assert.equal(M.sidecarPath('archive/v1.2/report.md'), 'archive/v1.2/report.meta.json');
+});
