@@ -41,5 +41,5 @@ users = StatCard("Users", "450k", "flat")
 
 ## Render
 ```bash
-node "${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js" design/home.openui design/home.html
+node "${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js" workspace/outputs/current/ux/home.openui workspace/outputs/current/ux/home.html
 ```
