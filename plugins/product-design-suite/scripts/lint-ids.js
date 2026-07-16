@@ -4,6 +4,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const C = require('./id-conventions.js');
+const W = require('./workspace-paths.js');
 
 // "ID-shaped": a known prefix, a separator, optional category letters, then a
 // REQUIRED digit — broad enough to catch near-misses (NFR_P1, FR-01X) the
@@ -80,7 +81,7 @@ function lintProduct(dir) {
 module.exports = { lintText, lintProduct, tableDefIds, SHAPED_RE, stripGeneratedBlocks };
 
 if (require.main === module) {
-  const dir = process.argv[2] || '.product';
+  const dir = W.resolveCurrent(process.argv[2]);
   const { malformed, duplicates, definitionDuplicates } = lintProduct(dir);
   for (const m of malformed) console.log(`malformed id "${m.token}" in ${m.file}`);
   for (const d of definitionDuplicates) console.log(`duplicate definition ${d.id} in ${d.files.join(', ')}`);

@@ -1,6 +1,6 @@
 ---
 name: egp-sad-builder
-description: Create or update a System Architecture Document (SAD). Use when a team maintains a macro-architecture document and wants the canonical system context, container/infrastructure topology, data-flow patterns, macro security architecture, and Architectural Requirements (AR-NNN) to live in a dedicated document between the SRS and the SDD. Writes .product/sad/sad.md; the SDD then references it.
+description: Create or update a System Architecture Document (SAD). Use when a team maintains a macro-architecture document and wants the canonical system context, container/infrastructure topology, data-flow patterns, macro security architecture, and Architectural Requirements (AR-NNN) to live in a dedicated document between the SRS and the SDD. Writes workspace/outputs/current/architecture/sad.md; the SDD then references it.
 metadata:
   author: Vivaldo
   version: "0.1.0"
@@ -8,7 +8,7 @@ metadata:
 
 # egp-sad-builder
 
-Build or update the SAD at `.product/sad/sad.md` from the shared template. The SAD is
+Build or update the SAD at `workspace/outputs/current/architecture/sad.md` from the shared template. The SAD is
 **optional**: when it exists, it is the canonical home for the macro-architecture — C4
 Context (C1) and Container (C2) diagrams, system boundaries, technology/infrastructure
 choices, data-flow & integration patterns, the macro security architecture, and the
@@ -17,9 +17,9 @@ SDD owns those as usual — creating this file is what puts the project into "SA
 
 ## Inputs
 - Template: `${CLAUDE_PLUGIN_ROOT}/shared/templates/sad-template.md`
-- PRD: `.product/prd/prd.md` (read for product intent and scope)
-- SRS (if present): `.product/srs/srs.md` — read the non-functional requirements as architectural drivers
-- SDD (if present): `.product/sdd/sdd.md` (read for any existing `AR` table / C4 Context+Container diagrams to migrate)
+- PRD: `workspace/outputs/current/planning/prd.md` (read for product intent and scope)
+- SRS (if present): `workspace/outputs/current/specifications/srs.md` — read the non-functional requirements as architectural drivers
+- SDD (if present): `workspace/outputs/current/architecture/sdd.md` (read for any existing `AR` table / C4 Context+Container diagrams to migrate)
 - Concepts/structure: `${CLAUDE_PLUGIN_ROOT}/shared/references/concepts.md`, `${CLAUDE_PLUGIN_ROOT}/shared/references/structures.md`
 - Question cadence: `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md`
 
@@ -27,7 +27,7 @@ SDD owns those as usual — creating this file is what puts the project into "SA
 - **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
   directly and follow the Steps/Rules below — invocation output is host-dependent.
 
-1. Ensure `.product/sad/` exists. If `sad.md` exists, load it and treat this as an update.
+1. Ensure `workspace/outputs/current/architecture/` exists. If `sad.md` exists, load it and treat this as an update.
 2. Read the SAD template, the PRD, and the SRS if present. Source the architectural drivers
    from the non-functional requirements (`NFR-NNN`) in the SRS, or the PRD when no SRS exists.
 3. Fill each required section per `questioning-protocol.md`. When authoritative source is
@@ -44,7 +44,7 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    Mermaid source, present it for approval, and offer a rendered preview: write the drafts to a
    scratch markdown file and run
    `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`
-   (use a temp path, not `.product/`), served via `start-server.sh`. Mermaid is vendored
+   (use a temp path, not `workspace/outputs/current/`), served via `start-server.sh`. Mermaid is vendored
    locally, so the preview works offline. The served preview URL is mandatory for
    approval; the standalone HTML file (`node scripts/mermaid-preview.js <draft.md> <out.html>`)
    is only an offline fallback, never a substitute for the reviewer-facing URL. Avoid the
@@ -77,11 +77,11 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    field), never a raw URL. For a portable artifact (006 A2): pass an output path to capture
    the JS-free static page in the same step: `mermaid-preview.js --verify <scratch.md> <out.html>`
    writes it from the rendered SVGs (this closes the former manual `--static` capture step).
-6. **Migrate macro-architecture out of the SDD (confirmation-gated).** If `.product/sdd/sdd.md`
+6. **Migrate macro-architecture out of the SDD (confirmation-gated).** If `workspace/outputs/current/architecture/sdd.md`
    already holds an `AR` table and/or C4 Context+Container diagrams (an SDD authored before the
    SAD existed), propose the migration: lift the §3 `AR-NNN` rows and the Context/Container
    Mermaid blocks into the SAD verbatim (IDs preserved), then rewrite the SDD's §3 Architecture
-   Overview as references to the SAD (`.product/sad/sad.md`). Show the exact before/after and
+   Overview as references to the SAD (`architecture/sad.md`). Show the exact before/after and
    apply only on approval — no silent rewrite. Never touch the SDD's component, data, API,
    testing, or operations content.
 7. Identify structural decisions with significant trade-offs and flag them as ADR candidates;
@@ -91,12 +91,17 @@ SDD owns those as usual — creating this file is what puts the project into "SA
    interactive gap checkpoint (see `questioning-protocol.md` → *Interactive gap checkpoint*);
    finalize with gaps only on the user's explicit choice.
    Then populate the YAML front-matter (`title`, `status`, `version`, `owner`, `date`)
-   — bump `version` and refresh `date` on an update — write `.product/sad/sad.md`, and record
+   — bump `version` and refresh `date` on an update — write `workspace/outputs/current/architecture/sad.md`, and record
    unresolved gaps in §8 Open Questions rather than leaving silent TBDs.
    Fill the `MODE-BANNER` slot with a concise orientation note (e.g., "This SAD owns the macro-architecture and AR-NNN")
    to signal the SAD's role in the documentation architecture, or leave it empty if unused.
 9. Suggest running `egp-doc-sync` to refresh the traceability matrix and propagate the new
    `AR` source to the SDD.
+10. **Snapshot the approved run.** After the user approves the finalized document
+    and the consistency gate passes, write an immutable execution package:
+    `node "${CLAUDE_PLUGIN_ROOT}/scripts/snapshot.js" --skill egp-sad-builder --artifact architecture/sad.md`
+    This records workspace/outputs/history/<run-id>/ with a manifest and the
+    validation reports. Never edit files under history/.
 
 ## Rules
 - The SAD owns the macro-architecture and `AR-NNN` only; detailed component/code design,
@@ -108,13 +113,13 @@ SDD owns those as usual — creating this file is what puts the project into "SA
   **Referencing** documents cite IDs in prose or in a **non-first column**. Any
   cross-doc reference/coverage table MUST be wrapped in generated markers
   (`COVERAGE-INDEX` / `ADR-INDEX` / `ADR-STATUS`) so `lint-ids` strips it.
-- **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
+- **Output language (006 G):** If `workspace/outputs/current/governance/import-state.json` has `outputLanguage`,
   write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
   technical jargon in that language. Absent → match the user's language.
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored
-  artifacts live under `.product/`.
+  artifacts live under `workspace/outputs/current/`.
 - **Version bump** (document `version` front-matter): patch = typo/clarification/formatting,
   no requirement change; minor = new section/requirement/ADR added (backward-compatible);
   major = restructure, or removed/renamed requirements.

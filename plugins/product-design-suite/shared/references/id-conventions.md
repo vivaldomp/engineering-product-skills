@@ -40,5 +40,6 @@ Examples: `FR-001`, `BR-002`, `NFR-003`, `NFR-P1`, `AR-004`, `UAT-005`,
 
 ## Linting
 
-Run `node scripts/lint-ids.js .product` to flag identifiers that look like IDs
-but do not match this spec, and duplicate IDs across files.
+Run `node scripts/lint-ids.js` (defaults to `workspace/outputs/current`) to flag
+identifiers that look like IDs but do not match this spec, and duplicate IDs
+across files.

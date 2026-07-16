@@ -41,7 +41,7 @@ test('egp-sad-builder skill exists with valid front-matter (name == dir)', () =>
 
 test('egp-sad-builder documents authoring, AR ownership, derive-then-confirm, and SDD migration', () => {
   const s = read('skills/egp-sad-builder/SKILL.md');
-  assert.match(s, /\.product\/sad\/sad\.md/);
+  assert.match(s, /workspace\/outputs\/current\/architecture\/sad\.md/);
   assert.match(s, /AR-NNN/);
   assert.match(s, /derive-then-confirm/i);
   assert.match(s, /migrat/i);
@@ -55,7 +55,7 @@ test('egp-sad command exists and routes to the skill', () => {
 test('egp-sdd-builder documents SAD mode', () => {
   const sdd = read('skills/egp-sdd-builder/SKILL.md');
   assert.match(sdd, /SAD/);
-  assert.match(sdd, /\.product\/sad\/sad\.md/);
+  assert.match(sdd, /workspace\/outputs\/current\/architecture\/sad\.md/);
 });
 
 test('egp-product-workflow documents the optional SAD stage', () => {
@@ -68,7 +68,7 @@ test('egp-doc-sync and egp-import handle the SAD', () => {
   const sync = read('skills/egp-doc-sync/SKILL.md');
   assert.match(sync, /SAD/);
   const imp = read('skills/egp-import/SKILL.md');
-  assert.match(imp, /sad-template|\.product\/sad/i);
+  assert.match(imp, /sad-template|architecture\/sad/i);
 });
 
 test('adr-template documents the related-sad field', () => {
@@ -79,7 +79,7 @@ test('adr-template documents the related-sad field', () => {
 test('concepts documents the SAD as an optional document', () => {
   const s = read('shared/references/concepts.md');
   assert.match(s, /SAD/);
-  assert.match(s, /\.product\/sad\/sad\.md/);
+  assert.match(s, /workspace\/outputs\/current\/architecture\/sad\.md/);
 });
 
 test('questioning-protocol mandates an interactive finalize-with-gaps checkpoint (007 #5)', () => {

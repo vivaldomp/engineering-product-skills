@@ -40,7 +40,7 @@ test('egp-srs-builder skill exists with valid front-matter (name == dir)', () =>
 
 test('egp-srs-builder documents authoring, FR/NFR ownership, derive-then-confirm, and PRD migration', () => {
   const s = read('skills/egp-srs-builder/SKILL.md');
-  assert.match(s, /\.product\/srs\/srs\.md/);
+  assert.match(s, /workspace\/outputs\/current\/specifications\/srs\.md/);
   assert.match(s, /FR-NNN/);
   assert.match(s, /NFR-NNN/);
   assert.match(s, /derive-then-confirm/i);
@@ -55,10 +55,10 @@ test('egp-srs command exists and routes to the skill', () => {
 test('egp-prd-builder and egp-sdd-builder document SRS mode', () => {
   const prd = read('skills/egp-prd-builder/SKILL.md');
   assert.match(prd, /SRS/);
-  assert.match(prd, /\.product\/srs\/srs\.md/);
+  assert.match(prd, /workspace\/outputs\/current\/specifications\/srs\.md/);
   const sdd = read('skills/egp-sdd-builder/SKILL.md');
   assert.match(sdd, /SRS/);
-  assert.match(sdd, /\.product\/srs\/srs\.md/);
+  assert.match(sdd, /workspace\/outputs\/current\/specifications\/srs\.md/);
 });
 
 test('egp-product-workflow documents the optional SRS stage', () => {
@@ -71,12 +71,12 @@ test('egp-doc-sync and egp-import handle the SRS', () => {
   const sync = read('skills/egp-doc-sync/SKILL.md');
   assert.match(sync, /SRS/);
   const imp = read('skills/egp-import/SKILL.md');
-  assert.match(imp, /srs-template|\.product\/srs/i);
+  assert.match(imp, /srs-template|specifications\/srs/i);
   assert.doesNotMatch(imp, /no native template/i);
 });
 
 test('concepts documents the SRS as an optional document', () => {
   const s = read('shared/references/concepts.md');
   assert.match(s, /SRS/);
-  assert.match(s, /\.product\/srs\/srs\.md/);
+  assert.match(s, /workspace\/outputs\/current\/specifications\/srs\.md/);
 });

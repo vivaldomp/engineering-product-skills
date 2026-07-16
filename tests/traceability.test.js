@@ -171,13 +171,13 @@ test('buildMatrix sources all requirements from the PRD when no SRS (regression)
   assert.deepEqual(m.requirements.map(r => r.id).sort(), ['BR-001', 'FR-001', 'NFR-001']);
 });
 
-test('loadProduct reads srs/srs.md into the srs field', () => {
+test('loadProduct reads specifications/srs.md into the srs field', () => {
   const os = require('node:os');
   const fsm = require('node:fs');
   const pth = require('node:path');
   const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'egp-srs-'));
-  fsm.mkdirSync(pth.join(dir, 'srs'), { recursive: true });
-  fsm.writeFileSync(pth.join(dir, 'srs', 'srs.md'), 'FR-001 from srs');
+  fsm.mkdirSync(pth.join(dir, 'specifications'), { recursive: true });
+  fsm.writeFileSync(pth.join(dir, 'specifications', 'srs.md'), 'FR-001 from srs');
   const loaded = t.loadProduct(dir);
   assert.match(loaded.srs, /FR-001 from srs/);
 });
@@ -203,13 +203,13 @@ test('buildMatrix sources AR from the SDD when no SAD (regression)', () => {
   assert.deepEqual(m.ars.find(a => a.id === 'AR-001').tracesTo, ['FR-001']);
 });
 
-test('loadProduct reads sad/sad.md into the sad field', () => {
+test('loadProduct reads architecture/sad.md into the sad field', () => {
   const os = require('node:os');
   const fsm = require('node:fs');
   const pth = require('node:path');
   const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'egp-sad-'));
-  fsm.mkdirSync(pth.join(dir, 'sad'), { recursive: true });
-  fsm.writeFileSync(pth.join(dir, 'sad', 'sad.md'), 'AR-001 from sad');
+  fsm.mkdirSync(pth.join(dir, 'architecture'), { recursive: true });
+  fsm.writeFileSync(pth.join(dir, 'architecture', 'sad.md'), 'AR-001 from sad');
   const loaded = t.loadProduct(dir);
   assert.match(loaded.sad, /AR-001 from sad/);
 });
@@ -311,12 +311,12 @@ test('traceability CLI resolves an absolute dir and writes outputs (IMP-2)', () 
   const fsm = require('node:fs');
   const pth = require('node:path');
   const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'trace-cli-'));
-  fsm.mkdirSync(pth.join(dir, 'prd'), { recursive: true });
-  fsm.mkdirSync(pth.join(dir, 'sdd'), { recursive: true });
-  fsm.writeFileSync(pth.join(dir, 'prd', 'prd.md'), '# PRD\n\nFR-001 export feature.');
-  fsm.writeFileSync(pth.join(dir, 'sdd', 'sdd.md'), '## 4. Components\nImplements FR-001.\n');
+  fsm.mkdirSync(pth.join(dir, 'planning'), { recursive: true });
+  fsm.mkdirSync(pth.join(dir, 'architecture'), { recursive: true });
+  fsm.writeFileSync(pth.join(dir, 'planning', 'prd.md'), '# PRD\n\nFR-001 export feature.');
+  fsm.writeFileSync(pth.join(dir, 'architecture', 'sdd.md'), '## 4. Components\nImplements FR-001.\n');
   const script = pth.resolve('plugins/product-design-suite/scripts/traceability.js');
   cp.execFileSync('node', [script, dir], { cwd: os.tmpdir() });
-  assert.ok(fsm.existsSync(pth.join(dir, 'traceability.md')), 'traceability.md written to the absolute dir');
-  assert.ok(fsm.existsSync(pth.join(dir, 'traceability.html')), 'traceability.html written to the absolute dir');
+  assert.ok(fsm.existsSync(pth.join(dir, 'governance', 'traceability.md')), 'traceability.md written to governance/');
+  assert.ok(fsm.existsSync(pth.join(dir, 'governance', 'traceability.html')), 'traceability.html written to governance/');
 });

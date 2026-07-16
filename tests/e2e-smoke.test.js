@@ -7,14 +7,13 @@ const t = require('../plugins/product-design-suite/scripts/traceability.js');
 const o = require('../plugins/product-design-suite/scripts/openui-render.js');
 const d = require('../plugins/product-design-suite/scripts/mermaid-preview.js');
 
-test('traceability over a sample .product links PRD->SDD->ADR', () => {
+test('traceability over a sample workspace links PRD->SDD->ADR', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'prod-'));
-  fs.mkdirSync(path.join(dir, 'prd'), { recursive: true });
-  fs.mkdirSync(path.join(dir, 'sdd'), { recursive: true });
-  fs.mkdirSync(path.join(dir, 'adr'), { recursive: true });
-  fs.writeFileSync(path.join(dir, 'prd', 'prd.md'), 'FR-001 onboarding. NFR-002 latency.');
-  fs.writeFileSync(path.join(dir, 'sdd', 'sdd.md'), 'AR-001 implements FR-001.');
-  fs.writeFileSync(path.join(dir, 'adr', 'ADR-001-x.md'), 'Decision impacting FR-001.');
+  fs.mkdirSync(path.join(dir, 'planning'), { recursive: true });
+  fs.mkdirSync(path.join(dir, 'architecture', 'adr'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'planning', 'prd.md'), 'FR-001 onboarding. NFR-002 latency.');
+  fs.writeFileSync(path.join(dir, 'architecture', 'sdd.md'), 'AR-001 implements FR-001.');
+  fs.writeFileSync(path.join(dir, 'architecture', 'adr', 'ADR-001-x.md'), 'Decision impacting FR-001.');
   const m = t.buildMatrix(t.loadProduct(dir));
   const fr = m.requirements.find(r => r.id === 'FR-001');
   assert.equal(fr.inSdd, true);

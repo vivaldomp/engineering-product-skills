@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { extractMermaidBlocks } = require('./mermaid-preview.js');
+const W = require('./workspace-paths.js');
 
 const TYPE_RE = /^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram(-v2)?|erDiagram|journey|gantt|pie|C4Context|C4Container|C4Component|C4Dynamic|mindmap|timeline|gitGraph|requirementDiagram|quadrantChart)\b/;
 
@@ -63,7 +64,7 @@ function lintProductDiagrams(target) {
 module.exports = { lintBlock, lintMarkdown, lintProductDiagrams };
 
 if (require.main === module) {
-  const results = lintProductDiagrams(path.resolve(process.argv[2] || '.product'));
+  const results = lintProductDiagrams(W.resolveCurrent(process.argv[2]));
   for (const r of results) for (const e of r.errors) console.log(`${r.file}: ${e}`);
   console.log(results.length ? 'mermaid-lint: errors found' : 'mermaid-lint: clean');
   process.exit(results.length ? 1 : 0);

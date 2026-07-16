@@ -6,7 +6,7 @@
 # Each session gets its own directory to avoid conflicts.
 #
 # Options:
-#   --project-dir <path>  Store session files under <path>/.product/preview/
+#   --project-dir <path>  Store session files under <path>/workspace/cache/preview/
 #                         instead of /tmp. Files persist after server stops.
 #   --host <bind-host>    Host/interface to bind (default: 127.0.0.1).
 #                         Use 0.0.0.0 in remote/containerized environments.
@@ -114,11 +114,11 @@ umask 077
 SESSION_ID="$$-$(date +%s)"
 
 if [[ -n "$PROJECT_DIR" ]]; then
-  SESSION_DIR="${PROJECT_DIR}/.product/preview/${SESSION_ID}"
+  SESSION_DIR="${PROJECT_DIR}/workspace/cache/preview/${SESSION_ID}"
   # Persist the bound port and key per project so a restart reuses them and an
   # already-open browser tab reconnects to the same URL with a valid cookie.
-  export PDS_PORT_FILE="${PROJECT_DIR}/.product/preview/.last-port"
-  export PDS_TOKEN_FILE="${PROJECT_DIR}/.product/preview/.last-token"
+  export PDS_PORT_FILE="${PROJECT_DIR}/workspace/cache/preview/.last-port"
+  export PDS_TOKEN_FILE="${PROJECT_DIR}/workspace/cache/preview/.last-token"
 else
   SESSION_DIR="/tmp/pds-preview-${SESSION_ID}"
 fi

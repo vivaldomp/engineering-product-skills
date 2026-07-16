@@ -3,13 +3,14 @@
 // are derived from the matching template at runtime — no hardcoded list.
 const fs = require('node:fs');
 const path = require('node:path');
+const W = require('./workspace-paths.js');
 
 const TEMPLATE_DIR = path.join(__dirname, '..', 'shared', 'templates');
 const TEMPLATE_FOR = {
-  'prd/prd.md': 'prd-template.md',
-  'srs/srs.md': 'srs-template.md',
-  'sad/sad.md': 'sad-template.md',
-  'sdd/sdd.md': 'sdd-template.md',
+  [W.REL.prd]: 'prd-template.md',
+  [W.REL.srs]: 'srs-template.md',
+  [W.REL.sad]: 'sad-template.md',
+  [W.REL.sdd]: 'sdd-template.md',
 };
 
 function normalizeHeading(t) {
@@ -50,7 +51,10 @@ function validateProduct(dir) {
 module.exports = { validateDoc, validateProduct, headings, normalizeHeading };
 
 if (require.main === module) {
-  const results = validateProduct(path.resolve(process.argv[2] || '.product'));
+  if (fs.existsSync('.product')) {
+    console.warn('validate-structure: legacy .product/ detected — run `node scripts/migrate-workspace.js` to move it into workspace/outputs/current/.');
+  }
+  const results = validateProduct(W.resolveCurrent(process.argv[2]));
   for (const r of results) {
     if (r.missing.length) console.log(`structure: ${r.file} missing: ${r.missing.join(', ')}`);
     if (r.merged.length) console.log(`structure: ${r.file} merged: ${r.merged.join(', ')}`);

@@ -3,7 +3,7 @@
 # Usage: stop-server.sh [--latest] [--project-dir <path>] [<session_dir>]
 #
 # Kills the server process. Only deletes session directory if it's
-# under /tmp (ephemeral). Persistent directories (.product/preview/) are
+# under /tmp (ephemeral). Persistent directories (workspace/cache/preview/) are
 # kept so mockups can be reviewed later.
 
 # Resolve the session dir. Accepts an explicit positional <session_dir> (back-compat),
@@ -23,7 +23,7 @@ resolve_latest() {
   local root="$1" d mt newest="" newest_mt=0
   shopt -s nullglob
   local candidates=()
-  if [[ -n "$root" ]]; then candidates=("$root"/.product/preview/*/); else candidates=(/tmp/pds-preview-*/); fi
+  if [[ -n "$root" ]]; then candidates=("$root"/workspace/cache/preview/*/); else candidates=(/tmp/pds-preview-*/); fi
   for d in "${candidates[@]}"; do
     d="${d%/}"
     [[ -f "$d/state/server.pid" ]] || continue

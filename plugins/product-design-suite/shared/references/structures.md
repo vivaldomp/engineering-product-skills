@@ -326,9 +326,9 @@ SAD
 ### AR ownership (macro/micro split)
 
 `AR-NNN` (Architectural Requirements) is owned by the **SAD when one exists**, and by the
-**SDD otherwise**. `traceability.js` keys off `.product/sad/sad.md` existence and sources the
-`AR` set accordingly, so `AR-NNN` resolves across SAD and SDD regardless of which document
-defines them.
+**SDD otherwise**. `traceability.js` keys off `workspace/outputs/current/architecture/sad.md`
+existence and sources the `AR` set accordingly, so `AR-NNN` resolves across SAD and SDD
+regardless of which document defines them.
 
 ## 3. ADR (Architecture Decision Record)
 
@@ -415,49 +415,27 @@ ADR
 For a modern product, platform, AI, or agent-assisted engineering initiative, this structure keeps product intent, technical design, decisions, diagrams, and contracts easy to navigate.
 
 ```text
-docs/
-|-- prd/
-|   |-- vision.md
-|   |-- requirements.md
-|   |-- business-rules.md
-|   |-- acceptance-criteria.md
-|   `-- roadmap.md
-|
-|-- sdd/
-|   |-- architecture.md
-|   |-- components.md
-|   |-- data-model.md
-|   |-- integrations.md
-|   |-- security.md
-|   |-- observability.md
-|   |-- testing.md
-|   `-- operations.md
-|
-|-- adr/
-|   |-- ADR-001-native-federation.md
-|   |-- ADR-002-opentelemetry.md
-|   |-- ADR-003-github-copilot.md
-|   |-- ADR-004-workflow-engine.md
-|   `-- ADR-005-kubernetes.md
-|
-|-- diagrams/            # optional exports; inline mermaid in the SDD is the source of truth
-|   |-- c4/
-|   |-- sequence/
-|   |-- state/
-|   |-- data/
-|   |-- deployment/
-|   `-- flow/
-|
-|-- api/
-|   |-- openapi.yaml
-|   |-- asyncapi.yaml
-|   `-- schemas/
-|
-`-- templates/
-    |-- prd-template.md
-    |-- sdd-template.md
-    `-- adr-template.md
+workspace/
+|-- inputs/                      # user-supplied source material
+`-- outputs/
+    |-- current/                 # live, editable working tree
+    |   |-- planning/prd.md
+    |   |-- specifications/srs.md
+    |   |-- architecture/{sad.md, sdd.md, adr/ADR-NNN-<slug>.md}
+    |   |-- ux/                  # UI previews (openui, prd-summary.html)
+    |   |-- governance/          # traceability, import reports
+    |   `-- exports/             # rendered diagram previews
+    `-- history/
+        `-- <run-id>/            # immutable snapshot: manifest.json, artifacts/, validation/
+.engineering/
+`-- config.yaml
 ```
+
+**Reserved names.** Taxonomy dirs `discovery/`, `implementation/`, `tests/`, `deployment/`,
+`operations/`; roots `workspace/outputs/releases/`, `workspace/reports/`, `workspace/cache/`
+(in use for preview session state), `workspace/state/`; `.engineering/{execution.db, receipts/,
+telemetry/}` — reserved for later phases (metadata sidecars, release promotion, engineering
+graph, telemetry). Directories are created only when something writes into them.
 
 ## 5. Traceability model
 
@@ -485,7 +463,7 @@ This traceability allows teams to answer three practical questions quickly: why 
 `scripts/traceability.js` makes this concrete. It understands compressed ID notation
 (ranges like `FR-036…042`, lists like `FR-001/002/003a`, and sub-IDs like `FR-010a`),
 expanding both PRD and SDD references symmetrically so notation differences never read as
-gaps. It emits `.product/traceability.{md,html}` and injects a Requirement Coverage Index
-into SDD §16 — linking each requirement to its SDD sections (anchored) and ADRs, listing
+gaps. It emits `workspace/outputs/current/governance/traceability.{md,html}` and injects a
+Requirement Coverage Index into SDD §16 — linking each requirement to its SDD sections (anchored) and ADRs, listing
 AR→FR traces and UAT back-references, and flagging genuine **orphans** (a PRD requirement
 with no matching SDD mention) distinctly from resolved notation artifacts.
