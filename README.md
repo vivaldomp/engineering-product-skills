@@ -1,5 +1,7 @@
 # engineering-product-skills
 
+[![CI](https://github.com/vivaldomp/engineering-product-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/vivaldomp/engineering-product-skills/actions/workflows/ci.yml)
+
 A Claude Code marketplace containing the **product-design-suite** plugin — a set
 of Agent Skills that guide Product Managers and architects through a sequential
 **PRD → SRS → SAD → SDD → ADR** workflow, with cross-document synchronization,
