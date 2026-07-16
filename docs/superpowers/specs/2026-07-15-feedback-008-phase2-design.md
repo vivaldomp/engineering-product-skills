@@ -65,18 +65,29 @@ workspace/outputs/
 
 ### Coverage
 
-Sidecars cover the four known documents (`prd.md`, `srs.md`, `sad.md`,
-`sdd.md`) and every file under `architecture/adr/`. Generated governance
-reports (`traceability.md`, `traceability.html`, the two graph files) get no
-sidecar: hashing a file the suite regenerates on every run carries no
-information.
+Sidecars cover **authored** artifacts:
+
+- the four known documents (`prd.md`, `srs.md`, `sad.md`, `sdd.md`),
+- every file under `architecture/adr/`,
+- `egp-import`'s governance artifacts: `governance/import-gap-report.md`,
+  `governance/import-map.json`, `governance/import-state.json`.
+
+They do **not** cover **regenerated** outputs: `traceability.{md,html,json}`
+and `artifacts.graph.json`. Hashing a file the suite rewrites on every finalize
+carries no information — its hash can never signal drift, because nothing but
+the generator ever changes it. Import artifacts, by contrast, are authored once
+and then read by downstream builders, so provenance and drift both matter.
+
+Sidecars are named by replacing the artifact's extension: `prd.md` →
+`prd.meta.json`, `import-map.json` → `import-map.meta.json`.
 
 The `template` value resolves as `TEMPLATE_FOR[rel]` for the four known
-documents, falling back to `'adr-template.md'` for any file under
-`architecture/adr/`. `TEMPLATE_FOR` deliberately gains **no** ADR entry: it is
-keyed by exact document path, and `validate-structure.js` iterates its entries
-calling `existsSync` on each key, so a directory-shaped key would break that
-loop. ADR resolution lives in `meta.js`.
+documents, `'adr-template.md'` for any file under `architecture/adr/`, and
+`null` for import artifacts (they have no template). `TEMPLATE_FOR`
+deliberately gains **no** ADR entry: it is keyed by exact document path, and
+`validate-structure.js` iterates its entries calling `existsSync` on each key,
+so a directory-shaped key would break that loop. ADR resolution lives in
+`meta.js`.
 
 ### Refresh rule (load-bearing)
 
@@ -234,7 +245,9 @@ The existing flow gains three steps and one reordering:
 1. `runId` and destination computation move **before** the copy (sidecars need
    the run id).
 2. Gate + lint run (unchanged).
-3. `meta.writeSidecars({ root: current, skill, runId, now })`.
+3. `meta.writeSidecars({ root: current, skill, runId, now, version, inputs })`,
+   where `inputs` is the `workspace/inputs/` listing when
+   `skill === 'egp-import'` and `[]` otherwise.
 4. `graph` writes `traceability.json` and `artifacts.graph.json` into
    `current/governance/`.
 5. Copy `current/` → `<dest>/artifacts/` (unchanged) — the package is
@@ -251,7 +264,7 @@ The existing flow gains three steps and one reordering:
 
 | File | Purpose |
 | --- | --- |
-| `scripts/meta.js` | `writeSidecars({root, skill, runId, now}) -> {written, preserved}`; `checkSidecars(root) -> [{file, status}]`; `sidecarPath(docRel)`; `hashFile(abs)`. CLI: `--check`. |
+| `scripts/meta.js` | `writeSidecars({root, skill, runId, now, version, inputs}) -> {written, preserved}`; `checkSidecars(root) -> [{file, status, runId}]`; `coveredDocs(root)`; `sidecarPath(rel)`; `hashFile(abs)`. CLI: `--check`. |
 | `scripts/graph.js` | `buildGraph(root)`; `impact(graph, fileRel)`. CLI: writes both JSON files, or `--impact <rel>`. |
 | `scripts/promote.js` | `promote({run, as, force, projectRoot}) -> {dest, release}`; `nextVersion(releasesDir)`. CLI: `--run/--as/--force/--root`. |
 | `commands/egp-promote.md` | User-facing promotion command. |
@@ -266,6 +279,8 @@ The existing flow gains three steps and one reordering:
 - `scripts/validate-structure.js` — import `TEMPLATE_FOR` from
   `workspace-paths.js` instead of defining it.
 - `scripts/snapshot.js` — the flow above.
+- `skills/egp-import/SKILL.md` — gains the finalize snapshot step described
+  under "The `inputs` field".
 - `shared/references/structures.md` — the four names this phase makes real
   (`outputs/releases/`, `.engineering/receipts/`, `.engineering/telemetry/`, and
   sidecars) move out of the reserved list and get documented. `execution.db`
@@ -287,8 +302,24 @@ Three, each recorded so a later reader does not mistake them for oversights:
    therefore flows `history/<run-id>` → `releases/<name>` only, and `current/`
    is never a symlink.
 
-`inputs` in sidecars is populated for `egp-import`, which genuinely reads
-`workspace/inputs/`; elsewhere it is an empty array rather than invented values.
+### The `inputs` field
+
+`egp-import` is the one skill that genuinely reads `workspace/inputs/`, so it is
+the one skill whose `inputs` can be populated honestly. It currently has **no**
+finalize snapshot — only the five builders do — so this phase gives it one:
+
+```bash
+node scripts/snapshot.js --skill egp-import --artifact governance/import-gap-report.md
+```
+
+On a run where `skill === 'egp-import'`, `snapshot` lists `workspace/inputs/`
+and passes it to `writeSidecars`, which records it as `inputs` on the sidecars
+it writes during that run. Every other run passes an empty array rather than
+inventing values. This is why import artifacts must be sidecar-covered: they are
+the only artifacts an import run writes.
+
+A side effect worth stating: import runs now produce history packages like any
+other finalize, which they arguably always should have.
 
 ## Testing
 
@@ -298,7 +329,9 @@ this Node version.
 - **`tests/meta.test.js`** — drift detection (write → hand-edit → `MODIFIED`);
   provenance preservation across two snapshots (an untouched document keeps its
   original `runId`/`skill` while a changed one takes the new run's); `MISSING`
-  for an absent sidecar; generated reports get no sidecar.
+  for an absent sidecar; regenerated reports (`traceability.md`) get no sidecar
+  while import artifacts do; `inputs` recorded on an `egp-import` run and empty
+  otherwise.
 - **`tests/graph.test.js`** — `dependsOn` edges from the constant;
   `shared-refs` edges derived from real requirement IDs, with counts and no
   duplicate pairs; transitive `--impact`; missing documents produce no node
