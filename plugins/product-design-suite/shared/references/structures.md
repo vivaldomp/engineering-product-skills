@@ -417,7 +417,7 @@ For a modern product, platform, AI, or agent-assisted engineering initiative, th
 ```text
 workspace/
 |-- inputs/                      # user-supplied source material
-`-- outputs/
+|-- outputs/
     |-- current/                 # live, editable working tree
     |   |-- planning/prd.md
     |   |-- specifications/srs.md
@@ -429,6 +429,7 @@ workspace/
     |   `-- <run-id>/            # immutable snapshot: manifest.json, artifacts/, validation/
     `-- releases/
         `-- v1/                  # promoted run: release.json, artifacts/
+`-- cache/                       # preview session state
 .engineering/
 |-- config.yaml
 |-- receipts/<run-id>.json       # how each run went
