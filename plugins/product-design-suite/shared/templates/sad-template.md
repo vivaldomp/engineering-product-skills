@@ -29,8 +29,8 @@ date: <YYYY-MM-DD>
 
 | Reference | Description | Link or Location |
 | --- | --- | --- |
-| PRD | Product Requirements Document | .product/prd/prd.md |
-| SRS | Software Requirements Specification (if used) | .product/srs/srs.md |
+| PRD | Product Requirements Document | workspace/outputs/current/planning/prd.md |
+| SRS | Software Requirements Specification (if used) | workspace/outputs/current/specifications/srs.md |
 | <Reference> | <Description> | <Link> |
 
 ### Related ADRs

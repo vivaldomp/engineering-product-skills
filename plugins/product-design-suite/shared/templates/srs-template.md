@@ -31,7 +31,7 @@ date: <YYYY-MM-DD>
 
 | Reference | Description | Link or Location |
 | --- | --- | --- |
-| PRD | Product Requirements Document | .product/prd/prd.md |
+| PRD | Product Requirements Document | workspace/outputs/current/planning/prd.md |
 | <Reference> | <Description> | <Link> |
 
 ### Overview
