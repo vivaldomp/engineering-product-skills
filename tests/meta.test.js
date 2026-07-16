@@ -3,8 +3,11 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const W = require('../plugins/product-design-suite/scripts/workspace-paths.js');
 const M = require('../plugins/product-design-suite/scripts/meta.js');
+
+const META_JS = path.join(__dirname, '..', 'plugins', 'product-design-suite', 'scripts', 'meta.js');
 
 // meta.js operates on a current root directly, so fixtures write relative paths under it.
 function current(files) {
@@ -93,6 +96,21 @@ test('inputs are recorded on an import run and empty otherwise', () => {
   const root2 = current({ 'planning/prd.md': 'FR-001' });
   M.writeSidecars({ root: root2, skill: 'egp-prd-builder', runId: 'R1', version: '0.1.1' });
   assert.deepEqual(read(root2, 'planning/prd.meta.json').inputs, []);
+});
+
+test('CLI without --check cannot rewrite provenance (it is check-only)', () => {
+  const root = current({ 'planning/prd.md': 'FR-001' });
+  M.writeSidecars({ root, skill: 'egp-prd-builder', runId: 'R1', version: '0.1.1' });
+  const before = read(root, 'planning/prd.meta.json');
+
+  fs.writeFileSync(path.join(root, 'planning', 'prd.md'), 'FR-001 edited by hand');
+
+  execFileSync(process.execPath, [META_JS, root]);
+
+  const after = read(root, 'planning/prd.meta.json');
+  assert.deepEqual(after, before);
+  assert.equal(after.skill, 'egp-prd-builder');
+  assert.equal(after.runId, 'R1');
 });
 
 test('sidecarPath rejects extensionless paths; normal and dotted-directory paths resolve correctly', () => {

@@ -92,14 +92,13 @@ module.exports = {
 if (require.main === module) {
   const args = process.argv.slice(2);
   const dir = W.resolveCurrent(args.find(a => !a.startsWith('--')));
-  if (args.includes('--check')) {
-    for (const r of checkSidecars(dir)) {
-      console.log(`${r.file}: ${r.status}${r.status === 'MODIFIED' ? ` since run ${r.runId}` : ''}`);
-    }
-    // Informational by design: MODIFIED is the normal state while authoring, so
-    // this must not become a gate. Always exit 0.
-    process.exit(0);
+  // Check-only CLI: --check is accepted but redundant, there is no write path
+  // here. Writing sidecars with no skill/runId would poison provenance, so
+  // that's the module API's job (see snapshot.js), never the CLI's.
+  for (const r of checkSidecars(dir)) {
+    console.log(`${r.file}: ${r.status}${r.status === 'MODIFIED' ? ` since run ${r.runId}` : ''}`);
   }
-  const { written, preserved } = writeSidecars({ root: dir });
-  console.log(`meta: ${written.length} written, ${preserved.length} preserved`);
+  // Informational by design: MODIFIED is the normal state while authoring, so
+  // this must not become a gate. Always exit 0.
+  process.exit(0);
 }
