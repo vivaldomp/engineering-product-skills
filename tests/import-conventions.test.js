@@ -16,7 +16,7 @@ test('egp-import documents ingest, mapping, gap report, SRS reference, read-only
   const s = read('skills/egp-import/SKILL.md');
   assert.match(s, /classif/i);
   assert.match(s, /map/i);
-  assert.match(s, /\.product\/import-gap-report\.md/);
+  assert.match(s, /workspace\/outputs\/current\/governance\/import-gap-report\.md/);
   assert.match(s, /SRS/);
   assert.match(s, /read-only/i);
   assert.match(s, /derive-then-confirm/i);

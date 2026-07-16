@@ -218,7 +218,7 @@ ADR/
 `-- ADR-004-mcp-server.md
 ```
 
-Many agile teams do not maintain a separate formal SRS; the PRD then owns functional (`FR-NNN`) and non-functional (`NFR-NNN`) requirements directly, alongside the SDD for technical design and ADRs for decision history. This works well where architecture evolves incrementally and decisions need to remain traceable. Teams that do keep an IEEE-830 SRS (often regulated or enterprise contexts) can adopt the optional SRS document: the SRS becomes the canonical home for `FR-NNN`/`NFR-NNN` while the PRD references them and keeps business rules (`BR-NNN`) and acceptance tests (`UAT-NNN`). The suite detects which mode applies by whether `.product/srs/srs.md` exists.
+Many agile teams do not maintain a separate formal SRS; the PRD then owns functional (`FR-NNN`) and non-functional (`NFR-NNN`) requirements directly, alongside the SDD for technical design and ADRs for decision history. This works well where architecture evolves incrementally and decisions need to remain traceable. Teams that do keep an IEEE-830 SRS (often regulated or enterprise contexts) can adopt the optional SRS document: the SRS becomes the canonical home for `FR-NNN`/`NFR-NNN` while the PRD references them and keeps business rules (`BR-NNN`) and acceptance tests (`UAT-NNN`). The suite detects which mode applies by whether `workspace/outputs/current/specifications/srs.md` exists.
 
 Between requirements and detailed design sits the optional **System Architecture Document
 (SAD)** — the macro-architecture blueprint. When a team adopts it, the SAD becomes the
@@ -227,7 +227,7 @@ canonical home for the system context (C4 Level 1), container/infrastructure top
 Architectural Requirements (`AR-NNN`); the SDD then drops to the micro level (C3 components,
 APIs, schemas, code-level design) and references the SAD. Without a SAD, the SDD owns the
 macro-architecture and `AR-NNN` as before. The suite detects SAD mode by whether
-`.product/sad/sad.md` exists. Where the SRS answers *what* the system must do and the SDD
+`workspace/outputs/current/architecture/sad.md` exists. Where the SRS answers *what* the system must do and the SDD
 answers *how* a module is built, the SAD answers *where* components live and the big picture.
 
 ## 5. Recommended lifecycle

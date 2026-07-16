@@ -1,6 +1,6 @@
 ---
 name: egp-sdd-builder
-description: Create or update a Software Design Document (SDD). Use when the user wants to design the technical solution, architecture, C4 diagrams, components, data model, APIs, security, observability, or testing strategy derived from a PRD. Writes .product/sdd/sdd.md with inline Mermaid diagrams (and optional exports to .product/diagrams/).
+description: Create or update a Software Design Document (SDD). Use when the user wants to design the technical solution, architecture, C4 diagrams, components, data model, APIs, security, observability, or testing strategy derived from a PRD. Writes workspace/outputs/current/architecture/sdd.md with inline Mermaid diagrams (and optional exports to workspace/outputs/current/exports/).
 metadata:
   author: Vivaldo
   version: "0.1.0"
@@ -8,25 +8,25 @@ metadata:
 
 # egp-sdd-builder
 
-Build or update the SDD at `.product/sdd/sdd.md` from the shared template,
+Build or update the SDD at `workspace/outputs/current/architecture/sdd.md` from the shared template,
 derived from the PRD.
 
 ## Inputs
 - Template: `${CLAUDE_PLUGIN_ROOT}/shared/templates/sdd-template.md`
-- PRD: `.product/prd/prd.md` (read for requirements to satisfy)
-- SRS (SRS mode): `.product/srs/srs.md` — the canonical `FR`/`NFR` source when it exists
-- SAD (SAD mode): `.product/sad/sad.md` — the canonical macro-architecture and `AR-NNN` source when it exists
+- PRD: `workspace/outputs/current/planning/prd.md` (read for requirements to satisfy)
+- SRS (SRS mode): `workspace/outputs/current/specifications/srs.md` — the canonical `FR`/`NFR` source when it exists
+- SAD (SAD mode): `workspace/outputs/current/architecture/sad.md` — the canonical macro-architecture and `AR-NNN` source when it exists
 - References: `${CLAUDE_PLUGIN_ROOT}/shared/references/{concepts,structures,questioning-protocol,openui-guide}.md`
 
 ## Steps
 - **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
   directly and follow the Steps/Rules below — invocation output is host-dependent.
 
-1. If `.product/prd/prd.md` is missing, warn the user that the SDD should follow
+1. If `workspace/outputs/current/planning/prd.md` is missing, warn the user that the SDD should follow
    a PRD, and offer to run `egp-prd-builder` first (do not hard-block).
-2. Read the SDD template and the requirements source. **SRS mode** — when `.product/srs/srs.md`
+2. Read the SDD template and the requirements source. **SRS mode** — when `specifications/srs.md`
    exists — the canonical `FR-NNN`/`NFR-NNN` live in the SRS; **otherwise** they live in the PRD.
-   **SAD mode** — when `.product/sad/sad.md` exists — the macro-architecture and the canonical
+   **SAD mode** — when `architecture/sad.md` exists — the macro-architecture and the canonical
    `AR-NNN` table live in the **SAD**, so §3 Architecture Overview **references** the SAD's
    `AR-NNN` and C4 Context/Container instead of enumerating them, and this SDD focuses on C3
    Component design, APIs, schemas, and code-level design, mapping its components to the SAD's
@@ -55,7 +55,7 @@ derived from the PRD.
      offer a rendered preview: write the drafts to a scratch markdown file and run
      `node "${CLAUDE_PLUGIN_ROOT}/scripts/mermaid-preview.js" <scratch.md> <preview.html>`
      (use a temporary path like the system temp dir for both the scratch markdown
-     and preview HTML, not `.product/`), served via the preview server (`start-server.sh`).
+     and preview HTML, not `workspace/outputs/current/`), served via the preview server (`start-server.sh`).
      Mermaid is vendored locally, so the preview works offline.
      The served preview URL is mandatory for approval; the standalone HTML file
      (`node scripts/mermaid-preview.js <draft.md> <out.html>`) is only an offline
@@ -89,10 +89,10 @@ derived from the PRD.
      field), never a raw URL. For a portable artifact (006 A2): pass an output path to capture
      the JS-free static page in the same step: `mermaid-preview.js --verify <scratch.md> <out.html>`
      writes it from the rendered SVGs (this closes the former manual `--static` capture step).
-   - **Optionally export** standalone files to `.product/diagrams/{c4,sequence,state,data,deployment,flow}/`
+   - **Optionally export** standalone files to `workspace/outputs/current/exports/{c4,sequence,state,data,deployment,flow}/`
      only if the user wants separate artifacts.
-5. For UI/frontend sections, author OpenUI Lang in `.product/design/*.openui`
-   and render with `${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js` to `.product/design/*.html`.
+5. For UI/frontend sections, author OpenUI Lang in `workspace/outputs/current/ux/*.openui`
+   and render with `${CLAUDE_PLUGIN_ROOT}/scripts/openui-render.js` to `workspace/outputs/current/ux/*.html`.
 6. Identify decisions with significant trade-offs and flag them as ADR
    candidates; hand each to `egp-adr-builder`. Reference resulting `ADR-NNN`
    in the SDD's "Referenced ADRs" section.
@@ -105,6 +105,11 @@ derived from the PRD.
 8. Suggest running `egp-doc-sync` to refresh the traceability matrix. The SDD's
    §16 Requirement Coverage Index is generated by that step (between the COVERAGE-INDEX
    markers) — do not hand-author it.
+9. **Snapshot the approved run.** After the user approves the finalized document
+   and the consistency gate passes, write an immutable execution package:
+   `node "${CLAUDE_PLUGIN_ROOT}/scripts/snapshot.js" --skill egp-sdd-builder --artifact architecture/sdd.md`
+   This records workspace/outputs/history/<run-id>/ with a manifest and the
+   validation reports. Never edit files under history/.
 
 ## Rules
 - Every major design choice should map back to a PRD requirement or an ADR.
@@ -123,13 +128,13 @@ derived from the PRD.
   references `AR` and does not re-define it in a first cell; in no-SAD mode the SDD
   owns and defines `AR` as usual. `FR`/`NFR` (owned by the SRS) are never
   re-defined in a first cell.
-- **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
+- **Output language (006 G):** If `workspace/outputs/current/governance/import-state.json` has `outputLanguage`,
   write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
   technical jargon in that language. Absent → match the user's language.
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored
-  artifacts live under `.product/`.
+  artifacts live under `workspace/outputs/current/`.
 - **Version bump** (document `version` front-matter): patch = typo/clarification/formatting,
   no requirement change; minor = new section/requirement/ADR added (backward-compatible);
   major = restructure, or removed/renamed requirements.

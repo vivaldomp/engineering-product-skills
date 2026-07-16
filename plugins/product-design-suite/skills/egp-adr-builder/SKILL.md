@@ -1,6 +1,6 @@
 ---
 name: egp-adr-builder
-description: Create or update an Architecture Decision Record (ADR). Use when the user wants to record a single significant architectural decision, capture options considered, trade-offs, the chosen option, consequences, or change an ADR status (proposed/accepted/superseded). Writes .product/adr/ADR-NNN-*.md.
+description: Create or update an Architecture Decision Record (ADR). Use when the user wants to record a single significant architectural decision, capture options considered, trade-offs, the chosen option, consequences, or change an ADR status (proposed/accepted/superseded). Writes workspace/outputs/current/architecture/adr/ADR-NNN-*.md.
 metadata:
   author: Vivaldo
   version: "0.1.0"
@@ -8,7 +8,7 @@ metadata:
 
 # egp-adr-builder
 
-Record one architectural decision per file in `.product/adr/`.
+Record one architectural decision per file in `workspace/outputs/current/architecture/adr/`.
 
 ## Inputs
 - Template: `${CLAUDE_PLUGIN_ROOT}/shared/templates/adr-template.md`
@@ -18,7 +18,7 @@ Record one architectural decision per file in `.product/adr/`.
 - **If these steps were not surfaced on invocation (006 H1):** read this `SKILL.md`
   directly and follow the Steps/Rules below — invocation output is host-dependent.
 
-1. Ensure `.product/adr/` exists. Determine the next `ADR-NNN` by scanning
+1. Ensure `workspace/outputs/current/architecture/adr/` exists. Determine the next `ADR-NNN` by scanning
    existing files (zero-padded, starting at 001).
 2. Confirm the decision is significant and scoped to exactly ONE decision.
 3. Fill the ADR template per `questioning-protocol.md`. When authoritative source
@@ -40,8 +40,14 @@ Record one architectural decision per file in `.product/adr/`.
    table.
 6. On finalize, record any unresolved questions or assumptions in the ADR's
    **Assumptions** / **Decision Scope** sections — do not leave silent TBDs.
-7. Write `.product/adr/ADR-NNN-<kebab-title>.md`.
+7. Write `workspace/outputs/current/architecture/adr/ADR-NNN-<kebab-title>.md`.
 8. Suggest running `egp-doc-sync` so the SDD's "Referenced ADRs" stays current.
+9. **Snapshot the approved run.** After the user approves the finalized document
+   and the consistency gate passes, write an immutable execution package:
+   `node "${CLAUDE_PLUGIN_ROOT}/scripts/snapshot.js" --skill egp-adr-builder --artifact architecture/adr/ADR-NNN-<kebab-title>.md`
+   (use the specific file just written, e.g. `architecture/adr/ADR-007-<slug>.md`).
+   This records workspace/outputs/history/<run-id>/ with a manifest and the
+   validation reports. Never edit files under history/.
 
 ## Rules
 - One decision per ADR. If the user describes several, create several ADRs.
@@ -51,13 +57,13 @@ Record one architectural decision per file in `.product/adr/`.
   **Referencing** documents cite IDs in prose or in a **non-first column**. Any
   cross-doc reference/coverage table MUST be wrapped in generated markers
   (`COVERAGE-INDEX` / `ADR-INDEX` / `ADR-STATUS`) so `lint-ids` strips it.
-- **Output language (006 G):** If `.product/import-state.json` has `outputLanguage`,
+- **Output language (006 G):** If `workspace/outputs/current/governance/import-state.json` has `outputLanguage`,
   write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and
   technical jargon in that language. Absent → match the user's language.
 
 ## Guards
 - **`docs/` is read-only.** Never write under `docs/` — it is the import source. All authored
-  artifacts live under `.product/`.
+  artifacts live under `workspace/outputs/current/`.
 - **Version bump** (document `version` front-matter): patch = typo/clarification/formatting,
   no requirement change; minor = new section/requirement/ADR added (backward-compatible);
   major = restructure, or removed/renamed requirements.

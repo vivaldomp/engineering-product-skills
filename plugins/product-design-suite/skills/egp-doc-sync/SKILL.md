@@ -1,6 +1,6 @@
 ---
 name: egp-doc-sync
-description: Propagate changes across PRD, SDD, and ADR documents. Use after editing any product document, or when the user asks to sync docs, check cross-document impact, refresh the traceability matrix, or find stale/affected sections. Produces an impact report and confirmation-gated edits in .product/.
+description: Propagate changes across PRD, SDD, and ADR documents. Use after editing any product document, or when the user asks to sync docs, check cross-document impact, refresh the traceability matrix, or find stale/affected sections. Produces an impact report and confirmation-gated edits in workspace/outputs/current/.
 metadata:
   author: Vivaldo
   version: "0.1.0"
@@ -13,13 +13,13 @@ without explicit user confirmation.
 
 ## Steps
 1. Refresh the traceability index:
-   `node "${CLAUDE_PLUGIN_ROOT}/scripts/traceability.js" .product`
-   This writes `.product/traceability.md` and `.product/traceability.html`, and injects
-   the coverage index into `.product/sdd/sdd.md` §16 between the COVERAGE-INDEX markers
+   `node "${CLAUDE_PLUGIN_ROOT}/scripts/traceability.js"`
+   This writes `governance/traceability.md` and `governance/traceability.html`, and injects
+   the coverage index into `architecture/sdd.md` §16 between the COVERAGE-INDEX markers
    (content outside the markers is never touched).
 1b. Regenerate the ADR index and sync ADR status:
-    `node "${CLAUDE_PLUGIN_ROOT}/scripts/adr-index.js" .product`
-    This writes `.product/adr/index.md` from each ADR's front-matter and populates
+    `node "${CLAUDE_PLUGIN_ROOT}/scripts/adr-index.js"`
+    This writes `architecture/adr/index.md` from each ADR's front-matter and populates
     the SDD §15 `Status` column between the ADR-STATUS markers. Front-matter is the
     single source of truth — never hand-edit the §15 Status column.
 2. Determine what changed (use git diff if available, else ask the user which
@@ -27,11 +27,11 @@ without explicit user confirmation.
 3. Using the traceability matrix, build an **impact report** listing each
    affected downstream and upstream item, for example:
    - A changed requirement `FR-NNN`/`NFR-NNN` -> `AR-NNN` and sections referencing it,
-     ADRs referencing it, and PRD `UAT-NNN` that verify it. When `.product/srs/srs.md` exists,
+     ADRs referencing it, and PRD `UAT-NNN` that verify it. When `specifications/srs.md` exists,
      the SRS is the canonical source of `FR`/`NFR` and the PRD references them; otherwise they
      live in the PRD. Business rules (`BR-NNN`) and UAT (`UAT-NNN`) always live in the PRD.
    - A changed `AR-NNN` or macro-architecture choice -> SDD component design referencing it and
-     linked ADRs. When `.product/sad/sad.md` exists, the SAD is the canonical source of `AR-NNN`
+     linked ADRs. When `architecture/sad.md` exists, the SAD is the canonical source of `AR-NNN`
      and the macro-architecture, and the SDD references it; otherwise `AR-NNN` lives in the SDD.
      A changed SRS `NFR-NNN` also propagates to the SAD's architectural drivers.
    - A changed/ superseded ADR -> SDD "Referenced ADRs" and design choices.
@@ -49,7 +49,7 @@ without explicit user confirmation.
    reflects the applied edits.
 6. Report any `⚠️ Orphan` rows in the matrix as genuine coverage gaps (notation-only
    artifacts are already resolved by the range-aware parser).
-7. **Migrate legacy docs to the metadata convention.** If a `.product/` document
+7. **Migrate legacy docs to the metadata convention.** If a `workspace/outputs/current/` document
    predates the YAML front-matter convention — it has no front-matter block, or an
    ADR still carries the legacy `## 1. Metadata` table — propose the migration:
    add a front-matter block populated from the document's existing content; for an
@@ -58,7 +58,7 @@ without explicit user confirmation.
    Show the exact before/after and apply only on approval — no silent rewrite.
 
 8. **Final consistency check**: after applying all edits, run
-   `node scripts/consistency-gate.js .product` as the final step — it
+   `node "${CLAUDE_PLUGIN_ROOT}/scripts/consistency-gate.js"` as the final step — it
    aggregates traceability, ID linting, and ADR supersede/amend reciprocity
    into one pass/fail summary, making it easy to confirm the product is
    internally consistent before committing.
