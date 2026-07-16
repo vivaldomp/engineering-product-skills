@@ -80,3 +80,21 @@ test('an unknown run is refused', () => {
   const root = project('2026-07-15T103422', 'success', GOOD);
   assert.throws(() => P.promote({ run: 'nope', projectRoot: root }), /no run nope/);
 });
+
+test('--force on an already-successful run does not record forced', () => {
+  const root = project('2026-07-15T103422', 'success', GOOD);
+  const { release } = P.promote({ run: '2026-07-15T103422', force: true, projectRoot: root });
+  assert.equal(release.forced, false);
+});
+
+test('a failed copy leaves no partial destination behind', { skip: process.getuid && process.getuid() === 0 }, () => {
+  const root = project('2026-07-15T103422', 'success', GOOD);
+  const badFile = path.join(root, W.HISTORY, '2026-07-15T103422', 'artifacts', 'planning', 'prd.md');
+  fs.chmodSync(badFile, 0o000);
+  try {
+    assert.throws(() => P.promote({ run: '2026-07-15T103422', as: 'v1', projectRoot: root }));
+    assert.ok(!fs.existsSync(path.join(root, W.RELEASES, 'v1')));
+  } finally {
+    fs.chmodSync(badFile, 0o644);
+  }
+});

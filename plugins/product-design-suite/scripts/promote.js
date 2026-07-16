@@ -45,21 +45,29 @@ function promote({ run, as, force = false, projectRoot = '.', now = new Date() }
     throw new Error(`promote: ${path.join(W.RELEASES, name)} already exists; pick another --as name`);
   }
 
-  fs.mkdirSync(dest, { recursive: true });
-  fs.cpSync(path.join(runDir, 'artifacts'), path.join(dest, 'artifacts'), { recursive: true });
+  // Copy + manifest write aren't atomic; a mid-copy throw (e.g. EACCES on an
+  // unreadable source file) must not leave a partial dest behind for the next
+  // promote to trip over "already exists" on.
+  try {
+    fs.mkdirSync(dest, { recursive: true });
+    fs.cpSync(path.join(runDir, 'artifacts'), path.join(dest, 'artifacts'), { recursive: true });
 
-  const release = {
-    release: name,
-    runId: manifest.runId,
-    promotedAt: now.toISOString(),
-    fromStatus: manifest.status,
-    // Only true when a failing status was overridden, so the override stays
-    // visible for the life of the release.
-    forced: manifest.status !== 'success',
-    artifacts: manifest.artifacts,
-  };
-  fs.writeFileSync(path.join(dest, 'release.json'), JSON.stringify(release, null, 2) + '\n');
-  return { dest, release };
+    const release = {
+      release: name,
+      runId: manifest.runId,
+      promotedAt: now.toISOString(),
+      fromStatus: manifest.status,
+      // Only true when a failing status was overridden, so the override stays
+      // visible for the life of the release.
+      forced: manifest.status !== 'success',
+      artifacts: manifest.artifacts,
+    };
+    fs.writeFileSync(path.join(dest, 'release.json'), JSON.stringify(release, null, 2) + '\n');
+    return { dest, release };
+  } catch (err) {
+    fs.rmSync(dest, { recursive: true, force: true });
+    throw err;
+  }
 }
 
 module.exports = { promote, nextVersion };
