@@ -423,19 +423,48 @@ workspace/
     |   |-- specifications/srs.md
     |   |-- architecture/{sad.md, sdd.md, adr/ADR-NNN-<slug>.md}
     |   |-- ux/                  # UI previews (openui, prd-summary.html)
-    |   |-- governance/          # traceability, import reports
+    |   |-- governance/          # traceability, import reports, graph
     |   `-- exports/             # rendered diagram previews
-    `-- history/
-        `-- <run-id>/            # immutable snapshot: manifest.json, artifacts/, validation/
+    |-- history/
+    |   `-- <run-id>/            # immutable snapshot: manifest.json, artifacts/, validation/
+    `-- releases/
+        `-- v1/                  # promoted run: release.json, artifacts/
 .engineering/
-`-- config.yaml
+|-- config.yaml
+|-- receipts/<run-id>.json       # how each run went
+`-- telemetry/runs.jsonl         # one line per run
 ```
 
+**Metadata sidecars.** Each authored artifact has a `*.meta.json` beside it
+(`planning/prd.meta.json`) recording the skill, template, plugin version, run id,
+and a `sha256:` hash of the file. Regenerated outputs — `traceability.{md,html,json}`
+and `artifacts.graph.json` — deliberately have none: their hash could never signal
+drift, because nothing but the generator changes them.
+
+A sidecar records the run that last *changed* its artifact, so
+`node scripts/meta.js --check` reports `MODIFIED` for exactly those documents
+hand-edited since the last finalize. It is informational and always exits 0 —
+editing a document between runs is normal, not a gate failure.
+
+**Engineering graph.** Every finalize regenerates `governance/traceability.json`
+(the requirement matrix) and `governance/artifacts.graph.json` (document nodes,
+`dependsOn` and `shared-refs` edges). `node scripts/graph.js --impact architecture/sad.md`
+answers "the architecture changed — what do I regenerate?"
+
+**Releases.** `node scripts/promote.js --run <run-id> [--as v1]` copies an immutable
+run package to `workspace/outputs/releases/<name>/`. Gate-failed runs are refused
+unless `--force`, which records `"forced": true` in `release.json`. Promotion sources
+only from `history/` — `current/` is the live editable tree, never a release pointer.
+
 **Reserved names.** Taxonomy dirs `discovery/`, `implementation/`, `tests/`, `deployment/`,
-`operations/`; roots `workspace/outputs/releases/`, `workspace/reports/`, `workspace/cache/`
-(in use for preview session state), `workspace/state/`; `.engineering/{execution.db, receipts/,
-telemetry/}` — reserved for later phases (metadata sidecars, release promotion, engineering
-graph, telemetry). Directories are created only when something writes into them.
+`operations/`; roots `workspace/reports/`, `workspace/state/` — reserved for later phases.
+Directories are created only when something writes into them.
+
+**Rejected, not pending.** `.engineering/execution.db`: the suite is strictly
+zero-dependency, and the only built-in SQLite (`node:sqlite`) is experimental and
+version-gated, so depending on it would break the plugin on older Node while still
+needing a fallback. `receipts/` plus `telemetry/runs.jsonl` answer every query at this
+scale, grep cleanly, and merge under git where a binary database conflicts.
 
 ## 5. Traceability model
 
