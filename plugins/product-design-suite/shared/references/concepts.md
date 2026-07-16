@@ -218,24 +218,25 @@ ADR/
 `-- ADR-004-mcp-server.md
 ```
 
-Many agile teams do not maintain a separate formal SRS; the PRD then owns functional (`FR-NNN`) and non-functional (`NFR-NNN`) requirements directly, alongside the SDD for technical design and ADRs for decision history. This works well where architecture evolves incrementally and decisions need to remain traceable. Teams that do keep an IEEE-830 SRS (often regulated or enterprise contexts) can adopt the optional SRS document: the SRS becomes the canonical home for `FR-NNN`/`NFR-NNN` while the PRD references them and keeps business rules (`BR-NNN`) and acceptance tests (`UAT-NNN`). The suite detects which mode applies by whether `workspace/outputs/current/specifications/srs.md` exists.
+The **PRD is the single canonical home for requirements**: it owns functional (`FR-NNN`) and non-functional (`NFR-NNN`) requirements directly, alongside business rules (`BR-NNN`) and acceptance tests (`UAT-NNN`), with the SDD for technical design and ADRs for decision history. This concise, single-requirements-home structure suits modern Agile and AI-driven workflows where architecture evolves incrementally and decisions must stay traceable — and it removes the heavy IEEE-830 SRS and its conditional canonical source. (Legacy IEEE-830 SRS documents can still be *imported*: `egp-import` splits their `FR`/`NFR` into the PRD and their external-interface and design/standards constraints into the SAD. See the decision note in §6.)
 
 Between requirements and detailed design sits the optional **System Architecture Document
 (SAD)** — the macro-architecture blueprint. When a team adopts it, the SAD becomes the
 canonical home for the system context (C4 Level 1), container/infrastructure topology
-(C4 Level 2), data-flow and integration patterns, the macro security architecture, and the
-Architectural Requirements (`AR-NNN`); the SDD then drops to the micro level (C3 components,
-APIs, schemas, code-level design) and references the SAD. Without a SAD, the SDD owns the
-macro-architecture and `AR-NNN` as before. The suite detects SAD mode by whether
-`workspace/outputs/current/architecture/sad.md` exists. Where the SRS answers *what* the system must do and the SDD
-answers *how* a module is built, the SAD answers *where* components live and the big picture.
+(C4 Level 2), data-flow, integration and external-interface patterns, the macro security and
+standards-compliance architecture, and the Architectural Requirements (`AR-NNN`); the SDD then
+drops to the micro level (C3 components, APIs, schemas, code-level design) and references the
+SAD. Without a SAD, the SDD owns the macro-architecture and `AR-NNN` as before. The suite
+detects SAD mode by whether `workspace/outputs/current/architecture/sad.md` exists. Where the
+PRD answers *what* the system must do and the SDD answers *how* a module is built, the SAD
+answers *where* components live and the big picture.
 
 ## 5. Recommended lifecycle
 
+0. *(Optional)* When the problem or users still need validation, run a Discovery first with
+   `egp-discovery-builder`; its recommendation seeds the PRD's scope.
 1. Start with a PRD when the problem, audience, expected outcomes, and scope need alignment.
-   - *(Optional)* If the team maintains a formal SRS, author it after the PRD with
-     `egp-srs-builder`; the SRS then owns the detailed `FR`/`NFR` that the PRD references and
-     the SDD designs against.
+   The PRD owns the detailed `FR`/`NFR` that the SAD and SDD design against.
    - *(Optional)* If the team maintains a System Architecture Document, author it after the
      requirements with `egp-sad-builder`; the SAD then owns the macro-architecture and `AR-NNN`
      that the SDD designs against and references.
@@ -244,5 +245,35 @@ answers *how* a module is built, the SAD answers *where* components live and the
    component/code design.
 3. Create ADRs whenever the design involves meaningful trade-offs, irreversible choices, expensive changes, cross-team standards, or long-lived operational consequences.
 4. Keep the documents connected through references: PRD requirements should map to SDD sections, and SDD design choices should link to ADRs.
-5. Update documents when reality changes. Documentation is most valuable when it reflects the system as built or intentionally records why it changed.
+5. *(Optional)* When shipping, author a Release Plan (`egp-release-builder`) and an Operations
+   Runbook (`egp-ops-builder`); both follow the SDD and turn its deployment/observability design
+   into executable rollout and on-call guides.
+6. Update documents when reality changes. Documentation is most valuable when it reflects the system as built or intentionally records why it changed.
+
+## 6. Design notes
+
+### Why the PRD is the single requirements home (SRS retired)
+
+The suite deliberately has **no SRS**. An IEEE-830 SRS duplicated the PRD's
+requirements (`FR-NNN`/`NFR-NNN`), personas, scope, and glossary, duplicated the
+SAD's system-context material, and generated its traceability index elsewhere —
+its only unique content was an external-interface inventory and a design/standards
+constraints list. Keeping it forced a conditional "which document owns the
+requirements?" mode into every builder and script. Retiring it collapses that to
+one rule (**the PRD owns `FR`/`NFR`/`BR`/`UAT`, always**), folds the interface and
+constraint tables into a tighter SAD (§5/§6/§2), and yields the concise structure
+that both humans and agents parse most reliably. Legacy SRS documents are still
+*importable* via `egp-import`, which splits them into the PRD and SAD.
+
+### Why the SAD stays separate from the SDD
+
+The SDD's "Solution Context" reproduces much of the SAD outline (drivers,
+context, containers), so merging them is tempting. The suite keeps them
+**distinct on purpose**: the SAD serves a macro-architecture audience (the
+*where* and the big picture) that the SDD's component/code detail buries, it is
+optional (`arSource = sad || sdd` in `traceability.js` reconciles either mode),
+and with the SRS retired the SAD now *owns* the external-interface and
+standards-compliance content — making it load-bearing rather than redundant.
+Fold macro-architecture into the SDD only if a team never wants a standalone
+architecture view.
 

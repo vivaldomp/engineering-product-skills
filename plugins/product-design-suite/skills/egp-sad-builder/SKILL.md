@@ -1,6 +1,6 @@
 ---
 name: egp-sad-builder
-description: Create or update a System Architecture Document (SAD). Use when a team maintains a macro-architecture document and wants the canonical system context, container/infrastructure topology, data-flow patterns, macro security architecture, and Architectural Requirements (AR-NNN) to live in a dedicated document between the SRS and the SDD. Writes workspace/outputs/current/architecture/sad.md; the SDD then references it.
+description: Create or update a System Architecture Document (SAD). Use when a team maintains a macro-architecture document and wants the canonical system context, container/infrastructure topology, data-flow and external-interface patterns, macro security and standards-compliance architecture, and Architectural Requirements (AR-NNN) to live in a dedicated document between the PRD and the SDD. Writes workspace/outputs/current/architecture/sad.md; the SDD then references it.
 metadata:
   author: Vivaldo
   version: "0.1.0"
@@ -11,14 +11,14 @@ metadata:
 Build or update the SAD at `workspace/outputs/current/architecture/sad.md` from the shared template. The SAD is
 **optional**: when it exists, it is the canonical home for the macro-architecture — C4
 Context (C1) and Container (C2) diagrams, system boundaries, technology/infrastructure
-choices, data-flow & integration patterns, the macro security architecture, and the
-Architectural Requirements (`AR-NNN`) — and the SDD references it. When no SAD exists, the
-SDD owns those as usual — creating this file is what puts the project into "SAD mode".
+choices, data-flow, integration and external-interface patterns, the macro security and
+standards-compliance architecture, and the Architectural Requirements (`AR-NNN`) — and the SDD
+references it. When no SAD exists, the SDD owns those as usual — creating this file is what puts
+the project into "SAD mode".
 
 ## Inputs
 - Template: `${CLAUDE_PLUGIN_ROOT}/shared/templates/sad-template.md`
-- PRD: `workspace/outputs/current/planning/prd.md` (read for product intent and scope)
-- SRS (if present): `workspace/outputs/current/specifications/srs.md` — read the non-functional requirements as architectural drivers
+- PRD: `workspace/outputs/current/planning/prd.md` — read for product intent/scope and the non-functional requirements (`NFR-NNN`) that drive the architecture
 - SDD (if present): `workspace/outputs/current/architecture/sdd.md` (read for any existing `AR` table / C4 Context+Container diagrams to migrate)
 - Concepts/structure: `${CLAUDE_PLUGIN_ROOT}/shared/references/concepts.md`, `${CLAUDE_PLUGIN_ROOT}/shared/references/structures.md`
 - Question cadence: `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md`
@@ -28,8 +28,11 @@ SDD owns those as usual — creating this file is what puts the project into "SA
   directly and follow the Steps/Rules below — invocation output is host-dependent.
 
 1. Ensure `workspace/outputs/current/architecture/` exists. If `sad.md` exists, load it and treat this as an update.
-2. Read the SAD template, the PRD, and the SRS if present. Source the architectural drivers
-   from the non-functional requirements (`NFR-NNN`) in the SRS, or the PRD when no SRS exists.
+2. Read the SAD template and the PRD. Source the architectural drivers from the
+   non-functional requirements (`NFR-NNN`) in the PRD. Author §5's External Interface
+   Requirements table (system/user/hardware/software/communication interfaces) and fold any
+   coding/regulatory standards-compliance into §2 Technical Constraints and §6 Security and
+   Compliance Architecture.
 3. Fill each required section per `questioning-protocol.md`. When authoritative source is
    provided — mapped content from `egp-import`, or source supplied by the user — use
    **derive-then-confirm mode**: derive the sections, present one confirmation batch (see the one-confirmation-batch contract in `questioning-protocol.md`), and ask
@@ -109,7 +112,7 @@ SDD owns those as usual — creating this file is what puts the project into "SA
 - Confirmation-gated: propose the SDD migration, then apply on approval. No silent rewrites.
 - Reuse source IDs verbatim; keep `AR-NNN` IDs stable across updates.
 - **ID ownership (006 D):** Only the **owning** document puts an ID in a first
-  table cell — SRS owns `FR`/`NFR`, SAD owns `AR`, each ADR owns itself.
+  table cell — PRD owns `FR`/`NFR`, SAD owns `AR`, each ADR owns itself.
   **Referencing** documents cite IDs in prose or in a **non-first column**. Any
   cross-doc reference/coverage table MUST be wrapped in generated markers
   (`COVERAGE-INDEX` / `ADR-INDEX` / `ADR-STATUS`) so `lint-ids` strips it.

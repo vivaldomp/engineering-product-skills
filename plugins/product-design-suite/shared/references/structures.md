@@ -296,27 +296,28 @@ set from this catalog:
 
 ## 2b. SAD (System Architecture Document)
 
-An optional macro-architecture document that sits between the SRS and the SDD. When present,
-it is the canonical home for the system context, container/infrastructure topology, data-flow
-patterns, the macro security architecture, and the Architectural Requirements (`AR-NNN`). The
-SDD then references it and focuses on C3 component/code design. Without a SAD, the SDD owns
-the macro-architecture and `AR-NNN`.
+An optional macro-architecture document that sits between the PRD and the SDD. When present,
+it is the canonical home for the system context, container/infrastructure topology, data-flow,
+integration and external-interface patterns, the macro security and standards-compliance
+architecture, and the Architectural Requirements (`AR-NNN`). The SDD then references it and
+focuses on C3 component/code design. Without a SAD, the SDD owns the macro-architecture and
+`AR-NNN`.
 
 ```text
 SAD
 |-- 1. Introduction (purpose, scope, audience, references, related ADRs, glossary)
-|-- 2. Architectural drivers and requirements (AR-NNN, drivers from NFRs, constraints)
+|-- 2. Architectural drivers and requirements (AR-NNN, drivers from NFRs, technical/standards constraints)
 |-- 3. System context (C4 Level 1)
 |-- 4. Container and infrastructure (C4 Level 2, technology choices, deployment)
-|-- 5. Data flow and integration patterns (REST/GraphQL/events, trust boundaries)
-|-- 6. Security and compliance architecture (macro: authN, encryption, perimeters)
+|-- 5. Data flow, integration and external-interface patterns (REST/GraphQL/events, interface inventory, trust boundaries)
+|-- 6. Security and compliance architecture (macro: authN, encryption, perimeters, standards compliance)
 |-- 7. Architecture decisions (each linking to an ADR)
 `-- 8. Open questions and assumptions
 ```
 
 ### SAD quality checklist
 
-- The macro-architecture maps back to SRS/PRD non-functional requirements via `AR-NNN`.
+- The macro-architecture maps back to PRD non-functional requirements via `AR-NNN`.
 - System boundaries and external integrations are explicit (C4 Context).
 - Container/technology choices and the deployment landscape are shown (C4 Container).
 - Data-flow and integration patterns, including trust boundaries, are mapped.
@@ -419,9 +420,11 @@ workspace/
 |-- inputs/                      # user-supplied source material
 |-- outputs/
 |   |-- current/                 # live, editable working tree
+|   |   |-- discovery/discovery.md  # optional (upstream of the PRD)
 |   |   |-- planning/prd.md
-|   |   |-- specifications/srs.md
 |   |   |-- architecture/{sad.md, sdd.md, adr/ADR-NNN-<slug>.md}
+|   |   |-- deployment/release.md    # optional (follows the SDD)
+|   |   |-- operations/runbook.md    # optional (follows the SDD)
 |   |   |-- ux/                  # UI previews (openui, prd-summary.html)
 |   |   |-- governance/          # traceability, import reports, graph
 |   |   `-- exports/             # rendered diagram previews
@@ -457,8 +460,9 @@ run package to `workspace/outputs/releases/<name>/`. Gate-failed runs are refuse
 unless `--force`, which records `"forced": true` in `release.json`. Promotion sources
 only from `history/` — `current/` is the live editable tree, never a release pointer.
 
-**Reserved names.** Taxonomy dirs `discovery/`, `implementation/`, `tests/`, `deployment/`,
-`operations/`; roots `workspace/reports/`, `workspace/state/` — reserved for later phases.
+**Reserved names.** Taxonomy dirs `implementation/`, `tests/`; roots `workspace/reports/`,
+`workspace/state/` — reserved for later phases. (`discovery/`, `deployment/`, and
+`operations/` are now backed by the discovery, release, and runbook documents.)
 Directories are created only when something writes into them.
 
 **Rejected, not pending.** `.engineering/execution.db`: the suite is strictly

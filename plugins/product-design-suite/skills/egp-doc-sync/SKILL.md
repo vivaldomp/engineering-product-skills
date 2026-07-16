@@ -27,20 +27,19 @@ without explicit user confirmation.
 3. Using the traceability matrix, build an **impact report** listing each
    affected downstream and upstream item, for example:
    - A changed requirement `FR-NNN`/`NFR-NNN` -> `AR-NNN` and sections referencing it,
-     ADRs referencing it, and PRD `UAT-NNN` that verify it. When `specifications/srs.md` exists,
-     the SRS is the canonical source of `FR`/`NFR` and the PRD references them; otherwise they
-     live in the PRD. Business rules (`BR-NNN`) and UAT (`UAT-NNN`) always live in the PRD.
+     ADRs referencing it, and PRD `UAT-NNN` that verify it. The PRD is the canonical source of
+     `FR`/`NFR`; business rules (`BR-NNN`) and UAT (`UAT-NNN`) also live in the PRD.
    - A changed `AR-NNN` or macro-architecture choice -> SDD component design referencing it and
      linked ADRs. When `architecture/sad.md` exists, the SAD is the canonical source of `AR-NNN`
      and the macro-architecture, and the SDD references it; otherwise `AR-NNN` lives in the SDD.
-     A changed SRS `NFR-NNN` also propagates to the SAD's architectural drivers.
+     A changed PRD `NFR-NNN` also propagates to the SAD's architectural drivers.
    - A changed/ superseded ADR -> SDD "Referenced ADRs" and design choices.
    - Read each ADR's front-matter relationship fields (`supersedes`,
      `superseded-by`, `amends`, `amended-by`) to find linked ADRs, and verify the
      links are symmetric: if ADR-A lists `supersedes: [ADR-B]` but ADR-B lacks
      `superseded-by: [ADR-A]` (or the reciprocal amend link is missing), report
      the asymmetric/dangling link and propose the corrective edit.
-   - Read each ADR's `related-prd`, `related-srs`, `related-sdd`, and `related-sad`
+   - Read each ADR's `related-prd`, `related-sdd`, and `related-sad`
      fields to link decisions to the documents they affect; a changed SAD structural
      choice propagates to ADRs that list it in `related-sad`.
    - A changed SDD contract -> PRD acceptance criteria that depend on it.

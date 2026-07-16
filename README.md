@@ -4,21 +4,23 @@
 
 A Claude Code marketplace containing the **product-design-suite** plugin — a set
 of Agent Skills that guide Product Managers and architects through a sequential
-**PRD → SRS → SAD → SDD → ADR** workflow, with cross-document synchronization,
+**PRD → SAD → SDD → ADR** workflow, with cross-document synchronization,
 requirement traceability, and framework-free HTML/Mermaid visualizations.
 
-The SRS and SAD stages are **optional**: a small product can go straight from PRD
-to SDD, while a team that maintains a formal IEEE-830 SRS or a macro System
-Architecture Document can slot those in. Everything is written to a local
-`workspace/` directory — live docs under `workspace/outputs/current/`, immutable
-per-approval run packages under `workspace/outputs/history/`.
+The SAD stage is **optional**: a small product can go straight from PRD
+to SDD, while a team that maintains a macro System Architecture Document can slot
+it in. The PRD is the single canonical home for requirements (`FR/NFR/BR/UAT`) —
+the suite carries no separate IEEE-830 SRS, though `egp-import` can still ingest a
+legacy one. Everything is written to a local `workspace/` directory — live docs
+under `workspace/outputs/current/`, immutable per-approval run packages under
+`workspace/outputs/history/`.
 
 ---
 
 ## What's inside
 
-- **8 skills** orchestrating the full document workflow (below).
-- **7 slash commands** (`/egp-product`, `/egp-prd`, `/egp-srs`, `/egp-sad`, `/egp-sdd`, `/egp-adr`, `/egp-import`).
+- **10 skills** orchestrating the full document workflow (below).
+- **9 slash commands** (`/egp-product`, `/egp-discovery`, `/egp-prd`, `/egp-sad`, `/egp-sdd`, `/egp-adr`, `/egp-release`, `/egp-ops`, `/egp-import`).
 - **Tooling scripts** for traceability, an ID linter, a consistency gate, and offline diagram/UI previews.
 - **A canonical ID convention** shared by the templates and the tooling so requirement IDs never silently drift.
 
@@ -27,9 +29,9 @@ per-approval run packages under `workspace/outputs/history/`.
 - **Canonical ID conventions** — one source of truth (`scripts/id-conventions.js` + `shared/references/id-conventions.md`) consumed by the traceability tool and the linter, so `FR-001`, category-lettered `NFR-P1`, and constraints `C-7` are all recognized consistently.
 - **Smarter traceability** — structural parsing of the SAD/SDD *Architectural Requirements* table (Source column), a first-class **Constraints** group, and a report of any ID-shaped token it could not classify.
 - **ID linter** (`scripts/lint-ids.js`) and a **consistency gate** (`scripts/consistency-gate.js`) that runs traceability + lint + ADR supersede/amend reciprocity in one pass/fail summary.
-- **IEEE-830 SRS** and **System Architecture Document (SAD)** stages, each owning their canonical requirements (`FR/NFR` in the SRS, `AR-NNN` in the SAD).
-- **`egp-import`** to bootstrap the suite from existing docs (emits a gap report + machine-readable `import-map.json` + `import-state.json`).
-- **Front-matter & template polish** — ADR `related-srs` links, an optional mode-banner slot, and per-concern status fields (`designed | partial | gap | n/a`) in the SDD.
+- **Single requirements home** — the PRD owns canonical `FR/NFR/BR/UAT`; the optional **System Architecture Document (SAD)** owns the macro-architecture, external interfaces, and Architectural Requirements (`AR-NNN`).
+- **`egp-import`** to bootstrap the suite from existing docs — including a legacy IEEE-830 SRS, split into the PRD and SAD — (emits a gap report + machine-readable `import-map.json` + `import-state.json`).
+- **Front-matter & template polish** — ADR relationship links, an optional mode-banner slot, and per-concern status fields (`designed | partial | gap | n/a`) in the SDD.
 - **Lighter diagram preview** — render inline Mermaid to a single self-contained HTML file with no long-running server.
 
 ---
@@ -105,28 +107,33 @@ directory, run `node plugins/product-design-suite/scripts/migrate-workspace.js`
 flowchart TD
     Start([Start a product spec]) --> Has{Existing docs?}
     Has -- yes --> Import["/egp-import<br/>classify sources → gap report<br/>+ import-map.json"]
-    Has -- no --> PRD
+    Has -- no --> Discq
     Import --> PRD
 
-    PRD["egp-prd-builder<br/><b>PRD</b>: problem, personas,<br/>scope, FR/NFR/UAT"]
-    PRD --> SRSq{Formal SRS?}
-    SRSq -- yes --> SRS["egp-srs-builder<br/><b>SRS</b> (IEEE-830)<br/>canonical FR/NFR"]
-    SRSq -- no --> SADq
-    SRS --> SADq{Macro architecture?}
-    SADq -- yes --> SAD["egp-sad-builder<br/><b>SAD</b>: system context,<br/>topology, AR-NNN"]
+    Discq{Problem validated?}
+    Discq -- no --> Disc["egp-discovery-builder<br/><b>Discovery</b>: research,<br/>findings, recommendation"]
+    Discq -- yes --> PRD
+    Disc --> PRD
+
+    PRD["egp-prd-builder<br/><b>PRD</b>: problem, personas,<br/>scope, canonical FR/NFR/BR/UAT"]
+    PRD --> SADq{Macro architecture?}
+    SADq -- yes --> SAD["egp-sad-builder<br/><b>SAD</b>: system context,<br/>topology, interfaces, AR-NNN"]
     SADq -- no --> SDD
     SAD --> SDD
 
     SDD["egp-sdd-builder<br/><b>SDD</b>: C4 + sequence diagrams,<br/>components, data, APIs"]
     SDD --> ADR["egp-adr-builder<br/><b>ADR-NNN</b>: decisions,<br/>options, consequences"]
-    ADR --> Sync["egp-doc-sync<br/>impact report +<br/>traceability matrix"]
+    ADR --> Rel["egp-release-builder<br/><b>Release</b>: rollout, rollback"]
+    ADR --> Ops["egp-ops-builder<br/><b>Runbook</b>: on-call, recovery"]
+    Rel --> Sync["egp-doc-sync<br/>impact report +<br/>traceability matrix"]
+    Ops --> Sync
 
     Sync --> Gate{"consistency-gate.js<br/>traceability + lint-ids +<br/>ADR reciprocity"}
     Gate -- pass --> Done(["workspace/ ready"])
     Gate -- "fail" --> PRD
 
     classDef opt fill:#eef,stroke:#88a,stroke-dasharray:4 3;
-    class SRS,SAD opt;
+    class Disc,SAD,Rel,Ops opt;
 ```
 
 The **`egp-product-workflow`** skill is the orchestrator: it initializes
@@ -140,13 +147,15 @@ You can also invoke any single stage on its own via its slash command.
 
 | Skill | Role |
 | --- | --- |
-| `egp-product-workflow` | **Orchestrator.** Runs the end-to-end PRD → (SRS) → (SAD) → SDD → ADR sequence, initializes `workspace/outputs/current/`, enforces question cadence, and dispatches to the builders + doc-sync. |
-| `egp-prd-builder` | Create/update the **PRD** — problem statement, personas, scope, functional/non-functional requirements, acceptance criteria. Writes `workspace/outputs/current/planning/prd.md`. |
-| `egp-srs-builder` | Create/update an **IEEE-830 SRS** owning canonical `FR-NNN`/`NFR-NNN`. Optional; the PRD then references it. Writes `workspace/outputs/current/specifications/srs.md`. |
-| `egp-sad-builder` | Create/update a **System Architecture Document** — system context, container/infra topology, macro security, and Architectural Requirements `AR-NNN`. Optional; sits between SRS and SDD. Writes `workspace/outputs/current/architecture/sad.md`. |
+| `egp-product-workflow` | **Orchestrator.** Runs the end-to-end PRD → (SAD) → SDD → ADR sequence, initializes `workspace/outputs/current/`, enforces question cadence, and dispatches to the builders + doc-sync. |
+| `egp-discovery-builder` | Create/update the **Discovery** doc — problem-space research, user findings, opportunities, recommendation. Optional; upstream of the PRD. Writes `workspace/outputs/current/discovery/discovery.md`. |
+| `egp-prd-builder` | Create/update the **PRD** — problem statement, personas, scope, canonical functional/non-functional requirements (`FR-NNN`/`NFR-NNN`), business rules, acceptance criteria. Writes `workspace/outputs/current/planning/prd.md`. |
+| `egp-sad-builder` | Create/update a **System Architecture Document** — system context, container/infra topology, external interfaces, macro security & standards compliance, and Architectural Requirements `AR-NNN`. Optional; sits between PRD and SDD. Writes `workspace/outputs/current/architecture/sad.md`. |
 | `egp-sdd-builder` | Create/update the **SDD** — C4 + sequence diagrams (inline Mermaid), components, data model, APIs, security, observability, testing. Writes `workspace/outputs/current/architecture/sdd.md`. |
 | `egp-adr-builder` | Record/update an **ADR** — a single decision with options, trade-offs, consequences, and status (proposed/accepted/superseded). Writes `workspace/outputs/current/architecture/adr/ADR-NNN-*.md`. |
-| `egp-doc-sync` | Propagate changes across PRD/SRS/SAD/SDD/ADR. Produces an impact report, refreshes the traceability matrix, and makes confirmation-gated edits. |
+| `egp-release-builder` | Create/update the **Release Plan** — strategy, environments, rollout, rollback, checklist, communications. Optional; follows the SDD. Writes `workspace/outputs/current/deployment/release.md`. |
+| `egp-ops-builder` | Create/update the **Operations Runbook** — on-call ownership, observability, common incidents, routine ops, recovery. Optional; follows the SDD. Writes `workspace/outputs/current/operations/runbook.md`. |
+| `egp-doc-sync` | Propagate changes across PRD/SAD/SDD/ADR. Produces an impact report, refreshes the traceability matrix, and makes confirmation-gated edits. |
 | `egp-import` | Bootstrap the suite from **existing** docs. Classifies sources, maps them to templates, and writes a gap report + `import-map.json` + `import-state.json` before any authoring. |
 
 ## Commands
@@ -154,11 +163,13 @@ You can also invoke any single stage on its own via its slash command.
 | Command | Invokes |
 | --- | --- |
 | `/egp-product` | `egp-product-workflow` (full workflow) |
+| `/egp-discovery` | `egp-discovery-builder` |
 | `/egp-prd` | `egp-prd-builder` |
-| `/egp-srs` | `egp-srs-builder` |
 | `/egp-sad` | `egp-sad-builder` |
 | `/egp-sdd` | `egp-sdd-builder` |
 | `/egp-adr` | `egp-adr-builder` |
+| `/egp-release` | `egp-release-builder` |
+| `/egp-ops` | `egp-ops-builder` |
 | `/egp-import` | `egp-import` |
 
 Skills are also **descriptive-triggered** — phrases like "draft a PRD", "design
@@ -196,8 +207,9 @@ library only, no npm dependencies) or POSIX shell.
 
 ## Templates & references
 
-**Templates** (`plugins/product-design-suite/shared/templates/`) — `prd-template.md`,
-`srs-template.md`, `sad-template.md`, `sdd-template.md`, `adr-template.md`. Each
+**Templates** (`plugins/product-design-suite/shared/templates/`) — `discovery-template.md`,
+`prd-template.md`, `sad-template.md`, `sdd-template.md`, `adr-template.md`,
+`release-template.md`, `runbook-template.md`. Each
 ships with YAML front-matter and (where relevant) a coverage-index marker and an
 optional mode-banner slot.
 
@@ -240,7 +252,6 @@ tree. Each approval also snapshots an immutable run package under
 ```
 workspace/outputs/current/
 ├── planning/prd.md
-├── specifications/srs.md        # optional
 ├── architecture/
 │   ├── sad.md                   # optional
 │   ├── sdd.md                   # includes the generated coverage index

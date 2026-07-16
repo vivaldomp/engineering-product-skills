@@ -28,10 +28,9 @@ Record one architectural decision per file in `workspace/outputs/current/archite
    alternatives (include "do nothing" when relevant).
 4. Populate the YAML front-matter (`id`, `title`, `status`, `date`, `author`,
    `reviewers`). Link related PRD/SDD/SAD/ADR references in the `related-prd`,
-   `related-srs`, `related-sdd`, `related-sad`, and `related-adrs` front-matter fields.
+   `related-sdd`, `related-sad`, and `related-adrs` front-matter fields.
    When the decision records a structural choice made in the SAD, set `related-sad` (SAD
-   section or `AR-NNN`). When FR/NFR live in an SRS, link them via `related-srs`
-   (e.g. `["§3 FR-012"]`).
+   section or `AR-NNN`). Link `FR`/`NFR` via `related-prd` (e.g. `["§7 FR-012"]`).
 5. Set `status` to a single enum value (Proposed/Accepted/Superseded/Deprecated/
    Rejected) — never overload it with parentheticals. Record supersede/amend
    relationships in the structured front-matter fields: set `supersedes` or
@@ -53,7 +52,7 @@ Record one architectural decision per file in `workspace/outputs/current/archite
 - One decision per ADR. If the user describes several, create several ADRs.
 - Keep it durable: explain *why*, not just *what*.
 - **ID ownership (006 D):** Only the **owning** document puts an ID in a first
-  table cell — SRS owns `FR`/`NFR`, SAD owns `AR`, each ADR owns itself.
+  table cell — PRD owns `FR`/`NFR`, SAD owns `AR`, each ADR owns itself.
   **Referencing** documents cite IDs in prose or in a **non-first column**. Any
   cross-doc reference/coverage table MUST be wrapped in generated markers
   (`COVERAGE-INDEX` / `ADR-INDEX` / `ADR-STATUS`) so `lint-ids` strips it.

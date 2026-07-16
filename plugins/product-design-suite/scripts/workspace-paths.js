@@ -18,14 +18,16 @@ const TELEMETRY = path.join(ENGINEERING, 'telemetry');
 const RUNS_LOG = path.join(TELEMETRY, 'runs.jsonl');
 
 // Engineering-purpose taxonomy inside outputs/current. Reserved names not yet
-// used by any skill (discovery, implementation, tests, deployment, operations)
-// are documented in shared/references/structures.md, not created here.
+// used by any skill (implementation, tests) are documented in
+// shared/references/structures.md, not created here.
 const REL = {
+  discovery: path.join('discovery', 'discovery.md'),
   prd: path.join('planning', 'prd.md'),
-  srs: path.join('specifications', 'srs.md'),
   sad: path.join('architecture', 'sad.md'),
   sdd: path.join('architecture', 'sdd.md'),
   adrDir: path.join('architecture', 'adr'),
+  release: path.join('deployment', 'release.md'),
+  runbook: path.join('operations', 'runbook.md'),
   governance: 'governance',
   ux: 'ux',
   exports: 'exports',
@@ -34,18 +36,22 @@ const REL = {
 // Template per authored document. Keyed by exact relative path: consumers
 // iterate these entries calling existsSync, so no directory-shaped keys.
 const TEMPLATE_FOR = {
+  [REL.discovery]: 'discovery-template.md',
   [REL.prd]: 'prd-template.md',
-  [REL.srs]: 'srs-template.md',
   [REL.sad]: 'sad-template.md',
   [REL.sdd]: 'sdd-template.md',
+  [REL.release]: 'release-template.md',
+  [REL.runbook]: 'runbook-template.md',
 };
 
 // The suite's fixed authoring pipeline. ADRs depend on the SAD; that edge is
-// resolved in meta.js because ADR filenames vary.
+// resolved in meta.js because ADR filenames vary. Discovery is an optional
+// upstream leaf that feeds the PRD; release and runbook follow the SDD.
 const DEPENDS = {
-  [REL.srs]: [REL.prd],
-  [REL.sad]: [REL.srs],
+  [REL.sad]: [REL.prd],
   [REL.sdd]: [REL.sad],
+  [REL.release]: [REL.sdd],
+  [REL.runbook]: [REL.sdd],
 };
 
 // Authored once by egp-import and read by downstream builders — unlike

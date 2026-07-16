@@ -37,7 +37,6 @@ test('id-conventions reference documents prefixes, category-letters and constrai
   assert.match(s, /FR|BR|NFR|AR|UAT|ADR/);
 });
 
-test('srs and sad templates link to the id-conventions reference', () => {
-  assert.match(read('shared/templates/srs-template.md'), /id-conventions/);
+test('sad template links to the id-conventions reference', () => {
   assert.match(read('shared/templates/sad-template.md'), /id-conventions/);
 });

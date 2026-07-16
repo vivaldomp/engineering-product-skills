@@ -36,7 +36,8 @@ test('migrate moves a populated legacy tree into the taxonomy without loss', () 
   const cur = path.join(root, W.CURRENT);
   assert.equal(fs.readFileSync(path.join(cur, 'planning', 'prd.md'), 'utf8'), 'FR-001');
   assert.equal(fs.readFileSync(path.join(cur, 'ux', 'prd-summary.html'), 'utf8'), '<html>');
-  assert.equal(fs.readFileSync(path.join(cur, 'specifications', 'srs.md'), 'utf8'), 'srs');
+  // A legacy SRS is unmapped now (the SRS type is retired): it falls through to its original path.
+  assert.equal(fs.readFileSync(path.join(cur, 'srs', 'srs.md'), 'utf8'), 'srs');
   assert.equal(fs.readFileSync(path.join(cur, 'architecture', 'sad.md'), 'utf8'), 'sad');
   assert.equal(fs.readFileSync(path.join(cur, 'architecture', 'sdd.md'), 'utf8'), 'sdd');
   assert.equal(fs.readFileSync(path.join(cur, 'architecture', 'adr', 'ADR-001-x.md'), 'utf8'), 'adr');

@@ -172,17 +172,19 @@ date: <YYYY-MM-DD>
 
 ## 9. Non-Functional Requirements
 
-| Category | Requirement | Target or Threshold | Measurement Method |
-| --- | --- | --- | --- |
-| Performance | <Requirement> | <Target> | <How measured> |
-| Security | <Requirement> | <Target> | <How measured> |
-| Privacy | <Requirement> | <Target> | <How measured> |
-| Availability | <Requirement> | <Target> | <How measured> |
-| Reliability | <Requirement> | <Target> | <How measured> |
-| Accessibility | <Requirement> | <Target> | <How measured> |
-| Observability | <Requirement> | <Target> | <How measured> |
-| Compliance | <Requirement> | <Target> | <How measured> |
-| Scalability | <Requirement> | <Target> | <How measured> |
+The PRD is the canonical home for non-functional requirements. Give each row a stable `NFR-NNN` ID so it is machine-traceable; the SAD sources its architectural drivers from these.
+
+| ID | Category | Requirement | Target or Threshold | Measurement Method |
+| --- | --- | --- | --- | --- |
+| NFR-NNN | Performance | <Requirement> | <Target> | <How measured> |
+| NFR-NNN | Security | <Requirement> | <Target> | <How measured> |
+| NFR-NNN | Privacy | <Requirement> | <Target> | <How measured> |
+| NFR-NNN | Availability | <Requirement> | <Target> | <How measured> |
+| NFR-NNN | Reliability | <Requirement> | <Target> | <How measured> |
+| NFR-NNN | Accessibility | <Requirement> | <Target> | <How measured> |
+| NFR-NNN | Observability | <Requirement> | <Target> | <How measured> |
+| NFR-NNN | Compliance | <Requirement> | <Target> | <How measured> |
+| NFR-NNN | Scalability | <Requirement> | <Target> | <How measured> |
 
 ## 10. Data and Reporting Needs
 

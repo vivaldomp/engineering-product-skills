@@ -13,8 +13,7 @@ derived from the PRD.
 
 ## Inputs
 - Template: `${CLAUDE_PLUGIN_ROOT}/shared/templates/sdd-template.md`
-- PRD: `workspace/outputs/current/planning/prd.md` (read for requirements to satisfy)
-- SRS (SRS mode): `workspace/outputs/current/specifications/srs.md` — the canonical `FR`/`NFR` source when it exists
+- PRD: `workspace/outputs/current/planning/prd.md` — the canonical `FR`/`NFR` source and requirements to satisfy
 - SAD (SAD mode): `workspace/outputs/current/architecture/sad.md` — the canonical macro-architecture and `AR-NNN` source when it exists
 - References: `${CLAUDE_PLUGIN_ROOT}/shared/references/{concepts,structures,questioning-protocol,openui-guide}.md`
 
@@ -24,8 +23,7 @@ derived from the PRD.
 
 1. If `workspace/outputs/current/planning/prd.md` is missing, warn the user that the SDD should follow
    a PRD, and offer to run `egp-prd-builder` first (do not hard-block).
-2. Read the SDD template and the requirements source. **SRS mode** — when `specifications/srs.md`
-   exists — the canonical `FR-NNN`/`NFR-NNN` live in the SRS; **otherwise** they live in the PRD.
+2. Read the SDD template and the requirements source. The canonical `FR-NNN`/`NFR-NNN` live in the PRD.
    **SAD mode** — when `architecture/sad.md` exists — the macro-architecture and the canonical
    `AR-NNN` table live in the **SAD**, so §3 Architecture Overview **references** the SAD's
    `AR-NNN` and C4 Context/Container instead of enumerating them, and this SDD focuses on C3
@@ -118,7 +116,7 @@ derived from the PRD.
   heading with an `n/a` body rather than omitting it, so `validate-structure` stays
   clean (feedback 005 #9).
 - **ID ownership (006 D):** Only the **owning** document puts an ID in a first
-  table cell — SRS owns `FR`/`NFR`, SAD owns `AR`, each ADR owns itself.
+  table cell — PRD owns `FR`/`NFR`, SAD owns `AR`, each ADR owns itself.
   **Referencing** documents cite IDs in prose or in a **non-first column**. Any
   cross-doc reference/coverage table MUST be wrapped in generated markers
   (`COVERAGE-INDEX` / `ADR-INDEX` / `ADR-STATUS`) so `lint-ids` strips it.
@@ -126,7 +124,7 @@ derived from the PRD.
   AR-realization tables inside `COVERAGE-INDEX` markers (generated form), NOT as
   hand-authored first-cell ID tables. When a SAD is active it owns `AR`, so the SDD
   references `AR` and does not re-define it in a first cell; in no-SAD mode the SDD
-  owns and defines `AR` as usual. `FR`/`NFR` (owned by the SRS) are never
+  owns and defines `AR` as usual. `FR`/`NFR` (owned by the PRD) are never
   re-defined in a first cell.
 - **Output language (006 G):** If `workspace/outputs/current/governance/import-state.json` has `outputLanguage`,
   write all prose in it; if it has `codeAndJargon`, keep identifiers, code, and

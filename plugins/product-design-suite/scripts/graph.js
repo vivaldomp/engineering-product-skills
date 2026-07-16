@@ -2,7 +2,7 @@
 // every finalize: traceability.json (the requirement matrix, serialized) and
 // artifacts.graph.json (document-level nodes and edges).
 //
-// No lineage.json: PRD->SRS->SAD->SDD is a fixed pipeline in this suite, so a
+// No lineage.json: PRD->SAD->SDD is a fixed pipeline in this suite, so a
 // file restating it carries no information. The constant lives once, in
 // workspace-paths.js, where it generates real edges.
 const fs = require('node:fs');
@@ -14,7 +14,7 @@ const trace = require('./traceability.js');
 const toPosix = p => p.split(path.sep).join('/');
 
 function typeOf(rel) {
-  for (const key of ['prd', 'srs', 'sad', 'sdd']) {
+  for (const key of ['discovery', 'prd', 'sad', 'sdd', 'release', 'runbook']) {
     if (W.REL[key] === rel) return key;
   }
   return rel.startsWith(W.REL.adrDir + path.sep) ? 'adr' : 'import';

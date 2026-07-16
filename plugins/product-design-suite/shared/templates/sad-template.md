@@ -30,7 +30,6 @@ date: <YYYY-MM-DD>
 | Reference | Description | Link or Location |
 | --- | --- | --- |
 | PRD | Product Requirements Document | workspace/outputs/current/planning/prd.md |
-| SRS | Software Requirements Specification (if used) | workspace/outputs/current/specifications/srs.md |
 | <Reference> | <Description> | <Link> |
 
 ### Related ADRs
@@ -48,7 +47,7 @@ date: <YYYY-MM-DD>
 
 ### Architectural Drivers
 
-- <Driver 1, sourced from SRS/PRD non-functional requirements: scalability, reliability, security, cost, compliance, time-to-market>
+- <Driver 1, sourced from PRD non-functional requirements (NFR-NNN): scalability, reliability, security, cost, compliance, time-to-market>
 - <Driver 2>
 
 > AR/constraint IDs follow the [canonical ID conventions](../references/id-conventions.md).
@@ -57,12 +56,14 @@ date: <YYYY-MM-DD>
 
 | ID | Requirement | Source | Design Impact |
 | --- | --- | --- | --- |
-| AR-NNN | <Requirement> | <PRD/SRS/ADR/stakeholder> | <Impact> |
+| AR-NNN | <Requirement> | <PRD/ADR/stakeholder> | <Impact> |
 | AR-NNN | <Requirement> | <Source> | <Impact> |
 
 ### Technical Constraints
 
-- <Constraint 1>
+Technical, coding-standard, and regulatory-standards constraints the architecture must honor (`C-NNN`).
+
+- <Constraint 1, e.g. must comply with <coding standard / platform limit>>
 - <Constraint 2>
 
 ## 3. System Context
@@ -116,6 +117,14 @@ flowchart LR
   api -->|<event>| broker[<Message broker>]
 ```
 
+### External Interface Requirements
+
+The system's external interfaces — user, hardware, software, and communication — and the contracts that govern them.
+
+| Interface | Type | Description |
+| --- | --- | --- |
+| <Interface name> | <User / Hardware / Software / Communication> | <Protocol, format, contract, and the external party> |
+
 ## 6. Security and Compliance Architecture
 
 Macro-level security posture (implementation-level controls live in SDD §8 Security and Compliance):
@@ -125,6 +134,7 @@ Macro-level security posture (implementation-level controls live in SDD §8 Secu
 - **Encryption:** <in transit / at rest posture>
 - **Network perimeters:** <segmentation, ingress/egress, trust zones>
 - **Compliance boundaries:** <data residency, regulatory scope>
+- **Standards compliance:** <regulatory / industry standards the design conforms to, e.g. PCI-DSS, HIPAA, WCAG, ISO 27001>
 
 ## 7. Architecture Decisions
 
