@@ -25,3 +25,33 @@ test('resolveCurrent defaults to workspace/outputs/current', () => {
   assert.equal(W.resolveCurrent(undefined), path.resolve(W.CURRENT));
   assert.equal(W.resolveCurrent('/tmp/z'), path.resolve('/tmp/z'));
 });
+
+test('phase-2 layout constants', () => {
+  assert.equal(W.RELEASES, path.join('workspace', 'outputs', 'releases'));
+  assert.equal(W.RECEIPTS, path.join('.engineering', 'receipts'));
+  assert.equal(W.TELEMETRY, path.join('.engineering', 'telemetry'));
+  assert.equal(W.RUNS_LOG, path.join('.engineering', 'telemetry', 'runs.jsonl'));
+});
+
+test('TEMPLATE_FOR is keyed by exact doc path, with no directory keys', () => {
+  assert.equal(W.TEMPLATE_FOR[W.REL.prd], 'prd-template.md');
+  assert.equal(W.TEMPLATE_FOR[W.REL.sdd], 'sdd-template.md');
+  assert.equal(Object.keys(W.TEMPLATE_FOR).length, 4);
+  // A directory-shaped key would break validate-structure's existsSync loop.
+  assert.equal(W.TEMPLATE_FOR[W.REL.adrDir], undefined);
+});
+
+test('DEPENDS encodes the authoring pipeline', () => {
+  assert.deepEqual(W.DEPENDS[W.REL.srs], [W.REL.prd]);
+  assert.deepEqual(W.DEPENDS[W.REL.sad], [W.REL.srs]);
+  assert.deepEqual(W.DEPENDS[W.REL.sdd], [W.REL.sad]);
+  assert.equal(W.DEPENDS[W.REL.prd], undefined);
+});
+
+test('IMPORT_ARTIFACTS names egp-import outputs', () => {
+  assert.deepEqual(W.IMPORT_ARTIFACTS, [
+    path.join('governance', 'import-gap-report.md'),
+    path.join('governance', 'import-map.json'),
+    path.join('governance', 'import-state.json'),
+  ]);
+});

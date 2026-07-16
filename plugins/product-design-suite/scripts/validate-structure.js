@@ -6,12 +6,7 @@ const path = require('node:path');
 const W = require('./workspace-paths.js');
 
 const TEMPLATE_DIR = path.join(__dirname, '..', 'shared', 'templates');
-const TEMPLATE_FOR = {
-  [W.REL.prd]: 'prd-template.md',
-  [W.REL.srs]: 'srs-template.md',
-  [W.REL.sad]: 'sad-template.md',
-  [W.REL.sdd]: 'sdd-template.md',
-};
+const TEMPLATE_FOR = W.TEMPLATE_FOR;
 
 function normalizeHeading(t) {
   return t.replace(/^\d+\.?\s*/, '').replace(/[<>]/g, '').trim().toLowerCase();

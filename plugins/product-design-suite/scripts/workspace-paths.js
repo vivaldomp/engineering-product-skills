@@ -12,6 +12,11 @@ const CACHE = path.join(WORKSPACE, 'cache');
 const ENGINEERING = '.engineering';
 const CONFIG = path.join(ENGINEERING, 'config.yaml');
 
+const RELEASES = path.join(WORKSPACE, 'outputs', 'releases');
+const RECEIPTS = path.join(ENGINEERING, 'receipts');
+const TELEMETRY = path.join(ENGINEERING, 'telemetry');
+const RUNS_LOG = path.join(TELEMETRY, 'runs.jsonl');
+
 // Engineering-purpose taxonomy inside outputs/current. Reserved names not yet
 // used by any skill (discovery, implementation, tests, deployment, operations)
 // are documented in shared/references/structures.md, not created here.
@@ -26,6 +31,31 @@ const REL = {
   exports: 'exports',
 };
 
+// Template per authored document. Keyed by exact relative path: consumers
+// iterate these entries calling existsSync, so no directory-shaped keys.
+const TEMPLATE_FOR = {
+  [REL.prd]: 'prd-template.md',
+  [REL.srs]: 'srs-template.md',
+  [REL.sad]: 'sad-template.md',
+  [REL.sdd]: 'sdd-template.md',
+};
+
+// The suite's fixed authoring pipeline. ADRs depend on the SAD; that edge is
+// resolved in meta.js because ADR filenames vary.
+const DEPENDS = {
+  [REL.srs]: [REL.prd],
+  [REL.sad]: [REL.srs],
+  [REL.sdd]: [REL.sad],
+};
+
+// Authored once by egp-import and read by downstream builders — unlike
+// traceability.*, which is regenerated on every finalize.
+const IMPORT_ARTIFACTS = [
+  path.join('governance', 'import-gap-report.md'),
+  path.join('governance', 'import-map.json'),
+  path.join('governance', 'import-state.json'),
+];
+
 function docPath(root, key) {
   if (!REL[key]) throw new Error(`unknown doc key: ${key}`);
   return path.join(root, REL[key]);
@@ -36,5 +66,7 @@ const resolveCurrent = cliArg => path.resolve(cliArg || CURRENT);
 
 module.exports = {
   WORKSPACE, CURRENT, HISTORY, INPUTS, CACHE, ENGINEERING, CONFIG,
-  REL, docPath, adrDir, governanceDir, resolveCurrent,
+  RELEASES, RECEIPTS, TELEMETRY, RUNS_LOG,
+  REL, TEMPLATE_FOR, DEPENDS, IMPORT_ARTIFACTS,
+  docPath, adrDir, governanceDir, resolveCurrent,
 };
