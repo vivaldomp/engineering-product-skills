@@ -95,20 +95,26 @@ On each snapshot, for every covered document:
 
 - If a sidecar exists and its `hash` **still matches** the file, the sidecar is
   left byte-for-byte alone. Original provenance is preserved.
-- If the hash differs, or no sidecar exists, the sidecar is rewritten with the
-  current run's `runId`, `hash`, and `generatedAt`. When an earlier sidecar was
-  present, its `skill` value is preserved; `skill` is taken from the finalizing
-  run only when creating a sidecar from scratch.
+- If the hash differs, or no sidecar exists, the sidecar is rewritten in full
+  with the finalizing run's `skill`, `runId`, `hash`, and `generatedAt`.
 
 A sidecar therefore records the run that last **changed** that document, not
 merely the last run that occurred. This is what makes the drift signal work:
 after a finalize, `--check` reports `MODIFIED` for exactly those documents
 hand-edited since.
 
-Attribution has a known limit: if a document is hand-edited and a *different*
-skill finalizes the next run, that document's sidecar gets the new `runId`
-while keeping its original `skill`. The common case — a document's sidecar
-created during its own builder's run — attributes correctly.
+Note the rewrite takes the finalizing run's `skill` rather than preserving a
+prior one. Preserving it would be wrong in the common case: the first run
+creates sidecars for *every* document already present, so an `srs.md` sidecar
+first created during a PRD run would keep `skill: egp-prd-builder` forever, even
+after the SRS builder rewrites the file.
+
+Attribution has a known limit in the reverse direction: if a document is
+hand-edited and a *different* skill's run is the next to finalize, that
+document's sidecar is attributed to the finalizing skill. That run is the best
+evidence available — it is the run that packaged the change — and the common
+case, where a document changes during its own builder's run, attributes
+correctly.
 
 ### `--check` exit code
 
