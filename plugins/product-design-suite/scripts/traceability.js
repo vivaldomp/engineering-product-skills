@@ -3,6 +3,7 @@ const path = require('node:path');
 
 const C = require('./id-conventions.js');
 const { lintText } = require('./lint-ids.js');
+const W = require('./workspace-paths.js');
 const PREFIX = C.PREFIX;
 const MEMBER = C.MEMBER;
 // A reference group: an anchor member plus a run of continuation operators + members.
@@ -292,7 +293,7 @@ function injectCoverage(sdd, block) {
 
 function loadProduct(dir) {
   const read = p => fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
-  const adrDir = path.join(dir, 'adr');
+  const adrDir = W.adrDir(dir);
   const adrs = {};
   if (fs.existsSync(adrDir)) {
     for (const f of fs.readdirSync(adrDir)) {
@@ -303,10 +304,10 @@ function loadProduct(dir) {
     }
   }
   return {
-    prd: read(path.join(dir, 'prd', 'prd.md')),
-    sdd: read(path.join(dir, 'sdd', 'sdd.md')),
-    srs: read(path.join(dir, 'srs', 'srs.md')),
-    sad: read(path.join(dir, 'sad', 'sad.md')),
+    prd: read(W.docPath(dir, 'prd')),
+    sdd: read(W.docPath(dir, 'sdd')),
+    srs: read(W.docPath(dir, 'srs')),
+    sad: read(W.docPath(dir, 'sad')),
     adrs,
   };
 }
@@ -317,15 +318,17 @@ module.exports = {
 };
 
 if (require.main === module) {
-  const dir = path.resolve(process.argv[2] || '.product');
+  const dir = W.resolveCurrent(process.argv[2]);
   const matrix = buildMatrix(loadProduct(dir));
   if (matrix.unclassified.length) {
     console.warn(`traceability: saw ${matrix.unclassified.length} token(s) it could not classify: ${matrix.unclassified.join(', ')}`);
   }
   try {
-    fs.writeFileSync(path.join(dir, 'traceability.md'), renderMarkdown(matrix));
-    fs.writeFileSync(path.join(dir, 'traceability.html'), renderHtml(matrix));
-    const sddPath = path.join(dir, 'sdd', 'sdd.md');
+    const gov = W.governanceDir(dir);
+    fs.mkdirSync(gov, { recursive: true });
+    fs.writeFileSync(path.join(gov, 'traceability.md'), renderMarkdown(matrix));
+    fs.writeFileSync(path.join(gov, 'traceability.html'), renderHtml(matrix));
+    const sddPath = W.docPath(dir, 'sdd');
     if (fs.existsSync(sddPath)) {
       fs.writeFileSync(sddPath, injectCoverage(fs.readFileSync(sddPath, 'utf8'), renderCoverageBlock(matrix)));
     } else {
