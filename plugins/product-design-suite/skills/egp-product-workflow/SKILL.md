@@ -8,7 +8,8 @@ metadata:
 
 # egp-product-workflow
 
-Drive the sequential PRD -> (optional) SAD -> SDD -> ADR workflow.
+Drive the sequential (optional Discovery) -> PRD -> (optional) SAD -> SDD -> ADR ->
+(optional Release / Runbook) workflow.
 
 ## Steps
 1. **Initialize** `workspace/outputs/current/` if missing: create `planning/ architecture/ architecture/adr/ exports/
@@ -20,6 +21,8 @@ Drive the sequential PRD -> (optional) SAD -> SDD -> ADR workflow.
    - a pre-existing `workspace/outputs/current/` document predates the metadata convention (no YAML
      front-matter, or an ADR still carrying a legacy `## 1. Metadata` table) ->
      offer the `egp-doc-sync` migration before continuing.
+   - the problem/users still need validation and no `discovery/discovery.md` exists -> offer
+     `egp-discovery-builder` (optional, upstream of the PRD; its recommendation seeds the PRD).
    - no `planning/prd.md` -> start with `egp-prd-builder`. The PRD is the canonical home for
      `FR-NNN`/`NFR-NNN`/`BR-NNN`/`UAT-NNN`.
    - PRD exists, no `architecture/sad.md` -> offer `egp-sad-builder`
@@ -31,6 +34,9 @@ Drive the sequential PRD -> (optional) SAD -> SDD -> ADR workflow.
      the SAD is the macro-architecture source and owns `AR-NNN`, so the SDD references it and
      focuses on C3 component/code design.
    - SDD exists -> offer `egp-adr-builder` for flagged decisions.
+   - SDD exists and the team is preparing to ship -> offer `egp-release-builder`
+     (`deployment/release.md`) and `egp-ops-builder` (`operations/runbook.md`), both optional and
+     downstream of the SDD.
    Warn (don't block) if the user wants to skip ahead.
 3. **Enforce cadence** from
    `${CLAUDE_PLUGIN_ROOT}/shared/references/questioning-protocol.md` across the

@@ -233,6 +233,8 @@ answers *where* components live and the big picture.
 
 ## 5. Recommended lifecycle
 
+0. *(Optional)* When the problem or users still need validation, run a Discovery first with
+   `egp-discovery-builder`; its recommendation seeds the PRD's scope.
 1. Start with a PRD when the problem, audience, expected outcomes, and scope need alignment.
    The PRD owns the detailed `FR`/`NFR` that the SAD and SDD design against.
    - *(Optional)* If the team maintains a System Architecture Document, author it after the
@@ -243,7 +245,10 @@ answers *where* components live and the big picture.
    component/code design.
 3. Create ADRs whenever the design involves meaningful trade-offs, irreversible choices, expensive changes, cross-team standards, or long-lived operational consequences.
 4. Keep the documents connected through references: PRD requirements should map to SDD sections, and SDD design choices should link to ADRs.
-5. Update documents when reality changes. Documentation is most valuable when it reflects the system as built or intentionally records why it changed.
+5. *(Optional)* When shipping, author a Release Plan (`egp-release-builder`) and an Operations
+   Runbook (`egp-ops-builder`); both follow the SDD and turn its deployment/observability design
+   into executable rollout and on-call guides.
+6. Update documents when reality changes. Documentation is most valuable when it reflects the system as built or intentionally records why it changed.
 
 ## 6. Design notes
 

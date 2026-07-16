@@ -110,7 +110,7 @@ test('confirmation-batch contract is defined once and referenced by workflow (F1
 });
 
 test('templates use non-matching placeholder IDs, not real example IDs (IMP-1a)', () => {
-  const files = ['prd', 'sad', 'sdd'].map(n => `shared/templates/${n}-template.md`);
+  const files = ['discovery', 'prd', 'sad', 'sdd', 'release', 'runbook'].map(n => `shared/templates/${n}-template.md`);
   // A real-looking example ID = a known prefix + dash + digits (e.g. FR-001).
   const REAL = /\b(FR|BR|NFR|AR|UAT)-\d+\b/;
   for (const f of files) {
@@ -120,7 +120,7 @@ test('templates use non-matching placeholder IDs, not real example IDs (IMP-1a)'
 });
 
 test('builders carry the docs/ guard and version-bump heuristic (IMP-9, IMP-11)', () => {
-  for (const b of ['egp-prd-builder', 'egp-sad-builder', 'egp-sdd-builder', 'egp-adr-builder']) {
+  for (const b of ['egp-prd-builder', 'egp-sad-builder', 'egp-sdd-builder', 'egp-adr-builder', 'egp-discovery-builder', 'egp-release-builder', 'egp-ops-builder']) {
     const s = read(`skills/${b}/SKILL.md`);
     assert.match(s, /docs\//, `${b} must mention the docs/ guard`);
     assert.match(s, /version/i, `${b} must mention version-bump guidance`);

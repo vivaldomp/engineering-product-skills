@@ -14,7 +14,7 @@ const trace = require('./traceability.js');
 const toPosix = p => p.split(path.sep).join('/');
 
 function typeOf(rel) {
-  for (const key of ['prd', 'sad', 'sdd']) {
+  for (const key of ['discovery', 'prd', 'sad', 'sdd', 'release', 'runbook']) {
     if (W.REL[key] === rel) return key;
   }
   return rel.startsWith(W.REL.adrDir + path.sep) ? 'adr' : 'import';

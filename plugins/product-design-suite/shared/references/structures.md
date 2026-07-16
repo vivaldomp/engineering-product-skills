@@ -420,8 +420,11 @@ workspace/
 |-- inputs/                      # user-supplied source material
 |-- outputs/
 |   |-- current/                 # live, editable working tree
+|   |   |-- discovery/discovery.md  # optional (upstream of the PRD)
 |   |   |-- planning/prd.md
 |   |   |-- architecture/{sad.md, sdd.md, adr/ADR-NNN-<slug>.md}
+|   |   |-- deployment/release.md    # optional (follows the SDD)
+|   |   |-- operations/runbook.md    # optional (follows the SDD)
 |   |   |-- ux/                  # UI previews (openui, prd-summary.html)
 |   |   |-- governance/          # traceability, import reports, graph
 |   |   `-- exports/             # rendered diagram previews
@@ -457,8 +460,9 @@ run package to `workspace/outputs/releases/<name>/`. Gate-failed runs are refuse
 unless `--force`, which records `"forced": true` in `release.json`. Promotion sources
 only from `history/` — `current/` is the live editable tree, never a release pointer.
 
-**Reserved names.** Taxonomy dirs `discovery/`, `implementation/`, `tests/`, `deployment/`,
-`operations/`; roots `workspace/reports/`, `workspace/state/` — reserved for later phases.
+**Reserved names.** Taxonomy dirs `implementation/`, `tests/`; roots `workspace/reports/`,
+`workspace/state/` — reserved for later phases. (`discovery/`, `deployment/`, and
+`operations/` are now backed by the discovery, release, and runbook documents.)
 Directories are created only when something writes into them.
 
 **Rejected, not pending.** `.engineering/execution.db`: the suite is strictly
