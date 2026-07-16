@@ -8,11 +8,11 @@ const g = require('../plugins/product-design-suite/scripts/consistency-gate.js')
 
 function scaffold() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gate-'));
-  fs.mkdirSync(path.join(dir, 'prd'), { recursive: true });
-  fs.mkdirSync(path.join(dir, 'sdd'), { recursive: true });
-  fs.mkdirSync(path.join(dir, 'adr'), { recursive: true });
-  fs.writeFileSync(path.join(dir, 'prd', 'prd.md'), '# PRD\nFR-001 export.\n');
-  fs.writeFileSync(path.join(dir, 'sdd', 'sdd.md'), '## 4. Components\nImplements FR-001.\n');
+  fs.mkdirSync(path.join(dir, 'planning'), { recursive: true });
+  fs.mkdirSync(path.join(dir, 'architecture'), { recursive: true });
+  fs.mkdirSync(path.join(dir, 'architecture', 'adr'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'planning', 'prd.md'), '# PRD\nFR-001 export.\n');
+  fs.writeFileSync(path.join(dir, 'architecture', 'sdd.md'), '## 4. Components\nImplements FR-001.\n');
   return dir;
 }
 
@@ -26,9 +26,9 @@ test('gate passes a clean product and reports per-check results', () => {
 
 test('gate fails when an ADR claims a supersede that is not reciprocated', () => {
   const dir = scaffold();
-  fs.writeFileSync(path.join(dir, 'adr', 'ADR-002-x.md'),
+  fs.writeFileSync(path.join(dir, 'architecture', 'adr', 'ADR-002-x.md'),
     '---\nid: ADR-002\nsupersedes: [ADR-001]\nsuperseded-by: []\n---\n# x\n');
-  fs.writeFileSync(path.join(dir, 'adr', 'ADR-001-y.md'),
+  fs.writeFileSync(path.join(dir, 'architecture', 'adr', 'ADR-001-y.md'),
     '---\nid: ADR-001\nsuperseded-by: []\n---\n# y\n'); // missing back-link
   const r = g.runGate(dir);
   assert.equal(r.pass, false);
@@ -37,9 +37,9 @@ test('gate fails when an ADR claims a supersede that is not reciprocated', () =>
 
 test('gate passes when quoted ADR IDs in front-matter are matched after quote-stripping', () => {
   const dir = scaffold();
-  fs.writeFileSync(path.join(dir, 'adr', 'ADR-002-x.md'),
+  fs.writeFileSync(path.join(dir, 'architecture', 'adr', 'ADR-002-x.md'),
     '---\nid: ADR-002\nsupersedes: ["ADR-001"]\nsuperseded-by: []\n---\n# x\n');
-  fs.writeFileSync(path.join(dir, 'adr', 'ADR-001-y.md'),
+  fs.writeFileSync(path.join(dir, 'architecture', 'adr', 'ADR-001-y.md'),
     '---\nid: ADR-001\nsuperseded-by: ["ADR-002"]\n---\n# y\n');
   const r = g.runGate(dir);
   assert.equal(r.pass, true);
@@ -74,7 +74,7 @@ test('structure check is warn-level and never fails the gate (IMP-3)', () => {
 
 test('mermaid-lint is error-level and fails a bad diagram (IMP-6)', () => {
   const dir = scaffold();
-  fs.writeFileSync(path.join(dir, 'sdd', 'sdd.md'),
+  fs.writeFileSync(path.join(dir, 'architecture', 'sdd.md'),
     '## 4. Components\nImplements FR-001.\n```mermaid\nsequenceDiagram\n  A->>B: a; b\n```\n');
   const r = g.runGate(dir);
   const ml = r.checks.find(c => c.name === 'mermaid-lint');
@@ -85,9 +85,9 @@ test('mermaid-lint is error-level and fails a bad diagram (IMP-6)', () => {
 
 test('one-directional related-adrs warns but does not fail the gate (IMP-7)', () => {
   const dir = scaffold();
-  fs.writeFileSync(path.join(dir, 'adr', 'ADR-001-a.md'),
+  fs.writeFileSync(path.join(dir, 'architecture', 'adr', 'ADR-001-a.md'),
     '---\nid: ADR-001\nrelated-adrs: [ADR-002]\n---\n# a\n');
-  fs.writeFileSync(path.join(dir, 'adr', 'ADR-002-b.md'),
+  fs.writeFileSync(path.join(dir, 'architecture', 'adr', 'ADR-002-b.md'),
     '---\nid: ADR-002\nrelated-adrs: []\n---\n# b\n'); // missing back-link
   const r = g.runGate(dir);
   const rel = r.checks.find(c => c.name === 'related-adrs');

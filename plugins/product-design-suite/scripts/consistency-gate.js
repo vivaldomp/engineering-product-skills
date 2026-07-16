@@ -8,6 +8,7 @@ const trace = require('./traceability.js');
 const { lintProduct } = require('./lint-ids.js');
 const structure = require('./validate-structure.js');
 const mermaid = require('./mermaid-lint.js');
+const W = require('./workspace-paths.js');
 
 function countProductMd(dir) {
   let n = 0;
@@ -40,7 +41,7 @@ function readFrontMatter(text) {
 }
 
 function loadAdrs(dir) {
-  const adrDir = path.join(dir, 'adr');
+  const adrDir = W.adrDir(dir);
   const out = {};
   if (!fs.existsSync(adrDir)) return out;
   for (const f of fs.readdirSync(adrDir)) {
@@ -96,7 +97,7 @@ function runGate(dir) {
 
   const checks = [
     { name: 'inputs-present', level: 'error', pass: mdCount > 0,
-      detail: mdCount > 0 ? `${mdCount} .product doc(s)` : `no .product/*.md found under ${dir}` },
+      detail: mdCount > 0 ? `${mdCount} doc(s)` : `no *.md found under ${dir}` },
     { name: 'traceability', level: 'error', pass: matrix.orphans.length === 0,
       detail: matrix.orphans.length ? `orphans: ${matrix.orphans.join(', ')}` : 'no orphans' },
     { name: 'id-lint', level: 'error', pass: lint.malformed.length === 0 && lint.definitionDuplicates.length === 0,
@@ -122,7 +123,7 @@ function runGate(dir) {
 module.exports = { runGate, checkReciprocity, checkRelatedReciprocity, readFrontMatter };
 
 if (require.main === module) {
-  const { pass, checks } = runGate(process.argv[2] || '.product');
+  const { pass, checks } = runGate(W.resolveCurrent(process.argv[2]));
   for (const c of checks) {
     const tag = c.pass ? 'PASS' : (c.level === 'warn' ? 'WARN' : 'FAIL');
     console.log(`[${tag}] ${c.name}: ${c.detail}`);
