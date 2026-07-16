@@ -13,7 +13,6 @@ test('canonical roots', () => {
 
 test('doc paths follow the engineering-purpose taxonomy', () => {
   assert.equal(W.docPath('/x', 'prd'), path.join('/x', 'planning', 'prd.md'));
-  assert.equal(W.docPath('/x', 'srs'), path.join('/x', 'specifications', 'srs.md'));
   assert.equal(W.docPath('/x', 'sad'), path.join('/x', 'architecture', 'sad.md'));
   assert.equal(W.docPath('/x', 'sdd'), path.join('/x', 'architecture', 'sdd.md'));
   assert.equal(W.adrDir('/x'), path.join('/x', 'architecture', 'adr'));
@@ -36,16 +35,16 @@ test('phase-2 layout constants', () => {
 test('TEMPLATE_FOR is keyed by exact doc path, with no directory keys', () => {
   assert.equal(W.TEMPLATE_FOR[W.REL.prd], 'prd-template.md');
   assert.equal(W.TEMPLATE_FOR[W.REL.sdd], 'sdd-template.md');
-  assert.equal(Object.keys(W.TEMPLATE_FOR).length, 4);
+  assert.equal(Object.keys(W.TEMPLATE_FOR).length, 3);
   // A directory-shaped key would break validate-structure's existsSync loop.
   assert.equal(W.TEMPLATE_FOR[W.REL.adrDir], undefined);
 });
 
 test('DEPENDS encodes the authoring pipeline', () => {
-  assert.deepEqual(W.DEPENDS[W.REL.srs], [W.REL.prd]);
-  assert.deepEqual(W.DEPENDS[W.REL.sad], [W.REL.srs]);
+  assert.deepEqual(W.DEPENDS[W.REL.sad], [W.REL.prd]);
   assert.deepEqual(W.DEPENDS[W.REL.sdd], [W.REL.sad]);
   assert.equal(W.DEPENDS[W.REL.prd], undefined);
+  assert.equal(W.REL.srs, undefined);
 });
 
 test('IMPORT_ARTIFACTS names egp-import outputs', () => {

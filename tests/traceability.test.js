@@ -151,10 +151,9 @@ test('buildMatrix scopes AR/UAT linkage to a sentence, not the whole paragraph',
   assert.deepEqual(m.ars.find(a => a.id === 'AR-002').tracesTo, ['FR-002']);
 });
 
-test('buildMatrix sources FR/NFR from the SRS when present, BR/UAT from the PRD', () => {
+test('buildMatrix sources FR/NFR/BR from the PRD, the single requirements home', () => {
   const m = t.buildMatrix({
-    prd: 'Business rule BR-001 applies. UAT-001 verifies FR-001.',
-    srs: 'FR-001 login. NFR-001 performance.',
+    prd: 'FR-001 login. NFR-001 performance. Business rule BR-001 applies. UAT-001 verifies FR-001.',
     sdd: '## 4. Components\nImplements FR-001, NFR-001 and BR-001.',
     adrs: {},
   });
@@ -162,24 +161,16 @@ test('buildMatrix sources FR/NFR from the SRS when present, BR/UAT from the PRD'
   assert.deepEqual(m.uats.map(u => u.id), ['UAT-001']);
 });
 
-test('buildMatrix sources all requirements from the PRD when no SRS (regression)', () => {
-  const m = t.buildMatrix({
-    prd: 'FR-001 a. NFR-001 b. BR-001 c.',
-    sdd: '## 4. X\nFR-001 NFR-001 BR-001.',
-    adrs: {},
-  });
-  assert.deepEqual(m.requirements.map(r => r.id).sort(), ['BR-001', 'FR-001', 'NFR-001']);
-});
-
-test('loadProduct reads specifications/srs.md into the srs field', () => {
+test('loadProduct reads planning/prd.md into the prd field', () => {
   const os = require('node:os');
   const fsm = require('node:fs');
   const pth = require('node:path');
-  const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'egp-srs-'));
-  fsm.mkdirSync(pth.join(dir, 'specifications'), { recursive: true });
-  fsm.writeFileSync(pth.join(dir, 'specifications', 'srs.md'), 'FR-001 from srs');
+  const dir = fsm.mkdtempSync(pth.join(os.tmpdir(), 'egp-prd-'));
+  fsm.mkdirSync(pth.join(dir, 'planning'), { recursive: true });
+  fsm.writeFileSync(pth.join(dir, 'planning', 'prd.md'), 'FR-001 from prd');
   const loaded = t.loadProduct(dir);
-  assert.match(loaded.srs, /FR-001 from srs/);
+  assert.match(loaded.prd, /FR-001 from prd/);
+  assert.equal(loaded.srs, undefined);
 });
 
 test('buildMatrix sources AR from the SAD when present', () => {

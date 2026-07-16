@@ -22,7 +22,6 @@ const RUNS_LOG = path.join(TELEMETRY, 'runs.jsonl');
 // are documented in shared/references/structures.md, not created here.
 const REL = {
   prd: path.join('planning', 'prd.md'),
-  srs: path.join('specifications', 'srs.md'),
   sad: path.join('architecture', 'sad.md'),
   sdd: path.join('architecture', 'sdd.md'),
   adrDir: path.join('architecture', 'adr'),
@@ -35,7 +34,6 @@ const REL = {
 // iterate these entries calling existsSync, so no directory-shaped keys.
 const TEMPLATE_FOR = {
   [REL.prd]: 'prd-template.md',
-  [REL.srs]: 'srs-template.md',
   [REL.sad]: 'sad-template.md',
   [REL.sdd]: 'sdd-template.md',
 };
@@ -43,8 +41,7 @@ const TEMPLATE_FOR = {
 // The suite's fixed authoring pipeline. ADRs depend on the SAD; that edge is
 // resolved in meta.js because ADR filenames vary.
 const DEPENDS = {
-  [REL.srs]: [REL.prd],
-  [REL.sad]: [REL.srs],
+  [REL.sad]: [REL.prd],
   [REL.sdd]: [REL.sad],
 };
 

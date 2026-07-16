@@ -10,13 +10,13 @@ spec. Keep documents and tooling in sync by following the forms below.
 
 | Prefix | Meaning                       | Owning document |
 | ------ | ----------------------------- | --------------- |
-| FR     | Functional requirement        | PRD or SRS      |
+| FR     | Functional requirement        | PRD             |
 | BR     | Business requirement          | PRD             |
-| NFR    | Non-functional requirement    | PRD or SRS      |
+| NFR    | Non-functional requirement    | PRD             |
 | AR     | Architectural requirement     | SAD (or SDD)    |
 | UAT    | User acceptance test          | PRD             |
 | ADR    | Architecture decision record  | ADR files       |
-| C      | Constraint                    | SRS/SAD/SDD     |
+| C      | Constraint                    | SAD/SDD         |
 
 ## Member form
 

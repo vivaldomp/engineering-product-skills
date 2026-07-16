@@ -58,21 +58,23 @@ test('a doc with no sidecar reports MISSING', () => {
 // The load-bearing behaviour: an untouched doc keeps its provenance across runs,
 // while a doc that actually changed is re-attributed to the run that changed it.
 test('unchanged docs keep provenance; changed docs take the new run', () => {
-  const root = current({ 'planning/prd.md': 'FR-001', 'specifications/srs.md': 'FR-001 detail' });
+  const root = current({ 'planning/prd.md': 'FR-001', 'architecture/sad.md': 'AR-001 detail' });
   M.writeSidecars({ root, skill: 'egp-prd-builder', runId: 'R1', version: '0.1.1' });
-  fs.writeFileSync(path.join(root, 'specifications', 'srs.md'), 'FR-001 detail, revised');
-  const { written, preserved } = M.writeSidecars({ root, skill: 'egp-srs-builder', runId: 'R2', version: '0.1.1' });
+  fs.writeFileSync(path.join(root, 'architecture', 'sad.md'), 'AR-001 detail, revised');
+  const { written, preserved } = M.writeSidecars({ root, skill: 'egp-sad-builder', runId: 'R2', version: '0.1.1' });
 
-  assert.deepEqual(written, [path.join('specifications', 'srs.md')]);
+  assert.deepEqual(written, [path.join('architecture', 'sad.md')]);
   assert.deepEqual(preserved, [path.join('planning', 'prd.md')]);
 
   const prd = read(root, 'planning/prd.meta.json');
   assert.equal(prd.runId, 'R1');
   assert.equal(prd.skill, 'egp-prd-builder');
 
-  const srs = read(root, 'specifications/srs.meta.json');
-  assert.equal(srs.runId, 'R2');
-  assert.equal(srs.skill, 'egp-srs-builder');
+  const sad = read(root, 'architecture/sad.meta.json');
+  assert.equal(sad.runId, 'R2');
+  assert.equal(sad.skill, 'egp-sad-builder');
+  // SAD now depends on the PRD (the SRS stage is retired).
+  assert.deepEqual(sad.dependsOn, [path.join('planning', 'prd.md')]);
 });
 
 test('ADR sidecars resolve the ADR template and depend on the SAD', () => {

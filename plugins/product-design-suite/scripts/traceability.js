@@ -165,11 +165,9 @@ function parseArTable(markdown) {
   return map;
 }
 
-function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '', sad = '' } = {}) {
-  // SRS mode: when an SRS is present it is the canonical source of FR/NFR;
-  // BR always comes from the PRD. With no SRS, FR/BR/NFR all come from the PRD.
-  const hasSrs = String(srs).trim() !== '';
-  const fnrRefs = parseRefs(hasSrs ? srs : prd).filter(id => /^(FR|NFR)-/.test(id));
+function buildMatrix({ prd = '', sdd = '', adrs = {}, sad = '' } = {}) {
+  // The PRD is the canonical source of FR/NFR/BR.
+  const fnrRefs = parseRefs(prd).filter(id => /^(FR|NFR)-/.test(id));
   const brRefs = parseRefs(prd).filter(id => /^BR-/.test(id));
   const prdRefs = [...new Set([...fnrRefs, ...brRefs, ...parseRefs(prd).filter(id => /^UAT-/.test(id))])].sort(refCompare);
   const sddSet = new Set(parseRefs(sdd));
@@ -218,14 +216,14 @@ function buildMatrix({ prd = '', sdd = '', adrs = {}, srs = '', sad = '' } = {})
     id, tracesTo: arTrace.get(id) || [], adrs: adrsFor(id),
   }));
 
-  const cSource = [prd, srs, sad, sdd].join('\n');
+  const cSource = [prd, sad, sdd].join('\n');
   const cTrace = linksWithin(cSource, /^C-/, REQ_RE);
   const constraints = parseRefs(cSource).filter(id => /^C-/.test(id)).map(id => ({
     id, tracesTo: cTrace.get(id) || [], adrs: adrsFor(id),
   }));
 
   const orphans = requirements.filter(r => r.coverage === 'orphan').map(r => r.id);
-  const unclassified = [...new Set([prd, sdd, srs, sad, ...Object.values(adrs)]
+  const unclassified = [...new Set([prd, sdd, sad, ...Object.values(adrs)]
     .flatMap(txt => lintText(txt).malformed))].sort();
   return { requirements, ars, uats, orphans, unclassified, constraints };
 }
@@ -306,7 +304,6 @@ function loadProduct(dir) {
   return {
     prd: read(W.docPath(dir, 'prd')),
     sdd: read(W.docPath(dir, 'sdd')),
-    srs: read(W.docPath(dir, 'srs')),
     sad: read(W.docPath(dir, 'sad')),
     adrs,
   };

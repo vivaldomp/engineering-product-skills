@@ -21,14 +21,13 @@ const edgesOf = (g, kind) => g.edges.filter(e => e.kind === kind);
 test('dependsOn edges follow the authoring pipeline, only between present docs', () => {
   const root = current({
     'planning/prd.md': 'FR-001',
-    'specifications/srs.md': 'FR-001',
+    'architecture/sad.md': 'AR-001',
     'architecture/sdd.md': 'FR-001',
   });
   const g = G.buildGraph(root);
   const deps = edgesOf(g, 'dependsOn').map(e => `${e.from}->${e.to}`);
-  assert.ok(deps.includes('specifications/srs.md->planning/prd.md'));
-  // sad.md is absent, so sdd->sad must not appear.
-  assert.ok(!deps.some(d => d.endsWith('->architecture/sad.md')));
+  assert.ok(deps.includes('architecture/sad.md->planning/prd.md'));
+  assert.ok(deps.includes('architecture/sdd.md->architecture/sad.md'));
 });
 
 test('nodes carry sidecar provenance and are typed', () => {
@@ -57,15 +56,13 @@ test('shared-refs edges carry the shared id count, one normalized pair each', ()
 test('impact walks dependsOn transitively', () => {
   const root = current({
     'planning/prd.md': 'FR-001',
-    'specifications/srs.md': 'FR-001',
     'architecture/sad.md': 'AR-001 traces to FR-001',
     'architecture/sdd.md': 'FR-001',
   });
   const rows = G.impact(G.buildGraph(root), 'planning/prd.md');
   const files = rows.map(r => r.file);
-  assert.ok(files.includes('specifications/srs.md'));
-  assert.ok(files.includes('architecture/sad.md'));  // transitive: sad -> srs -> prd
-  assert.ok(files.includes('architecture/sdd.md'));  // transitive: sdd -> sad
+  assert.ok(files.includes('architecture/sad.md'));  // sad -> prd
+  assert.ok(files.includes('architecture/sdd.md'));  // transitive: sdd -> sad -> prd
   assert.ok(!files.includes('planning/prd.md'));     // never itself
 });
 

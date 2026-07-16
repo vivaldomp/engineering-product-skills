@@ -10,7 +10,9 @@ const { ensureConfig, pluginVersion } = require('./snapshot.js');
 const FILE_MAP = {
   'prd/prd.md': W.REL.prd,
   'prd/prd-summary.html': path.join(W.REL.ux, 'prd-summary.html'),
-  'srs/srs.md': W.REL.srs,
+  // A legacy srs/srs.md is intentionally unmapped: the SRS document type is
+  // retired, so it falls through as an unrecognized file (preserved under its
+  // original path and listed in the summary) for manual folding into the PRD/SAD.
   'sad/sad.md': W.REL.sad,
   'sdd/sdd.md': W.REL.sdd,
   'traceability.md': path.join(W.REL.governance, 'traceability.md'),

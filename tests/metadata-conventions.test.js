@@ -75,20 +75,25 @@ test('references document front-matter metadata and relationship fields', () => 
   assert.match(co, /amend/i);
 });
 
-test('adr template front-matter includes related-srs (D1)', () => {
+test('adr template front-matter links to PRD/SAD, and the retired SRS is gone (D1)', () => {
   const tpl = read('shared/templates/adr-template.md');
-  assert.match(tpl, /related-srs:\s*\[\]/);
+  assert.match(tpl, /related-prd:\s*\[\]/);
+  assert.match(tpl, /related-sad:\s*\[\]/);
+  assert.ok(!/related-srs/.test(tpl));
 });
 
-test('egp-adr-builder and egp-doc-sync mention related-srs', () => {
-  assert.match(read('skills/egp-adr-builder/SKILL.md'), /related-srs/);
-  assert.match(read('skills/egp-doc-sync/SKILL.md'), /related-srs/);
+test('egp-adr-builder and egp-doc-sync mention related-sad, not the retired related-srs', () => {
+  const adr = read('skills/egp-adr-builder/SKILL.md');
+  const sync = read('skills/egp-doc-sync/SKILL.md');
+  assert.match(adr, /related-sad/);
+  assert.match(sync, /related-sad/);
+  assert.ok(!/related-srs/.test(adr));
+  assert.ok(!/related-srs/.test(sync));
 });
 
-test('srs and sad templates ship a mode-banner slot (D2)', () => {
-  assert.match(read('shared/templates/srs-template.md'), /MODE-BANNER:START/);
-  assert.match(read('shared/templates/srs-template.md'), /MODE-BANNER:END/);
+test('sad template ships a mode-banner slot (D2)', () => {
   assert.match(read('shared/templates/sad-template.md'), /MODE-BANNER:START/);
+  assert.match(read('shared/templates/sad-template.md'), /MODE-BANNER:END/);
 });
 
 test('sdd §9/§10/§14 carry a per-concern status field with planned (D3, IMP-5)', () => {
@@ -105,7 +110,7 @@ test('confirmation-batch contract is defined once and referenced by workflow (F1
 });
 
 test('templates use non-matching placeholder IDs, not real example IDs (IMP-1a)', () => {
-  const files = ['prd', 'srs', 'sad', 'sdd'].map(n => `shared/templates/${n}-template.md`);
+  const files = ['prd', 'sad', 'sdd'].map(n => `shared/templates/${n}-template.md`);
   // A real-looking example ID = a known prefix + dash + digits (e.g. FR-001).
   const REAL = /\b(FR|BR|NFR|AR|UAT)-\d+\b/;
   for (const f of files) {
@@ -115,7 +120,7 @@ test('templates use non-matching placeholder IDs, not real example IDs (IMP-1a)'
 });
 
 test('builders carry the docs/ guard and version-bump heuristic (IMP-9, IMP-11)', () => {
-  for (const b of ['egp-prd-builder', 'egp-srs-builder', 'egp-sad-builder', 'egp-sdd-builder', 'egp-adr-builder']) {
+  for (const b of ['egp-prd-builder', 'egp-sad-builder', 'egp-sdd-builder', 'egp-adr-builder']) {
     const s = read(`skills/${b}/SKILL.md`);
     assert.match(s, /docs\//, `${b} must mention the docs/ guard`);
     assert.match(s, /version/i, `${b} must mention version-bump guidance`);

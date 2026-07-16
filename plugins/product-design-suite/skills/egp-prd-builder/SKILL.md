@@ -27,15 +27,10 @@ Build or update the PRD at `workspace/outputs/current/planning/prd.md` from the 
    content from `egp-import`, or source supplied by the user — use **derive-then-confirm mode**: derive the sections, present one confirmation batch (see the one-confirmation-batch contract in `questioning-protocol.md`), and ask
    only about genuine gaps. Otherwise use the gap-question cadence (pause after
    every 4 questions and summarize remaining gaps).
-5. Assign stable IDs (keep them stable across updates):
-   - **No SRS (default):** the PRD owns functional `FR-NNN`, business rules `BR-NNN`,
-     non-functional `NFR-NNN`, and UAT `UAT-NNN`.
-   - **SRS mode** — when `workspace/outputs/current/specifications/srs.md` exists — the SRS owns the canonical
-     `FR-NNN`/`NFR-NNN`; the PRD's §7 Functional Requirements and §9 Non-Functional
-     Requirements **reference** the SRS instead of enumerating them. The PRD still owns
-     and assigns `BR-NNN` and `UAT-NNN`. (Moving existing `FR`/`NFR` into a new SRS is
-     `egp-srs-builder`'s migration step, not the PRD builder's job — the PRD builder only
-     honors the active mode.)
+5. Assign stable IDs (keep them stable across updates): the PRD is the canonical
+   home and owns functional `FR-NNN` (§7), business rules `BR-NNN` (§8),
+   non-functional `NFR-NNN` (§9), and UAT `UAT-NNN` (§12). Give every §9 NFR row an
+   `NFR-NNN` ID so it is machine-traceable by `traceability.js`.
 6. On finalize, populate the YAML front-matter (`title`, `status`, `version`,
    `owner`, `date`) — bump `version` and refresh `date` on an update — write
    `workspace/outputs/current/planning/prd.md`, and record unresolved gaps in the **Open Questions**

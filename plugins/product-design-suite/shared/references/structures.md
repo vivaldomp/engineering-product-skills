@@ -296,27 +296,28 @@ set from this catalog:
 
 ## 2b. SAD (System Architecture Document)
 
-An optional macro-architecture document that sits between the SRS and the SDD. When present,
-it is the canonical home for the system context, container/infrastructure topology, data-flow
-patterns, the macro security architecture, and the Architectural Requirements (`AR-NNN`). The
-SDD then references it and focuses on C3 component/code design. Without a SAD, the SDD owns
-the macro-architecture and `AR-NNN`.
+An optional macro-architecture document that sits between the PRD and the SDD. When present,
+it is the canonical home for the system context, container/infrastructure topology, data-flow,
+integration and external-interface patterns, the macro security and standards-compliance
+architecture, and the Architectural Requirements (`AR-NNN`). The SDD then references it and
+focuses on C3 component/code design. Without a SAD, the SDD owns the macro-architecture and
+`AR-NNN`.
 
 ```text
 SAD
 |-- 1. Introduction (purpose, scope, audience, references, related ADRs, glossary)
-|-- 2. Architectural drivers and requirements (AR-NNN, drivers from NFRs, constraints)
+|-- 2. Architectural drivers and requirements (AR-NNN, drivers from NFRs, technical/standards constraints)
 |-- 3. System context (C4 Level 1)
 |-- 4. Container and infrastructure (C4 Level 2, technology choices, deployment)
-|-- 5. Data flow and integration patterns (REST/GraphQL/events, trust boundaries)
-|-- 6. Security and compliance architecture (macro: authN, encryption, perimeters)
+|-- 5. Data flow, integration and external-interface patterns (REST/GraphQL/events, interface inventory, trust boundaries)
+|-- 6. Security and compliance architecture (macro: authN, encryption, perimeters, standards compliance)
 |-- 7. Architecture decisions (each linking to an ADR)
 `-- 8. Open questions and assumptions
 ```
 
 ### SAD quality checklist
 
-- The macro-architecture maps back to SRS/PRD non-functional requirements via `AR-NNN`.
+- The macro-architecture maps back to PRD non-functional requirements via `AR-NNN`.
 - System boundaries and external integrations are explicit (C4 Context).
 - Container/technology choices and the deployment landscape are shown (C4 Container).
 - Data-flow and integration patterns, including trust boundaries, are mapped.
@@ -420,7 +421,6 @@ workspace/
 |-- outputs/
 |   |-- current/                 # live, editable working tree
 |   |   |-- planning/prd.md
-|   |   |-- specifications/srs.md
 |   |   |-- architecture/{sad.md, sdd.md, adr/ADR-NNN-<slug>.md}
 |   |   |-- ux/                  # UI previews (openui, prd-summary.html)
 |   |   |-- governance/          # traceability, import reports, graph

@@ -1,6 +1,6 @@
 ---
 name: egp-product-workflow
-description: Orchestrate the end-to-end product design workflow (PRD then optional SRS then optional SAD then SDD then ADR). Use when the user wants to start designing a product, run the full product-spec workflow, or is unsure which document to write next. Initializes workspace/outputs/current/, enforces the question cadence, and dispatches to the prd/srs/sad/sdd/adr builders and doc-sync.
+description: Orchestrate the end-to-end product design workflow (PRD then optional SAD then SDD then ADR). Use when the user wants to start designing a product, run the full product-spec workflow, or is unsure which document to write next. Initializes workspace/outputs/current/, enforces the question cadence, and dispatches to the prd/sad/sdd/adr builders and doc-sync.
 metadata:
   author: Vivaldo
   version: "0.1.0"
@@ -8,30 +8,28 @@ metadata:
 
 # egp-product-workflow
 
-Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workflow.
+Drive the sequential PRD -> (optional) SAD -> SDD -> ADR workflow.
 
 ## Steps
 1. **Initialize** `workspace/outputs/current/` if missing: create `planning/ architecture/ architecture/adr/ exports/
    ux/ governance/`.
 2. **Detect stage** by inspecting `workspace/outputs/current/` and the working tree:
    - `workspace/outputs/current/` has no `planning/prd.md` yet but existing product docs are present
-     elsewhere (e.g. a `docs/` set with PRD/SRS/ADR/SDD) -> offer `egp-import` first
+     elsewhere (e.g. a `docs/` set with PRD/ADR/SDD, or a legacy SRS) -> offer `egp-import` first
      to ingest them and write a gap report before authoring.
    - a pre-existing `workspace/outputs/current/` document predates the metadata convention (no YAML
      front-matter, or an ADR still carrying a legacy `## 1. Metadata` table) ->
      offer the `egp-doc-sync` migration before continuing.
-   - no `planning/prd.md` -> start with `egp-prd-builder`.
-   - PRD exists, no `specifications/srs.md` -> offer `egp-srs-builder` for teams that maintain a formal
-     IEEE-830 SRS (optional; skipping it keeps the PRD as the requirements home). If a `docs/`
-     SRS was imported, offer the SRS builder here.
-   - PRD exists (and the SRS, if the team uses one), no `architecture/sad.md` -> offer `egp-sad-builder`
+   - no `planning/prd.md` -> start with `egp-prd-builder`. The PRD is the canonical home for
+     `FR-NNN`/`NFR-NNN`/`BR-NNN`/`UAT-NNN`.
+   - PRD exists, no `architecture/sad.md` -> offer `egp-sad-builder`
      for teams that maintain a System Architecture Document (optional; skipping it keeps the
      macro-architecture and `AR-NNN` in the SDD). If a `docs/` SAD was imported, offer the SAD
      builder here.
-   - PRD exists (and the SRS/SAD, if the team uses them), no `architecture/sdd.md` -> offer
-     `egp-sdd-builder`. When `specifications/srs.md` exists, the SRS is the requirements source;
-     when `architecture/sad.md` exists, the SAD is the macro-architecture source and owns
-     `AR-NNN`, so the SDD references it and focuses on C3 component/code design.
+   - PRD exists (and the SAD, if the team uses one), no `architecture/sdd.md` -> offer
+     `egp-sdd-builder`. The PRD is the requirements source; when `architecture/sad.md` exists,
+     the SAD is the macro-architecture source and owns `AR-NNN`, so the SDD references it and
+     focuses on C3 component/code design.
    - SDD exists -> offer `egp-adr-builder` for flagged decisions.
    Warn (don't block) if the user wants to skip ahead.
 3. **Enforce cadence** from
@@ -63,9 +61,9 @@ Drive the sequential PRD -> (optional) SRS -> (optional) SAD -> SDD -> ADR workf
 Default mode is interactive derive-then-confirm, one builder at a time. For a full
 suite, the user may request **batch / derive-all** mode:
 
-- **Dependency order is explicit:** ADRs → SRS/SAD → SDD/PRD. ADR IDs must exist
-  before docs cite them; the SAD mints `AR-NNN` the SDD references; the SRS owns
-  `FR`/`NFR` the PRD/SDD reference. Author in this order.
+- **Dependency order is explicit:** ADRs → SAD → SDD/PRD. ADR IDs must exist
+  before docs cite them; the SAD mints `AR-NNN` the SDD references; the PRD owns
+  `FR`/`NFR` the SAD/SDD reference. Author in this order.
 - **Author derivable content first.** Produce everything derivable from the source +
   prior decisions without stopping, then surface the **consolidated** gap questions
   once at the end instead of interrupting per document.
@@ -78,11 +76,11 @@ suite, the user may request **batch / derive-all** mode:
   Before dispatching a builder, if its invocation does not surface its Steps/Rules,
   read the builder's `SKILL.md` directly and follow it. Never proceed on a one-line
   launch alone.
-- Respect the sequence; the PRD anchors the work, an optional SRS (when present) owns the
-  detailed `FR`/`NFR`, an optional SAD (when present) owns the macro-architecture and `AR-NNN`
+- Respect the sequence; the PRD anchors the work and owns the detailed
+  `FR`/`NFR`/`BR`/`UAT`, an optional SAD (when present) owns the macro-architecture and `AR-NNN`
   that the SDD designs against, and ADRs record decisions made during SAD/SDD design.
-  `specifications/` and `architecture/sad.md` are created on demand by their builders — the workflow
-  need not pre-create them.
+  `architecture/sad.md` is created on demand by its builder — the workflow
+  need not pre-create it.
 - Keep everything inside `workspace/outputs/current/`.
 - **Output language (006 G):** Ask once for the output language and write
   `outputLanguage` (and `codeAndJargon` if jargon/code should stay in another
