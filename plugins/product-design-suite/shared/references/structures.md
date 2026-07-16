@@ -418,17 +418,17 @@ For a modern product, platform, AI, or agent-assisted engineering initiative, th
 workspace/
 |-- inputs/                      # user-supplied source material
 |-- outputs/
-    |-- current/                 # live, editable working tree
-    |   |-- planning/prd.md
-    |   |-- specifications/srs.md
-    |   |-- architecture/{sad.md, sdd.md, adr/ADR-NNN-<slug>.md}
-    |   |-- ux/                  # UI previews (openui, prd-summary.html)
-    |   |-- governance/          # traceability, import reports, graph
-    |   `-- exports/             # rendered diagram previews
-    |-- history/
-    |   `-- <run-id>/            # immutable snapshot: manifest.json, artifacts/, validation/
-    `-- releases/
-        `-- v1/                  # promoted run: release.json, artifacts/
+|   |-- current/                 # live, editable working tree
+|   |   |-- planning/prd.md
+|   |   |-- specifications/srs.md
+|   |   |-- architecture/{sad.md, sdd.md, adr/ADR-NNN-<slug>.md}
+|   |   |-- ux/                  # UI previews (openui, prd-summary.html)
+|   |   |-- governance/          # traceability, import reports, graph
+|   |   `-- exports/             # rendered diagram previews
+|   |-- history/
+|   |   `-- <run-id>/            # immutable snapshot: manifest.json, artifacts/, validation/
+|   `-- releases/
+|       `-- v1/                  # promoted run: release.json, artifacts/
 `-- cache/                       # preview session state
 .engineering/
 |-- config.yaml
