@@ -9,7 +9,7 @@ const STOP = 'plugins/product-design-suite/scripts/stop-server.sh';
 
 test('stop-server.sh --latest resolves and stops the newest session (006 H2)', () => {
   const proj = fs.mkdtempSync(path.join(os.tmpdir(), 'pds-proj-'));
-  const stateDir = path.join(proj, '.product', 'preview', 'sess1', 'state');
+  const stateDir = path.join(proj, 'workspace', 'cache', 'preview', 'sess1', 'state');
   fs.mkdirSync(stateDir, { recursive: true });
 
   // Create a temporary sleeper script to pass --pds-server-id as argv
