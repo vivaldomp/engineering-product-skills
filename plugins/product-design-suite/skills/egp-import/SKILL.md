@@ -107,6 +107,15 @@ read them instead of having them re-passed as arguments:
 - `codeAndJargon` (optional, e.g. `"en"`): language to keep identifiers, code,
   and technical jargon in. Absent → builders match the user's language.
 
+### Snapshot the import run
+
+After `import-state.json` is written:
+`node "${CLAUDE_PLUGIN_ROOT}/scripts/snapshot.js" --skill egp-import --artifact governance/import-gap-report.md`
+
+This records the import as an immutable run package and stamps the
+`workspace/inputs/` listing onto the import artifacts' metadata sidecars.
+Never edit files under `workspace/outputs/history/`.
+
 ## Rules
 - Read-only on source: never migrate, move, or edit the user's existing files.
 - An SRS source maps to the SRS template (`specifications/srs.md`); reuse its `FR`/`NFR` IDs
